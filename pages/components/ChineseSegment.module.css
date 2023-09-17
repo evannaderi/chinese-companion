@@ -1,0 +1,23 @@
+.segmentedText {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.character {
+    position: relative;
+    cursor: pointer;
+  }
+  
+  .character:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    z-index: 10;
+    white-space: nowrap;
+  }
