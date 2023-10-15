@@ -68,7 +68,7 @@ export default function Home() {
         <h3>Chat with Lihua</h3>
         <div className={styles.chatBox}>
           {conversation.map((entry, index) => (
-            <div key={index} className={entry.type}>
+            <div key={index} className={`${styles.chatEntry} ${styles[entry.type]}`}>
               {renderTranslatedText(entry.text)}
             </div>
           ))}

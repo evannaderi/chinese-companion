@@ -76,3 +76,40 @@
   width: 80%;          
   margin: 20px auto;   
 }
+
+.chatEntry {
+  padding: 10px;
+  margin: 5px;
+  border-radius: 10px;
+  font-size: 18px;
+  max-width: 70%;
+}
+
+.user {
+  background-color: white;
+  border: 1px solid #10a37f;
+  align-self: flex-end;  /* Aligns the user's messages to the right */
+}
+
+.bot {
+  background-color: #10a37f;
+  color: white;
+  align-self: flex-start;  /* Aligns the bot's messages to the left */
+}
+
+.chatBox {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  /* ... existing styles ... */
+}
+
+.main h3 {
+  font-size: 48px;
+  font-weight: bold;
+  background: linear-gradient(90deg, #10a37f, #5fdfbf);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2);
+  margin: 20px;
+}

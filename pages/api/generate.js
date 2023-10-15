@@ -72,5 +72,5 @@ function generatePrompt(conversation) {
           
           ${studentConvo}
           
-          You:`;
+          Lihua:`;
 }
