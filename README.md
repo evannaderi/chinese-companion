@@ -1,44 +1,40 @@
-# OpenAI API Quickstart - Node.js example app
+# Chinese Companion App
 
-This is an example pet name generator app used in the OpenAI API [quickstart tutorial](https://platform.openai.com/docs/quickstart). It uses the [Next.js](https://nextjs.org/) framework with [React](https://reactjs.org/). Check out the tutorial or follow the instructions below to get set up.
+## Overview
 
-![Text box that says name my pet with an icon of a dog](https://user-images.githubusercontent.com/10623307/213887080-b2bc4645-7fdb-4dbd-ae42-efce00d0dc29.png)
+Chinese Companion is an interactive chat application designed to help university students practice and improve their Chinese language skills. This AI-powered application offers real-time conversation in Chinese, leveraging the OpenAI API to provide a responsive and intelligent chatbot. With real-time translation and clickable word meanings, it serves as a comprehensive tool for language learning.
 
+## Features
 
-## Setup
+- **AI-Powered Chatbot**: Engage in Chinese conversations with an AI chatbot trained to assist in language learning.
+- **Real-Time Translation**: Understand and learn with immediate translation of Chinese phrases and sentences.
+- **Clickable Word Meanings**: Click on any word during your chat to see its meaning, aiding vocabulary acquisition.
+- **User-Friendly Interface**: A clean, intuitive interface designed for a seamless learning experience.
+- **Responsive Design**: Fully responsive web design that works on desktop, tablets, and mobile devices.
 
-1. If you don’t have Node.js installed, [install it from here](https://nodejs.org/en/) (Node.js version >= 14.6.0 required)
+## Technology Stack
 
-2. Clone this repository
+- **OpenAI API**: Powers the intelligent chatbot with advanced language processing.
+- **React**: A JavaScript library for building user interfaces.
+- **Node.js**: JavaScript runtime for building the server-side application.
+- **Next.js**: A React framework with server-side rendering for better performance and SEO.
+- **Vercel**: Deployment and hosting platform with continuous integration and live previews.
 
-3. Navigate into the project directory
+## Live Application
 
-   ```bash
-   $ cd openai-quickstart-node
-   ```
+The application is live at [https://chinese-companion.vercel.app/](https://chinese-companion.vercel.app/)
 
-4. Install the requirements
+## Getting Started
 
-   ```bash
-   $ npm install
-   ```
+To run this project locally, you'll need to clone the repository and install its dependencies.
 
-5. Make a copy of the example environment variables file
+### Prerequisites
 
-   On Linux systems: 
-   ```bash
-   $ cp .env.example .env
-   ```
-   On Windows:
-   ```powershell
-   $ copy .env.example .env
-   ```
-6. Add your [API key](https://platform.openai.com/account/api-keys) to the newly created `.env` file
+- Node.js
+- npm or yarn
 
-7. Run the app
+### Installation
 
-   ```bash
-   $ npm run dev
-   ```
-
-You should now be able to access the app at [http://localhost:3000](http://localhost:3000)! For the full context behind this example app, check out the [tutorial](https://platform.openai.com/docs/quickstart).
+1. Clone the repository:
+```bash
+git clone https://github.com/your-username/chinese-companion.git

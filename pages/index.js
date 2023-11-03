@@ -40,7 +40,7 @@ export default function Home() {
     };
 
     callAPI();
-  }, [shouldCallAPI, conversation]);
+  }, [shouldCallAPI]);
 
   const onSubmit = async (event) => {
     event.preventDefault();
