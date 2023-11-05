@@ -35,6 +35,6 @@ To run this project locally, you'll need to clone the repository and install its
 
 ### Installation
 
-1. Clone the repository:
+To clone the repository:
 ```bash
 git clone https://github.com/your-username/chinese-companion.git

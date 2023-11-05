@@ -67,18 +67,28 @@ export default function Home() {
   
         <h3>Chat with Lihua</h3>
         <div className={styles.chatBox}>
-          {conversation.map((entry, index) => (
-            <div key={index} className={`${styles.chatEntry} ${styles[entry.type]}`}>
-              {renderTranslatedText(entry.text)}
-            </div>
-          ))}
+          {conversation.map((entry, index) => {
+            if (entry.type == "bot") {
+              return (
+                <div key={index} className={`${styles.chatEntry} ${styles[entry.type]}`}>
+                  {renderTranslatedText(entry.text)}
+                </div>
+              );
+            } else {
+              return (
+                <div key={index} className={`${styles.chatEntry} ${styles[entry.type]}`}>
+                  {entry.text}
+                </div>
+              );
+            }
+          })}
         </div>
-        <form onSubmit={onSubmit}>
+        <form onSubmit={onSubmit} class="input-form">
           <div class="input-frame">
             <input
               type="text"
               name="message"
-              placeholder="Type your message"
+              placeholder="Chat with Lihua"
               value={userInput}
               onChange={(e) => setUserInput(e.target.value)}
             />
