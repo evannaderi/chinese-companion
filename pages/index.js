@@ -28,7 +28,7 @@ export default function Home() {
         }
     
         // Add the bot's response to the conversation array
-        setConversation(prevConversation => [...prevConversation, { type: "bot", text: `Lihua: ${data.result}`}]);
+        setConversation(prevConversation => [...prevConversation, { type: "assistant", text: `Lihua: ${data.result}`}]);
         setUserInput("");
       } catch (error) {
         console.error(error);
@@ -68,15 +68,15 @@ export default function Home() {
         <h3>Chat with Lihua</h3>
         <div className={styles.chatBox}>
           {conversation.map((entry, index) => {
-            if (entry.type == "bot") {
+            if (entry.type == "assistant") {
               return (
-                <div key={index} className={`${styles.chatEntry} ${styles[entry.type]}`}>
+                <div key={index} className={`${styles.chatEntry} ${styles["bot"]}`}>
                   {renderTranslatedText(entry.text)}
                 </div>
               );
             } else {
               return (
-                <div key={index} className={`${styles.chatEntry} ${styles[entry.type]}`}>
+                <div key={index} className={`${styles.chatEntry} ${styles["user"]}`}>
                   {entry.text}
                 </div>
               );

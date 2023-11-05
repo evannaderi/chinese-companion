@@ -1,13 +1,12 @@
-import { Configuration, OpenAIApi } from "openai";
 
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
+const { OpenAI } = require('openai');
+
+const openai = new OpenAI({
+  api_key: process.env.OPENAI_API_KEY,
 });
-const openai = new OpenAIApi(configuration);
 
 export default async function (req, res) {
-  console.log("Calling generate API");
-  if (!configuration.apiKey) {
+  if (!openai.apiKey) {
     res.status(500).json({
       error: {
         message: "OpenAI API key not configured, please follow instructions in README.md",
@@ -27,14 +26,18 @@ export default async function (req, res) {
   }
 
   try {
-    const completion = await openai.createCompletion({
-      model: "text-davinci-003",
-      prompt: generatePrompt(conversation),
-      temperature: 0.99,
-      max_tokens: 1000,
+    // Update the model here to use gpt-3.5-turbo, gpt-4, or another chat model
+    const completion = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo", // specify the correct chat model here
+      messages: [
+        {role: "system", content: "Translate this Chinese word into English and write its pinyin."},
+        {role: "user", content: conversation}
+      ],
+      temperature: 0,
     });
-    console.log(JSON.stringify(completion.data.choices[0], null, 2));
-    res.status(200).json({ result: completion.data.choices[0].text });
+    
+    console.log(JSON.stringify(completion.choices[0], null, 2));
+    res.status(200).json({ result: completion.choices[0].message.content });
   } catch(error) {
     if (error.response) {
       console.error(error.response.status, error.response.data);
