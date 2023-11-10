@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import styles from "./ChineseSegment.module.css"
 
-function ChineseSegment({ text }) {
+function ChineseSegment({ text, saveWord }) {
     const [segmentedText, setSegmentedText] = useState([]);
     const [segmentMapping, setSegmentMapping] = useState({});
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [currentWord, setCurrentWord] = useState("");
 
     useEffect(() => {
         const loadJieba = async () => {
@@ -577,16 +579,49 @@ function ChineseSegment({ text }) {
         }
         return results;
     }
+
+    const handleWordClick = (word) => {
+        setCurrentWord(word);
+        setIsModalOpen(true);
+    };
+
+    const handleSaveWord = () => {
+        saveWord(currentWord);
+        setIsModalOpen(false); // Close the modal after saving
+    };
+
+    const WordModal = ({ isOpen, word, onSave }) => {
+        if (!isOpen) return null;
+
+        return (
+            <div className="modal">
+                <div className="modal-content">
+                    <span className="close" onClick={() => setIsModalOpen(false)}>&times;</span>
+                    <p>{word}</p> {/* Display the current word here */}
+                    <p>{/* Display the translation here */}</p>
+                    <button onClick={onSave}>Save Word</button>
+                </div>
+            </div>
+        );
+    };
     
 
     return (
-        <span className={styles.segmentedText}>
-            {segmentedText.map((segment, idx) => (
-                <span key={segment} className={styles.character} data-tooltip={segmentMapping[segment]}>
-                    {segment}
-                </span>
-            ))}
-        </span>
+        <>
+            <WordModal isOpen={isModalOpen} word={currentWord} onSave={handleSaveWord} />
+            <span className={styles.segmentedText}>
+                {segmentedText.map((segment, idx) => (
+                    <span 
+                        key={idx} 
+                        className={styles.character} 
+                        onClick={() => handleWordClick(segment)}
+                        data-tooltip={segmentMapping[segment]}
+                    >
+                        {segment}
+                    </span>
+                ))}
+            </span>
+        </>
     );
 }
 

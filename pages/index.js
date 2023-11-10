@@ -7,6 +7,12 @@ export default function Home() {
   const [userInput, setUserInput] = useState("");
   const [conversation, setConversation] = useState([]);
   const [shouldCallAPI, setShouldCallAPI] = useState(false);
+  const [savedWords, setSavedWords] = useState([]);
+
+  const saveWord = (word) => {
+      setSavedWords(prevWords => [...prevWords, word]);
+      // Optionally save to local storage or send to backend here
+  };
 
   useEffect(() => {
     if (!shouldCallAPI) return;
@@ -30,7 +36,7 @@ export default function Home() {
         // Add the bot's response to the conversation array
         setConversation(prevConversation => [
           ...prevConversation,
-          { type: "assistant", text: `Lihua: ${data.result}`, loading: true },
+          { type: "assistant", text: `${data.result}`, loading: true },
         ]);
         setUserInput("");
       } catch (error) {
@@ -49,7 +55,7 @@ export default function Home() {
     event.preventDefault();
   
     // Add the user's input to the conversation array
-    setConversation(prevConversation => [...prevConversation, { type: "user", text: `Student: ${userInput}` }]);
+    setConversation(prevConversation => [...prevConversation, { type: "user", text: `${userInput}` }]);
   
     // Set the flag to trigger the API call
     setShouldCallAPI(true);
@@ -62,7 +68,7 @@ export default function Home() {
     }
 
     // Once the translation is ready, render it with the ChineseSegment component
-    return <ChineseSegment text={text} />;
+    return <ChineseSegment text={text} saveWord={saveWord} />;
   };
 
   return (
@@ -73,14 +79,17 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-  
+        <div clasName={styles.chatContainer}>
+          
+        </div>
         <h3>Chat with Lihua</h3>
         <div className={styles.chatBox}>
           {conversation.map((entry, index) => {
             if (entry.type == "assistant") {
+              console.log("returning");
               return (
                 <div key={index} className={`${styles.chatEntry} ${styles["bot"]}`}>
-                  {renderTranslatedText(entry.text, false)}
+                  {renderTranslatedText(entry.text)}
                 </div>
               );
             } else {
@@ -104,6 +113,12 @@ export default function Home() {
             <input type="submit" value="Send" />
           </div>
         </form>
+        <div className={styles.savedWordsContainer}>
+            <h4>Saved Words</h4>
+            {savedWords.map((word, index) => (
+                <div key={word + index}>{word}</div>
+            ))}
+        </div>
       </main>
     </div>
   );

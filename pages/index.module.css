@@ -129,3 +129,10 @@
   text-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2);
   margin: 20px;
 }
+
+.savedWordsContainer {
+  position: fixed;
+  right: 0;
+  top: 50%; /* Adjust as necessary */
+  transform: translateY(-50%); /* Center it vertically */
+}
