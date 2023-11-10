@@ -1,4 +1,4 @@
-const express = require('express');
+
 const app = express();
 import fs from 'fs';
 import readline from 'readline';
