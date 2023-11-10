@@ -28,7 +28,10 @@ export default function Home() {
         }
     
         // Add the bot's response to the conversation array
-        setConversation(prevConversation => [...prevConversation, { type: "assistant", text: `Lihua: ${data.result}`}]);
+        setConversation(prevConversation => [
+          ...prevConversation,
+          { type: "assistant", text: `Lihua: ${data.result}`, loading: true },
+        ]);
         setUserInput("");
       } catch (error) {
         console.error(error);
@@ -52,7 +55,13 @@ export default function Home() {
     setShouldCallAPI(true);
   };
 
-  const renderTranslatedText = (text) => {
+  const renderTranslatedText = (text, isLoading) => {
+    // If the translation is loading, return a placeholder or a loading spinner
+    if (isLoading) {
+      return <div>{text}</div>;
+    }
+
+    // Once the translation is ready, render it with the ChineseSegment component
     return <ChineseSegment text={text} />;
   };
 
@@ -71,7 +80,7 @@ export default function Home() {
             if (entry.type == "assistant") {
               return (
                 <div key={index} className={`${styles.chatEntry} ${styles["bot"]}`}>
-                  {renderTranslatedText(entry.text)}
+                  {renderTranslatedText(entry.text, false)}
                 </div>
               );
             } else {

@@ -571,7 +571,8 @@ function ChineseSegment({ text }) {
                 results[segment] = localTranslations[segment].Pinyin + " " + localTranslations[segment].English;
             } else {
                 // Fetch from the API for segments not in local translations.
-                results[segment] = (await callTranslate(segment)).result;
+                //results[segment] = (await callTranslate(segment)).result;
+                results[segment] = (await callDictTranslate(segment)).result;
             }
         }
         return results;
@@ -603,5 +604,34 @@ function loadScript(src) {
         document.body.appendChild(script);
     });
 }
+
+async function callDictTranslate(text) {
+    try {
+        console.log("Calling API")
+        const response = await fetch("/api/lookup", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ query: text }),
+        });
+
+        const data = await response.json();
+
+        if (response.status !== 200 || !data.result) {
+            throw new Error(`Request failed with status ${response.status}`);
+        }
+
+        return data;
+
+    } catch (error) {
+        console.error(error);
+        // If there's an error, return a default value
+        return {
+            result: "Translation Error"
+        };
+    }
+}
+
 
 export default ChineseSegment;
