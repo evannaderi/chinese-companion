@@ -8,18 +8,37 @@ export default function Home() {
   const [conversation, setConversation] = useState([]);
   const [shouldCallAPI, setShouldCallAPI] = useState(false);
   const [savedWords, setSavedWords] = useState([]);
+  const [selectedAPI, setSelectedAPI] = useState("defaultAPI");
 
   const saveWord = (word) => {
-      setSavedWords(prevWords => [...prevWords, word]);
-      // Optionally save to local storage or send to backend here
+    setSavedWords(prevWords => [...prevWords, word]);
+    // Optionally save to local storage or send to backend here
+  };
+
+  const renderWords = () => {
+    return savedWords.map((word, index) => (
+      <div key={index}>
+        <span>{word.character}</span> - <span>{word.translation}</span>
+      </div>
+    ));
   };
 
   useEffect(() => {
     if (!shouldCallAPI) return;
 
     const callAPI = async () => {
+      let apiURL;
+      switch(selectedAPI) {
+        case "alternativeAPI":
+          apiURL = "/api/dawei";
+          break;
+        // Add more cases if there are more APIs
+        default:
+          apiURL = "/api/generate";
+      }
+
       try {
-        const response = await fetch("/api/generate", {
+        const response = await fetch(apiURL, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -49,7 +68,7 @@ export default function Home() {
     };
 
     callAPI();
-  }, [shouldCallAPI]);
+  }, [shouldCallAPI, selectedAPI]);
 
   const onSubmit = async (event) => {
     event.preventDefault();
@@ -74,15 +93,28 @@ export default function Home() {
   return (
     <div>
       <Head>
-        <title>Lihua Chat</title>
+        <title>Chinese Companion</title>
         <link rel="icon" href="/dog.png" />
+        <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
       </Head>
 
       <main className={styles.main}>
         <div clasName={styles.chatContainer}>
           
         </div>
-        <h3>Chat with Lihua</h3>
+        <h3>Chinese Companion</h3>
+        <div className={styles.apiSelector}>
+          <label htmlFor="api-select">Choose a mode:</label>
+          <select
+            id="api-select"
+            value={selectedAPI}
+            onChange={(e) => setSelectedAPI(e.target.value)}
+          >
+            <option value="defaultAPI">WordReinforcer</option>
+            <option value="alternativeAPI">Dawei the foodie</option>
+            {/* Add more options for additional APIs */}
+          </select>
+        </div>
         <div className={styles.chatBox}>
           {conversation.map((entry, index) => {
             if (entry.type == "assistant") {
@@ -106,7 +138,7 @@ export default function Home() {
             <input
               type="text"
               name="message"
-              placeholder="Chat with Lihua"
+              placeholder="Type Something (try 你好)"
               value={userInput}
               onChange={(e) => setUserInput(e.target.value)}
             />
@@ -115,9 +147,7 @@ export default function Home() {
         </form>
         <div className={styles.savedWordsContainer}>
             <h4>Saved Words</h4>
-            {savedWords.map((word, index) => (
-                <div key={word + index}>{word}</div>
-            ))}
+            {renderWords()}
         </div>
       </main>
     </div>
