@@ -99,7 +99,7 @@
   align-self: flex-end;  /* Aligns the user's messages to the right */
 }
 
-.bot {
+.assistant {
   background-color: #10a37f;
   color: white;
   align-self: flex-start;  /* Aligns the bot's messages to the left */

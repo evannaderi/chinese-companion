@@ -1,7 +1,48 @@
 import Head from "next/head";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import styles from "./index.module.css";
 import ChineseSegment from "./components/ChineseSegment";
+
+const useAPI = (shouldCallAPI, selectedAPI, conversation, setConversation, setUserInput, setShouldCallAPI) => {
+  useEffect(() => {
+    if (!shouldCallAPI) return;
+
+    const callAPI = async () => {
+      const apiURL = selectedAPI === "alternativeAPI" ? "/api/dawei" : "/api/generate";
+
+      try {
+        const response = await fetch(apiURL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query: conversation }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`Request failed with status ${response.status}`);
+        }
+
+        const data = await response.json();
+        setConversation(prev => [...prev, { type: "assistant", text: data.result }]);
+        setUserInput("");
+        
+      } catch (error) {
+        console.error(error);
+        alert(error.message);
+      }
+    };
+
+    callAPI();
+    setShouldCallAPI(false);
+  }, [shouldCallAPI, selectedAPI, conversation]);
+};
+
+const SavedWords = ({ savedWords }) => {
+  return savedWords.map((word, index) => (
+    <div key={index}>
+      <span>{word.character}</span> - <span>{word.translation}</span>
+    </div>
+  ));
+};
 
 export default function Home() {
   const [userInput, setUserInput] = useState("");
@@ -10,84 +51,24 @@ export default function Home() {
   const [savedWords, setSavedWords] = useState([]);
   const [selectedAPI, setSelectedAPI] = useState("defaultAPI");
 
-  const saveWord = (word) => {
+  useAPI(shouldCallAPI, selectedAPI, conversation, setConversation, setUserInput, setShouldCallAPI);
+
+  const saveWord = useCallback((word) => {
     setSavedWords(prevWords => [...prevWords, word]);
-    // Optionally save to local storage or send to backend here
-  };
+  }, []);
 
-  const renderWords = () => {
-    return savedWords.map((word, index) => (
-      <div key={index}>
-        <span>{word.character}</span> - <span>{word.translation}</span>
-      </div>
-    ));
-  };
-
-  useEffect(() => {
-    if (!shouldCallAPI) return;
-
-    const callAPI = async () => {
-      let apiURL;
-      switch(selectedAPI) {
-        case "alternativeAPI":
-          apiURL = "/api/dawei";
-          break;
-        // Add more cases if there are more APIs
-        default:
-          apiURL = "/api/generate";
-      }
-
-      try {
-        const response = await fetch(apiURL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ query: conversation }),
-        });
-    
-        const data = await response.json();
-    
-        if (response.status !== 200) {
-          throw data.error || new Error(`Request failed with status ${response.status}`);
-        }
-    
-        // Add the bot's response to the conversation array
-        setConversation(prevConversation => [
-          ...prevConversation,
-          { type: "assistant", text: `${data.result}`, loading: true },
-        ]);
-        setUserInput("");
-      } catch (error) {
-        console.error(error);
-        alert(error.message);
-      }
-
-      // Reset the shouldCallAPI flag
-      setShouldCallAPI(false);
-    };
-
-    callAPI();
-  }, [shouldCallAPI, selectedAPI]);
-
-  const onSubmit = async (event) => {
+  const onSubmit = (event) => {
     event.preventDefault();
-  
-    // Add the user's input to the conversation array
-    setConversation(prevConversation => [...prevConversation, { type: "user", text: `${userInput}` }]);
-  
-    // Set the flag to trigger the API call
+    setConversation(prev => [...prev, { type: "user", text: userInput }]);
     setShouldCallAPI(true);
   };
 
-  const renderTranslatedText = (text, isLoading) => {
-    // If the translation is loading, return a placeholder or a loading spinner
-    if (isLoading) {
-      return <div>{text}</div>;
-    }
-
-    // Once the translation is ready, render it with the ChineseSegment component
-    return <ChineseSegment text={text} saveWord={saveWord} />;
+  const renderChatEntries = () => {
+    return conversation.map((entry, index) => (
+      <div key={index} className={`${styles.chatEntry} ${styles[entry.type]}`}>
+        {entry.type === "assistant" ? <ChineseSegment text={entry.text} saveWord={saveWord} /> : entry.text}
+      </div>
+    ));
   };
 
   return (
@@ -116,22 +97,7 @@ export default function Home() {
           </select>
         </div>
         <div className={styles.chatBox}>
-          {conversation.map((entry, index) => {
-            if (entry.type == "assistant") {
-              console.log("returning");
-              return (
-                <div key={index} className={`${styles.chatEntry} ${styles["bot"]}`}>
-                  {renderTranslatedText(entry.text)}
-                </div>
-              );
-            } else {
-              return (
-                <div key={index} className={`${styles.chatEntry} ${styles["user"]}`}>
-                  {entry.text}
-                </div>
-              );
-            }
-          })}
+          {renderChatEntries()}
         </div>
         <form onSubmit={onSubmit} class="input-form">
           <div class="input-frame">
@@ -147,7 +113,7 @@ export default function Home() {
         </form>
         <div className={styles.savedWordsContainer}>
             <h4>Saved Words</h4>
-            {renderWords()}
+            <SavedWords savedWords={savedWords} />
         </div>
       </main>
     </div>
