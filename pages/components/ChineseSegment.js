@@ -509,6 +509,7 @@ function ChineseSegment({ text, saveWord }) {
     const [segmentMapping, setSegmentMapping] = useState({});
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentWord, setCurrentWord] = useState("");
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const loadJieba = async () => {
@@ -522,6 +523,7 @@ function ChineseSegment({ text, saveWord }) {
                     setSegmentMapping(prevMapping => ({ ...prevMapping, ...newTranslations }));
                 });
             }
+            setIsLoading(false);
         };
         
         loadJieba();
@@ -613,6 +615,7 @@ function ChineseSegment({ text, saveWord }) {
         );
     };
     
+    if (isLoading) return <div>Loading...</div>;
 
     return (
         <>

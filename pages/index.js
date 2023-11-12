@@ -3,9 +3,12 @@ import { useState, useEffect, useCallback } from "react";
 import styles from "./index.module.css";
 import ChineseSegment from "./components/ChineseSegment";
 
-const useAPI = (shouldCallAPI, selectedAPI, conversation, setConversation, setUserInput, setShouldCallAPI) => {
+const useAPI = async (shouldCallAPI, selectedAPI, conversation, setConversation, setUserInput, setShouldCallAPI, setLoading, setError) => {
   useEffect(() => {
     if (!shouldCallAPI) return;
+
+    setLoading(true); // Start loading
+    setError(null); // Reset error state
 
     const callAPI = async () => {
       const apiURL = selectedAPI === "alternativeAPI" ? "/api/dawei" : "/api/generate";
@@ -27,13 +30,15 @@ const useAPI = (shouldCallAPI, selectedAPI, conversation, setConversation, setUs
         
       } catch (error) {
         console.error(error);
-        alert(error.message);
+        setError(error.message);
+      } finally {
+        setLoading(false); // End loading
       }
     };
 
     callAPI();
     setShouldCallAPI(false);
-  }, [shouldCallAPI, selectedAPI, conversation]);
+  }, [shouldCallAPI, selectedAPI, conversation, setLoading, setError]);
 };
 
 const SavedWords = ({ savedWords }) => {
@@ -44,14 +49,24 @@ const SavedWords = ({ savedWords }) => {
   ));
 };
 
+// const renderChatEntries = async (conversation, saveWord) => {
+//   return conversation.map((entry, index) => (
+//     <div key={index} className={`${styles.chatEntry} ${styles[entry.type]}`}>
+//       {entry.type === "assistant" ? <ChineseSegment text={entry.text} saveWord={saveWord} /> : entry.text}
+//     </div>
+//   ));
+// };
+
 export default function Home() {
   const [userInput, setUserInput] = useState("");
   const [conversation, setConversation] = useState([]);
   const [shouldCallAPI, setShouldCallAPI] = useState(false);
   const [savedWords, setSavedWords] = useState([]);
   const [selectedAPI, setSelectedAPI] = useState("defaultAPI");
+  const [isLoading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  useAPI(shouldCallAPI, selectedAPI, conversation, setConversation, setUserInput, setShouldCallAPI);
+  useAPI(shouldCallAPI, selectedAPI, conversation, setConversation, setUserInput, setShouldCallAPI, setLoading, setError);
 
   const saveWord = useCallback((word) => {
     setSavedWords(prevWords => [...prevWords, word]);
@@ -80,7 +95,7 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <div clasName={styles.chatContainer}>
+        <div className={styles.chatContainer}>
           
         </div>
         <h3>Chinese Companion</h3>
