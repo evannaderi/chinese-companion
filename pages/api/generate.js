@@ -51,7 +51,7 @@ export default async function (req, res) {
   try {
     // Update the model here to use gpt-3.5-turbo, gpt-4, or another chat model
     const completion = await openai.chat.completions.create({
-      model: "gpt-4", // specify the correct chat model here
+      model: "gpt-4-1106-preview", // specify the correct chat model here
       messages: conversation.map(entry => ({ role: entry.type, content: entry.text })),
       temperature: 1,
       max_tokens: 1000,
