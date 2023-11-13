@@ -523,10 +523,12 @@ function ChineseSegment({ text, saveWord }) {
                     setSegmentMapping(prevMapping => ({ ...prevMapping, ...newTranslations }));
                 });
             }
-            setIsLoading(false);
+            
+            console.log("set is loading false");
         };
         
         loadJieba();
+        setIsLoading(false);
     }, [text]);
 
     async function callTranslate(text) {
@@ -615,7 +617,7 @@ function ChineseSegment({ text, saveWord }) {
         );
     };
     
-    if (isLoading) return <div>Loading...</div>;
+    if (isLoading) return <div>text</div>;
 
     return (
         <>

@@ -3,7 +3,9 @@ import { useState, useEffect, useCallback } from "react";
 import styles from "./index.module.css";
 import ChineseSegment from "./components/ChineseSegment";
 
-const useAPI = async (shouldCallAPI, selectedAPI, conversation, setConversation, setUserInput, setShouldCallAPI, setLoading, setError) => {
+const initialText = "你好！你今天怎么样？"
+
+const useAPI = async (shouldCallAPI, selectedAPI, conversation, setConversation, setUserInput, setShouldCallAPI, setLoading, setError, reinforcementWords) => {
   useEffect(() => {
     if (!shouldCallAPI) return;
 
@@ -17,7 +19,7 @@ const useAPI = async (shouldCallAPI, selectedAPI, conversation, setConversation,
         const response = await fetch(apiURL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ query: conversation }),
+          body: JSON.stringify({ query: conversation, reinforcement: reinforcementWords }),
         });
 
         if (!response.ok) {
@@ -63,10 +65,18 @@ export default function Home() {
   const [shouldCallAPI, setShouldCallAPI] = useState(false);
   const [savedWords, setSavedWords] = useState([]);
   const [selectedAPI, setSelectedAPI] = useState("defaultAPI");
+  const [reinforcementWords, setReinforcementWords] = useState("");
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  useAPI(shouldCallAPI, selectedAPI, conversation, setConversation, setUserInput, setShouldCallAPI, setLoading, setError);
+  useEffect(
+    () => {
+      setConversation(prev => [...prev, { type: "assistant", text: initialText }]);
+      console.log(conversation);
+    }, []
+  )
+
+  useAPI(shouldCallAPI, selectedAPI, conversation, setConversation, setUserInput, setShouldCallAPI, setLoading, setError, reinforcementWords);
 
   const saveWord = useCallback((word) => {
     setSavedWords(prevWords => [...prevWords, word]);
@@ -86,6 +96,14 @@ export default function Home() {
     ));
   };
 
+  function exportInputValue() {
+    const inputValue = reinforcementWords;
+    return inputValue; // Just for demonstration
+
+    // Assuming you have a module or function in another file where you want to use this value
+    // You can import that function here and pass the inputValue to it
+}
+
   return (
     <div>
       <Head>
@@ -96,7 +114,9 @@ export default function Home() {
 
       <main className={styles.main}>
         <div className={styles.chatContainer}>
-          
+          <label>Reinforcement words</label>
+          <input type="text" id="name" name="name" onChange={(e) => setReinforcementWords(e.target.value)}></input>
+          <button onclick="exportInputValue()">Export Value</button>
         </div>
         <h3>Chinese Companion</h3>
         <div className={styles.apiSelector}>
