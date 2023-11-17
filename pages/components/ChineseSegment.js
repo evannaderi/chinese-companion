@@ -575,13 +575,19 @@ function ChineseSegment({ text, saveWord }) {
                 continue;
             }
             let result;
-            if (localTranslations[segment]) {
-                results[segment] = localTranslations[segment].Pinyin + " " + localTranslations[segment].English;
-            } else {
+            // TODO: Add a check for if the segment is in local translations.
+            // if (localTranslations[segment]) {
+            //     results[segment] = localTranslations[segment].Pinyin + " " + localTranslations[segment].English;
+            // } else {
                 // Fetch from the API for segments not in local translations.
                 //results[segment] = (await callTranslate(segment)).result;
                 result = (await callDictTranslate(segment)).result;
                 localTranslations[segment] = result;
+                results[segment] = result;
+            // }
+
+            if (result == "Not found") {
+                result = (await callTranslate(segment)).text;
                 results[segment] = result;
             }
         }

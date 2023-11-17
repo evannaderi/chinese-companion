@@ -2,8 +2,21 @@ import Head from "next/head";
 import { useState, useEffect, useCallback } from "react";
 import styles from "./index.module.css";
 import ChineseSegment from "./components/ChineseSegment";
+import Button from '@mui/material/Button';
+import { createTheme } from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material/styles';
+import TextField from '@mui/material/TextField';
 
-const initialText = "你好！你今天怎么样？"
+
+const initialText = "你好！你今天怎么样？";
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#10a37f', // Your desired primary color
+    },
+  },
+});
 
 const useAPI = async (shouldCallAPI, selectedAPI, conversation, setConversation, setUserInput, setShouldCallAPI, setLoading, setError, reinforcementWords) => {
   useEffect(() => {
@@ -46,7 +59,7 @@ const useAPI = async (shouldCallAPI, selectedAPI, conversation, setConversation,
 const SavedWords = ({ savedWords }) => {
   return savedWords.map((word, index) => (
     <div key={index}>
-      <span>{word.character}</span> - <span>{word.translation}</span>
+      <span>{word.character}</span>
     </div>
   ));
 };
@@ -105,52 +118,68 @@ export default function Home() {
 }
 
   return (
-    <div>
-      <Head>
-        <title>Chinese Companion</title>
-        <link rel="icon" href="/dog.png" />
-        <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
-      </Head>
+    <ThemeProvider theme={theme}>
+      <div>
+        <Head>
+          <title>Chinese Companion</title>
+          <link rel="icon" href="/dog.png" />
+          <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+        </Head>
 
-      <main className={styles.main}>
-        <div className={styles.chatContainer}>
-          <label>Reinforcement words</label>
-          <input type="text" id="name" name="name" onChange={(e) => setReinforcementWords(e.target.value)}></input>
-          <button onclick="exportInputValue()">Export Value</button>
-        </div>
-        <h3>Chinese Companion</h3>
-        <div className={styles.apiSelector}>
-          <label htmlFor="api-select">Choose a mode:</label>
-          <select
-            id="api-select"
-            value={selectedAPI}
-            onChange={(e) => setSelectedAPI(e.target.value)}
-          >
-            <option value="defaultAPI">WordReinforcer</option>
-            <option value="alternativeAPI">Dawei the foodie</option>
-            {/* Add more options for additional APIs */}
-          </select>
-        </div>
-        <div className={styles.chatBox}>
-          {renderChatEntries()}
-        </div>
-        <form onSubmit={onSubmit} class="input-form">
-          <div class="input-frame">
-            <input
-              type="text"
-              name="message"
-              placeholder="Type Something (try 你好)"
-              value={userInput}
-              onChange={(e) => setUserInput(e.target.value)}
-            />
-            <input type="submit" value="Send" />
+        <main className={styles.main}>
+          <div className={styles.leftThird}>
+              <TextField
+                id="reinforcement-words"
+                label="Reinforcement words"
+                variant="outlined"
+                value={reinforcementWords}
+                onChange={(e) => setReinforcementWords(e.target.value)}
+              />
+              <button onclick="exportInputValue()">Set reinforcement words</button>
+            </div>
+          <div className={styles.mainChat}>
+            <h3>Chinese Companion</h3>
+            <div className={styles.apiSelector}>
+              <label htmlFor="api-select">Choose a mode:</label>
+              <select
+                id="api-select"
+                value={selectedAPI}
+                onChange={(e) => setSelectedAPI(e.target.value)}
+              >
+                <option value="defaultAPI">WordReinforcer</option>
+                <option value="alternativeAPI">Dawei the foodie</option>
+                {/* Add more options for additional APIs */}
+              </select>
+            </div>
+            <div className={styles.chatBox}>
+              {renderChatEntries()}
+            </div>
+            <div class={styles.userInput}>
+              <div class={styles.inputFrame}>
+                <TextField
+                  type="text"
+                  name="message"
+                  label="Type Something (try 你好)" // Used as the placeholder and label
+                  variant="outlined" // or 'filled' or 'standard'
+                  value={userInput}
+                  onChange={(e) => setUserInput(e.target.value)}
+                  sx={{ width: '80%', height: '50px' }}
+                />
+                <Button variant="contained" color="primary" onClick={onSubmit} sx={{ height: '50px' }}>
+                  Send
+                </Button>
+              </div>
+            </div>
+            
           </div>
-        </form>
-        <div className={styles.savedWordsContainer}>
+          <div className={styles.savedWordsContainer}>
             <h4>Saved Words</h4>
             <SavedWords savedWords={savedWords} />
-        </div>
-      </main>
-    </div>
+          </div>
+          
+        </main>
+      </div>
+    </ThemeProvider>
+    
   );
 }
