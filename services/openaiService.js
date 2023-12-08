@@ -148,3 +148,20 @@ export const getTTS = async (model, voice, input, id) => {
         throw new Error(`Request failed with status ${error.response.status}`);
     }
 }
+
+export const getTranscription = async (base64Audio, audioId, model) => {
+    const apiURL = "/api/transcription";
+    
+    try {
+        const response = await axios.post(apiURL, {
+            file: base64Audio,
+            filename: audioId,
+            model: model
+        });
+
+        return response.data.result;
+
+    } catch (error) {
+        throw new Error(`Request failed with error ${error}`);
+    }
+};

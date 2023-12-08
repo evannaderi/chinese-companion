@@ -81,10 +81,6 @@ const ChatContainer = () => {
         setConversationLog(prev => [...prev, { role: 'user', content: input }]);
     };
 
-    const handleTTS = async () => {
-        const openAIResponse = await getTTS('tts-1', 'alloy', 'Alicia非常漂亮和美丽。艾文觉得立夏是世界最漂亮的人.', 'thisid');
-    }
-
     return (
         <div className="chat-container">
             <ChatHeader />
@@ -92,9 +88,6 @@ const ChatContainer = () => {
             <MessageDisplayArea messages={conversationLog} segmentedMessages={segmentedConversation} onClickWord={updateCard}/>
             <ChatInputArea onSendMessage={handleSubmit} />
             <SystemMessages />
-            <button onClick={handleTTS}>
-                TTS
-            </button>
             <TranslationCard title={cardTitle} content={cardContent} onClickWord={updateCard} />
         </div>
     );
