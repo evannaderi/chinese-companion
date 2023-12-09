@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { getTranscription } from '../services/openaiService';
+import { set } from 'mongoose';
 
 const transcriptionModel = "whisper-1";
 
@@ -89,6 +90,7 @@ const ChatInputArea = ({ onSendMessage }) => {
             const result = await getTranscription(base64Audio, audioID, transcriptionModel);
             console.log("called getTranscription");
             console.log("The result of transcription is: ", result);
+            setInput(result);
         } catch (error) {
             console.error("Error in saveRecording: ", error);
         } finally {

@@ -13,7 +13,8 @@ import { getTTS } from '../services/openaiService';
 import { getCustomCompletion } from '../services/openaiService';
 
 const model = "gpt-3.5-turbo";
-const firstMsgContent = "Act like are in this situation with me. You are one of the characters AI bot. Say something just one thing to start the conversation. Do not surround your text with quotation marks or a name or anything. Do not ask for any more information on the situation, you should know everything. Also, only speak Spanish";
+const language = "Spanish";
+const firstMsgContent = "Say something just one thing to start the conversation. Do not surround your text with quotation marks or a name or anything. Do not ask for any more information on the situation, you should know everything.";
 
 const ChatContainer = () => {
     const [userInput, setUserInput] = useState('');
@@ -22,6 +23,7 @@ const ChatContainer = () => {
     const [cardTitle, setCardTitle] = useState('Default Title');
     const [cardContent, setCardContent] = useState('Default content.');
     const [situation, setSituation] = useState('');
+    const systemPre = `You are the character Sam in this situation and the user is Bob. Only speak in ${language}. However, if the user asks a question about the language, give them help in English. Keep your responses to 1-2 sentences: `;
 
     const updateCard = (title, content) => {
         setCardTitle(title);
@@ -36,8 +38,9 @@ const ChatContainer = () => {
                 return;
             }
 
+            const systemPrompt = systemPre + situation;
             const messages = [{role: 'user', content: firstMsgContent}];
-            const openAIResponse = await getCustomCompletion(situation, messages, model);
+            const openAIResponse = await getCustomCompletion(systemPrompt, messages, model);
             setConversationLog( [{ role: 'assistant', content: openAIResponse }]); // resets convo
         };
 
@@ -55,7 +58,8 @@ const ChatContainer = () => {
 
             if (lastMessage.role === 'user') {
                 // If the last message is from the user, send it to the API
-                const openAIResponse = await getSimpleCompletion(conversationLog, model);
+                const systemPrompt = systemPre + situation;
+                const openAIResponse = await getCustomCompletion(systemPrompt, conversationLog, model);
                 setConversationLog(prev => [...prev, { role: 'assistant', content: openAIResponse }]);
             } else if (lastMessage.role === 'assistant') {
                 // If the last message is from the bot, segment the text

@@ -14,7 +14,7 @@ const systemPrompts = {
     createSituation: () => ({
         prompt: `
                 Create a description of a situation that two people 
-                (person acting as one, and AI bot acting as the other) 
+                (Sam and Bob) 
                 are in that leads to conversation in one sentence. Make it
                 a simple, real-world, practical scenario.
             `

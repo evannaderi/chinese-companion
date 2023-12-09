@@ -1,6 +1,6 @@
 import { createSituation } from "../services/openaiService";
 
-const model = "gpt-3.5-turbo";
+const model = "gpt-4"; // more advanced model
 
 const SituationCard = ({ content, setSituation }) => {
     const makeSituation = async () => {
@@ -11,7 +11,7 @@ const SituationCard = ({ content, setSituation }) => {
         <div className="situation-card">
             <h3>Situation</h3>
             <p>{content}</p>
-            <button onClick={makeSituation}>Create situation</button>
+            <button onClick={makeSituation}>Generate situation</button>
         </div>
     );
 };
