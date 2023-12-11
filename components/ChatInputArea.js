@@ -1,6 +1,5 @@
 import React, { useState, useRef } from 'react';
 import { getTranscription } from '../services/openaiService';
-import { set } from 'mongoose';
 
 const transcriptionModel = "whisper-1";
 
