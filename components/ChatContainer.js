@@ -20,8 +20,8 @@ const ChatContainer = () => {
     const [userInput, setUserInput] = useState('');
     const [conversationLog, setConversationLog] = useState([]);
     const [segmentedConversation, setSegmentedConversation] = useState([]);
-    const [cardTitle, setCardTitle] = useState('Default Title');
-    const [cardContent, setCardContent] = useState('Default content.');
+    const [cardTitle, setCardTitle] = useState('');
+    const [cardContent, setCardContent] = useState('');
     const [situation, setSituation] = useState('');
     const systemPre = `You are the character Sam in this situation and the user is Bob. Only speak in ${language}. However, if the user asks a question about the language, give them help in English. Keep your responses to 1-2 sentences: `;
 
@@ -30,22 +30,33 @@ const ChatContainer = () => {
         setCardContent(content);
     };
 
-    // When situation changes
-    useEffect(() => {
-        console.log("situation changed: ", situation);
-        const processSituation = async () => {
-            if (situation === '') {
-                return;
-            }
+    // // When situation changes
+    // useEffect(() => {
+    //     console.log("situation changed: ", situation);
+    //     const processSituation = async () => {
+    //         if (situation === '') {
+    //             return;
+    //         }
 
-            const systemPrompt = systemPre + situation;
-            const messages = [{role: 'user', content: firstMsgContent}];
-            const openAIResponse = await getCustomCompletion(systemPrompt, messages, model);
-            setConversationLog( [{ role: 'assistant', content: openAIResponse }]); // resets convo
-        };
+    //         const systemPrompt = systemPre + situation;
+    //         const messages = [{role: 'user', content: firstMsgContent}];
+    //         const openAIResponse = await getCustomCompletion(systemPrompt, messages, model);
+    //         setConversationLog( [{ role: 'assistant', content: openAIResponse }]); // resets convo
+    //     };
 
-        processSituation();
-    }, [situation]);
+    //     processSituation();
+    // }, [situation]);
+
+    const useSituation = async () => {
+        if (situation === '') {
+            return;
+        }
+
+        const systemPrompt = systemPre + situation;
+        const messages = [{role: 'user', content: firstMsgContent}];
+        const openAIResponse = await getCustomCompletion(systemPrompt, messages, model);
+        setConversationLog([{ role: 'assistant', content: openAIResponse }]); // resets convo
+    };
 
     // Since state updates are asyncronous, we need to use useEffect to wait for the conversationLog state to update
     useEffect(() => {
@@ -88,7 +99,7 @@ const ChatContainer = () => {
     return (
         <div className="chat-container">
             <ChatHeader />
-            <SituationCard content={situation} setSituation={setSituation}/>
+            <SituationCard content={situation} setSituation={setSituation} useSituation={useSituation}/>
             <MessageDisplayArea messages={conversationLog} segmentedMessages={segmentedConversation} onClickWord={updateCard}/>
             <ChatInputArea onSendMessage={handleSubmit} />
             <SystemMessages />

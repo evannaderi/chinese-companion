@@ -16,7 +16,8 @@ const systemPrompts = {
                 Create a description of a situation that two people 
                 (Sam and Bob) 
                 are in that leads to conversation in one sentence. Make it
-                a simple, real-world, practical scenario.
+                a simple, real-world, practical scenario. However, if the user
+                makes a mistake speaking Spanish, you should correct them in English.
             `
 
     }),
