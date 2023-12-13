@@ -6,5 +6,29 @@
     font: inherit;
     cursor: pointer;
     display: inline;
-  }
+}
+
+.userMessage {
+  background-color: #004777; /* User message background color */
+  color: white; /* Text color */
+  padding: 15px; /* Inner spacing */
+  margin: 10px 5px; /* Spacing around each message */
+  border-radius: 10px; /* Rounded corners */
+  max-width: 80%; /* Maximum width of the message */
+  align-self: flex-end; /* Align to the end (right) for user messages */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Add shadow for depth */
+  border: 1px solid #003355; /* Slightly darker border for definition */
+}
+
+.assistantMessage {
+  background-color: #ffffff;
+  color: #333;
+  padding: 15px;
+  margin: 10px 5px;
+  border-radius: 10px;
+  max-width: 80%;
+  align-self: flex-start;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  border: 1px solid #dddddd;
+}
   

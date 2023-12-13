@@ -1,0 +1,7 @@
+.translationCard,
+.situationCard {
+    background-color: #00afb5; /* Verdigris for secondary color */
+    color: white;
+    padding: 10px;
+    margin: 10px 0;
+}

@@ -165,3 +165,29 @@ export const getTranscription = async (base64Audio, audioId, model) => {
         throw new Error(`Request failed with error ${error}`);
     }
 };
+
+export const getSpanishSentenceTranslation = async (sentence, model) => {
+    const apiURL = "/api/completion";
+    const translateMsg = systemPrompts.sentenceTranslate(sentence).prompt;
+    
+    try {
+        const response = await axios.post(apiURL, {
+            messages: [
+                {
+                    role: "user",
+                    content: translateMsg
+                }
+            ],
+            systemMsg: "You are a Spanish to English translator",
+            model: model
+        });
+
+        console.log("response: ", response.data.result);
+
+        return response.data.result;
+
+    } catch (error) {
+        console.log(error.response.status);
+        throw new Error(`Request failed with status ${error.response.status}`);
+    }
+}

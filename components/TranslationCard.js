@@ -1,6 +1,8 @@
+import styles from './styles/Cards.module.css';
+
 const TranslationCard = ({ title, content }) => {
     return (
-        <div className="info-card">
+        <div className={styles.translationCard}>
             <h3>{title}</h3>
             <p>{content}</p>
         </div>

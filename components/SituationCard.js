@@ -1,5 +1,6 @@
 import { createSituation } from "../services/openaiService";
 import { useState } from "react";
+import styles from "./styles/Cards.module.css";
 
 const model = "gpt-4"; // more advanced model
 
@@ -17,7 +18,7 @@ const SituationCard = ({ content, setSituation, useSituation }) => {
     };
 
     return (
-        <div className="situation-card">
+        <div className={styles.situationCard}>
             <h3>Situation</h3>
             <textarea 
                 value={content} 

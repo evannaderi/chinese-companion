@@ -2,12 +2,14 @@ import React from 'react';
 import styles from './styles/SegmentedChatMessage.module.css';
 import { getSpanishTranslation } from '../services/openaiService';
 import { getTTS } from '../services/openaiService';
+import Box from '@mui/material/Box';
 
 const SegmentedChatMessage = ({ message, onClickWord, idx }) => {
     const [isPlaying, setIsPlaying] = React.useState(false);
     const [audioLoaded, setAudioLoaded] = React.useState(false);
     const [playbackSpeed, setPlaybackSpeed] = React.useState(1);
     const audioRef = React.useRef(null);
+    const messageBoxClass = message.role === 'user' ? styles.userMessage : styles.assistantMessage;
 
     const fetchAndSetAudio = async () => {
         const messageText = Array.isArray(message.content) ? message.content.join(' ') : message;
@@ -51,7 +53,7 @@ const SegmentedChatMessage = ({ message, onClickWord, idx }) => {
     };
 
     return (
-        <div className={`message ${message.role}`}>
+        <div className={messageBoxClass}>
             <div className="message-content">
                 {message.role === 'assistant' && Array.isArray(message.content) ?
                     message.content.map((segment, index) => (

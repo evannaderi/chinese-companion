@@ -7,10 +7,9 @@ import ChatInputArea from './ChatInputArea';
 import SystemMessages from './SystemMessages';
 import TranslationCard from './TranslationCard';
 import SituationCard from './SituationCard';
-import { getSimpleCompletion } from '../services/openaiService';
 import { spaceSegment } from '../services/SegmentService';
-import { getTTS } from '../services/openaiService';
 import { getCustomCompletion } from '../services/openaiService';
+import styles from './styles/ChatContainer.module.css';
 
 const model = "gpt-3.5-turbo";
 const language = "Spanish";
@@ -97,10 +96,9 @@ const ChatContainer = () => {
     };
 
     return (
-        <div className="chat-container">
-            <ChatHeader />
-            <SituationCard content={situation} setSituation={setSituation} useSituation={useSituation}/>
-            <MessageDisplayArea messages={conversationLog} segmentedMessages={segmentedConversation} onClickWord={updateCard}/>
+        <div className={styles.chatContainer}>
+            <ChatHeader className={styles.chatHeader}/>
+            <MessageDisplayArea messages={conversationLog} segmentedMessages={segmentedConversation} onClickWord={updateCard} situation={situation} setSituation={setSituation} useSituation={useSituation}/>
             <ChatInputArea onSendMessage={handleSubmit} />
             <SystemMessages />
             <TranslationCard title={cardTitle} content={cardContent} onClickWord={updateCard} />

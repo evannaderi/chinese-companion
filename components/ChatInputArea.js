@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { getTranscription } from '../services/openaiService';
+import styles from './styles/ChatInputArea.module.css';
 
 const transcriptionModel = "whisper-1";
 
@@ -106,7 +107,7 @@ const ChatInputArea = ({ onSendMessage }) => {
     };
 
     return (
-        <div className="chat-input-area">
+        <div className={styles.chatInputArea}>
             <input
                 type="text"
                 value={input}
