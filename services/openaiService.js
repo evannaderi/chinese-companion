@@ -81,7 +81,7 @@ export const getCustomCompletion = async (systemMsg, messages, model) => {
     }
 }
 
-export const createSituation = async (model) => {
+export const createSituation = async (word, model) => {
     const apiURL = "/api/completion";
     const systemMsg = "You are a situation creator.";
     
@@ -89,7 +89,7 @@ export const createSituation = async (model) => {
         const response = await axios.post(apiURL, {
             messages: [{
                 role: "user",
-                content: systemPrompts.createSituation().prompt,
+                content: systemPrompts.createSituation(word).prompt,
             }],
             systemMsg: systemMsg,
             model: model

@@ -2,6 +2,7 @@ import React from 'react';
 import styles from './styles/SegmentedChatMessage.module.css';
 import { getSpanishTranslation } from '../services/openaiService';
 import { getTTS } from '../services/openaiService';
+import { getGoogleTranslation } from '../services/googleTranslateService';
 import Box from '@mui/material/Box';
 
 const SegmentedChatMessage = ({ message, onClickWord, idx }) => {
@@ -40,7 +41,7 @@ const SegmentedChatMessage = ({ message, onClickWord, idx }) => {
     const handleSegmentClick = async (segment) => {
         // Handle the click event, such as displaying more information or triggering an action
         console.log("Clicked segment:", segment);
-        const translation = await getSpanishTranslation(segment, 'gpt-3.5-turbo');
+        const translation = await getGoogleTranslation(segment, "English");
         onClickWord(segment, translation);
     };
 
