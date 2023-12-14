@@ -17,6 +17,7 @@
     "openai": "^4.20.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-modal": "^3.16.1",
     "uuid": "^9.0.1"
   },
   "engines": {

@@ -10,6 +10,7 @@ import SituationCard from './SituationCard';
 import { spaceSegment } from '../services/SegmentService';
 import { getCustomCompletion } from '../services/openaiService';
 import styles from './styles/ChatContainer.module.css';
+import TranslatorModal from './TranslatorModal';
 
 const model = "gpt-3.5-turbo";
 const language = "Spanish";
@@ -22,7 +23,11 @@ const ChatContainer = () => {
     const [cardTitle, setCardTitle] = useState('');
     const [cardContent, setCardContent] = useState('');
     const [situation, setSituation] = useState('');
+    const [isTranslatorOpen, setIsTranslatorOpen] = useState(false);
     const systemPre = `You are the character Sam in this situation and the user is Bob. Only speak in ${language}. However, if the user asks a question about the language, give them help in English. Keep your responses to 1-2 sentences: `;
+
+    const openTranslator = () => setIsTranslatorOpen(true);
+    const closeTranslator = () => setIsTranslatorOpen(false);
 
     const updateCard = (title, content) => {
         setCardTitle(title);
@@ -102,6 +107,8 @@ const ChatContainer = () => {
             <ChatInputArea onSendMessage={handleSubmit} />
             <SystemMessages />
             <TranslationCard title={cardTitle} content={cardContent} onClickWord={updateCard} />
+            <button onClick={openTranslator}>Open Translator</button>
+            <TranslatorModal isOpen={isTranslatorOpen} onRequestClose={closeTranslator} targetLanguage={language} />
         </div>
     );
 };
