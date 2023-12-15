@@ -4,7 +4,7 @@ import SituationCard from "./SituationCard";
 import styles from './styles/MessageDisplayArea.module.css';
 import { useEffect, useRef } from "react";
 
-const MessageDisplayArea = ({ messages, segmentedMessages, onClickWord, situation, setSituation, useSituation }) => {
+const MessageDisplayArea = ({ messages, segmentedMessages, onClickWord, situation, setSituation, useSituation, showSituation, openHelpChat }) => {
     const scrollRef = useRef(null);
 
     useEffect(() => {
@@ -17,10 +17,12 @@ const MessageDisplayArea = ({ messages, segmentedMessages, onClickWord, situatio
 
     return (
         <div className={styles.messageDisplayArea} ref={scrollRef}>
-            <SituationCard content={situation} setSituation={setSituation} useSituation={useSituation}/>
+            {showSituation && (
+                <SituationCard content={situation} setSituation={setSituation} useSituation={useSituation}/>
+            )}
             {messages.map((message, index) => {
                 if (index < segmentedMessages.length) {
-                    return <SegmentedChatMessage key={index} message={segmentedMessages[index]} onClickWord={onClickWord} idx={index} />;
+                    return <SegmentedChatMessage key={index} message={segmentedMessages[index]} onClickWord={onClickWord} idx={index} openHelpChat={openHelpChat} />;
                 } else {
                     return <ChatMessage key={index} message={message} />;
                 }

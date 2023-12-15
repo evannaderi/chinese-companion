@@ -11,6 +11,7 @@ import { spaceSegment } from '../services/SegmentService';
 import { getCustomCompletion } from '../services/openaiService';
 import styles from './styles/ChatContainer.module.css';
 import TranslatorModal from './TranslatorModal';
+import HelpChatModal from './HelpChatModal';
 
 const model = "gpt-3.5-turbo";
 const language = "Spanish";
@@ -24,10 +25,19 @@ const ChatContainer = () => {
     const [cardContent, setCardContent] = useState('');
     const [situation, setSituation] = useState('');
     const [isTranslatorOpen, setIsTranslatorOpen] = useState(false);
+    const [isHelpChatOpen, setIsHelpChatOpen] = useState(false);
+    const [queryText, setQueryText] = useState('Hola amigo');
     const systemPre = `You are the character Sam in this situation and the user is Bob. Only speak in ${language}. However, if the user asks a question about the language, give them help in English. Keep your responses to 1-2 sentences: `;
 
     const openTranslator = () => setIsTranslatorOpen(true);
     const closeTranslator = () => setIsTranslatorOpen(false);
+
+    const openHelpChat = (queryText) => {
+        setQueryText(queryText);
+        setIsHelpChatOpen(true);
+    }
+    const closeHelpChat = () => setIsHelpChatOpen(false);
+
 
     const updateCard = (title, content) => {
         setCardTitle(title);
@@ -103,12 +113,19 @@ const ChatContainer = () => {
     return (
         <div className={styles.chatContainer}>
             <ChatHeader className={styles.chatHeader}/>
-            <MessageDisplayArea messages={conversationLog} segmentedMessages={segmentedConversation} onClickWord={updateCard} situation={situation} setSituation={setSituation} useSituation={useSituation}/>
+            <MessageDisplayArea messages={conversationLog} segmentedMessages={segmentedConversation} onClickWord={updateCard} situation={situation} setSituation={setSituation} useSituation={useSituation} showSituation={true} openHelpChat={openHelpChat}/>
             <ChatInputArea onSendMessage={handleSubmit} />
             <SystemMessages />
             <TranslationCard title={cardTitle} content={cardContent} onClickWord={updateCard} />
             <button onClick={openTranslator}>Open Translator</button>
             <TranslatorModal isOpen={isTranslatorOpen} onRequestClose={closeTranslator} targetLanguage={language} />
+            <HelpChatModal 
+                isOpen={isHelpChatOpen} 
+                onRequestClose={closeHelpChat}
+                model={model}
+                language={language}
+                queryText={queryText}
+            />
         </div>
     );
 };

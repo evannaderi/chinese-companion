@@ -5,7 +5,7 @@ import { getTTS } from '../services/openaiService';
 import { getGoogleTranslation } from '../services/googleTranslateService';
 import Box from '@mui/material/Box';
 
-const SegmentedChatMessage = ({ message, onClickWord, idx }) => {
+const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat }) => {
     const [isPlaying, setIsPlaying] = React.useState(false);
     const [audioLoaded, setAudioLoaded] = React.useState(false);
     const [playbackSpeed, setPlaybackSpeed] = React.useState(1);
@@ -53,6 +53,11 @@ const SegmentedChatMessage = ({ message, onClickWord, idx }) => {
         }
     };
 
+    const onClickHelp = () => {
+        const messageText = Array.isArray(message.content) ? message.content.join(' ') : message.content;
+        openHelpChat(messageText);
+    };
+
     return (
         <div className={messageBoxClass}>
             <div className="message-content">
@@ -84,6 +89,9 @@ const SegmentedChatMessage = ({ message, onClickWord, idx }) => {
                             onChange={handleSpeedChange}
                         />
                     </div>
+                    <button onClick={onClickHelp}>
+                        Help
+                    </button>
                 </div>
             )}
             
