@@ -3,7 +3,7 @@ import { useState } from "react";
 import getRandomNoun from "../utils/getRandomNoun";
 import styles from "./styles/Cards.module.css";
 
-const model = "gpt-4"; // more advanced model
+const model = "gpt-4-1106-preview"; // more advanced model
 
 const SituationCard = ({ content, setSituation, useSituation }) => {
     const [isSituationUsed, setIsSituationUsed] = useState(false);

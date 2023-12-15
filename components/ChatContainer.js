@@ -122,7 +122,6 @@ const ChatContainer = () => {
             <HelpChatModal 
                 isOpen={isHelpChatOpen} 
                 onRequestClose={closeHelpChat}
-                model={model}
                 language={language}
                 queryText={queryText}
             />

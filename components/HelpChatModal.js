@@ -5,7 +5,9 @@ import { getCustomCompletion } from '../services/openaiService';
 import styles from './styles/ChatContainer.module.css';
 import Modal from 'react-modal';
 
-const HelpChatModal = ({ isOpen, onRequestClose, model, language, queryText }) => {
+const model="gpt-4-1106-preview"
+
+const HelpChatModal = ({ isOpen, onRequestClose, language, queryText }) => {
     const [userInput, setUserInput] = useState('');
     const [conversationLog, setConversationLog] = useState([]);
     const scrollRef = useRef(null);
@@ -14,7 +16,7 @@ const HelpChatModal = ({ isOpen, onRequestClose, model, language, queryText }) =
 
     useEffect(() => {
         // When modal opens and if the conversation log is empty, add the queryText
-        if (isOpen && conversationLog.length === 0) {
+        if (isOpen) {
             setConversationLog([{ role: 'user', content: systemPre }]);
         }
     }, [isOpen, queryText]);
