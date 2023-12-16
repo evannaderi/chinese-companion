@@ -3,6 +3,10 @@ import axios from 'axios';
 const languageCodeMap = {
     "English": "en",
     "Spanish": "es",
+    "French": "fr",
+    "German": "de",
+    "Italian": "it",
+    "Portuguese": "pt"
     // Add more languages as needed
 };
 

@@ -6,18 +6,19 @@ import styles from './styles/ChatContainer.module.css';
 import Modal from 'react-modal';
 
 const model="gpt-4-1106-preview"
+const systemPrompt = "You are a language learning assistant. Keep responses brief.";
 
 const HelpChatModal = ({ isOpen, onRequestClose, language, queryText }) => {
     const [userInput, setUserInput] = useState('');
     const [conversationLog, setConversationLog] = useState([]);
     const scrollRef = useRef(null);
 
-    const systemPre = `Translate this text from ${language} into English: ${queryText}`;
+    const prompt = `Translate this text from ${language} into English: ${queryText}`;
 
     useEffect(() => {
         // When modal opens and if the conversation log is empty, add the queryText
         if (isOpen) {
-            setConversationLog([{ role: 'user', content: systemPre }]);
+            setConversationLog([{ role: 'user', content: prompt }]);
         }
     }, [isOpen, queryText]);
 
@@ -32,7 +33,6 @@ const HelpChatModal = ({ isOpen, onRequestClose, language, queryText }) => {
 
             const lastMessage = conversationLog[conversationLog.length - 1];
             if (lastMessage.role === 'user') {
-                const systemPrompt = systemPre;
                 const openAIResponse = await getCustomCompletion(systemPrompt, conversationLog, model);
                 setConversationLog(prev => [...prev, { role: 'assistant', content: openAIResponse }]);
             }

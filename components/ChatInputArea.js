@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { TextField, Button } from '@mui/material';
 import { getTranscription } from '../services/openaiService';
 import styles from './styles/ChatInputArea.module.css';
 
@@ -108,16 +109,30 @@ const ChatInputArea = ({ onSendMessage }) => {
 
     return (
         <div className={styles.chatInputArea}>
-            <input
-                type="text"
+            <TextField
+                fullWidth
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Type your message..."
+                variant="outlined"
+                margin="normal"
             />
-            <button onClick={handleSend}>Send</button>
-            <button onClick={handleRecordButtonClick}>
+            <Button 
+                variant="contained" 
+                color="primary" 
+                onClick={handleSend}
+                style={{ margin: '5px' }}
+            >
+                Send
+            </Button>
+            <Button 
+                variant="contained" 
+                color={recording ? "secondary" : "primary"}
+                onClick={handleRecordButtonClick}
+                style={{ margin: '5px' }}
+            >
                 {recording ? 'Stop Recording' : 'Start Recording'}
-            </button>
+            </Button>
         </div>
     );
 };

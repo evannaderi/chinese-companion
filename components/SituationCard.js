@@ -1,6 +1,7 @@
 import { createSituation } from "../services/openaiService";
 import { useState } from "react";
 import getRandomNoun from "../utils/getRandomNoun";
+import { Button, TextField } from "@mui/material";
 import styles from "./styles/Cards.module.css";
 
 const model = "gpt-4-1106-preview"; // more advanced model
@@ -15,7 +16,7 @@ const SituationCard = ({ content, setSituation, useSituation }) => {
         setSituation(openAIResponse);
     };
 
-    const handleUseSitatuion = () => {
+    const handleUseSituation = () => {
         setIsSituationUsed(true);
         useSituation();
     };
@@ -23,15 +24,34 @@ const SituationCard = ({ content, setSituation, useSituation }) => {
     return (
         <div className={styles.situationCard}>
             <h3>Situation</h3>
-            <textarea 
-                value={content} 
-                onChange={(e) => setSituation(e.target.value)} 
-                rows="4" 
-                cols="50" 
-                disabled={isSituationUsed} // Disable textarea if situation is used
+            <TextField
+                fullWidth
+                multiline
+                rows={4}
+                value={content}
+                onChange={(e) => setSituation(e.target.value)}
+                variant="outlined"
+                margin="normal"
+                disabled={isSituationUsed}
             />
-            <button onClick={makeSituation} disabled={isSituationUsed}>Generate situation</button>
-            <button onClick={handleUseSitatuion} disabled={isSituationUsed}>Use situation</button>
+            <Button
+                variant="contained"
+                color="primary"
+                onClick={makeSituation}
+                disabled={isSituationUsed}
+                style={{ margin: '5px' }}
+            >
+                Generate situation
+            </Button>
+            <Button
+                variant="contained"
+                color="secondary"
+                onClick={handleUseSituation}
+                disabled={isSituationUsed}
+                style={{ margin: '5px' }}
+            >
+                Use situation
+            </Button>
         </div>
     );
 };
