@@ -12,8 +12,17 @@ const ChatInputArea = ({ onSendMessage }) => {
     const audioChunksRef = useRef([]);
 
     const handleSend = () => {
-        onSendMessage(input);
-        setInput('');
+        if (input.trim() !== '') {
+            onSendMessage(input);
+            setInput('');
+        }
+    };
+
+    const handleKeyPress = (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault(); // Prevent the default action to avoid line break in TextField
+            handleSend();
+        }
     };
 
     const startRecording = async () => {
@@ -116,6 +125,7 @@ const ChatInputArea = ({ onSendMessage }) => {
                 placeholder="Type your message..."
                 variant="outlined"
                 margin="normal"
+                onKeyPress={handleKeyPress}
             />
             <Button 
                 variant="contained" 

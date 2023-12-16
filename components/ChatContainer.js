@@ -16,6 +16,7 @@ import HelpChatModal from './HelpChatModal';
 
 const model = "gpt-3.5-turbo";
 const firstMsgContent = "Say something just one thing to start the conversation. Do not surround your text with quotation marks or a name or anything. Do not ask for any more information on the situation, you should know everything.";
+const difficulty = "extremely beginner";
 
 const ChatContainer = () => {
     const [userInput, setUserInput] = useState('');
@@ -27,10 +28,12 @@ const ChatContainer = () => {
     const [isTranslatorOpen, setIsTranslatorOpen] = useState(false);
     const [isHelpChatOpen, setIsHelpChatOpen] = useState(false);
     const [queryText, setQueryText] = useState('Hola amigo');
-    const [language, setLanguage] = useState('English'); // default language
+    const [language, setLanguage] = useState('Spanish'); // default language
     const [isSituationUsed, setIsSituationUsed] = useState(false);
+    const [difficulty, setDifficulty] = useState('extremely beginner');
+    const difficultyLevels = ['extremely beginner', 'beginner', 'low medium', 'medium', 'high medium', 'advanced', 'extremely advanced'];
     const languages = ['English', 'Spanish', 'French', 'German', 'Italian', 'Portuguese'];
-    const systemPre = `You are the character Sam in this situation and the user is Bob. Only speak in ${language}. However, if the user asks a question about the language, give them help in English. Keep your responses to 1-2 sentences: `;
+    const systemPre = `You are the character Sam in this situation and the user is Bob. Only speak in ${language} at a ${difficulty} difficulty, using ${difficulty} sentences and words. Keep your responses to 1-2 sentences: `;
 
     const openTranslator = () => setIsTranslatorOpen(true);
     const closeTranslator = () => setIsTranslatorOpen(false);
@@ -40,6 +43,10 @@ const ChatContainer = () => {
         setIsHelpChatOpen(true);
     }
     const closeHelpChat = () => setIsHelpChatOpen(false);
+
+    const handleDifficultyChange = (event) => {
+        setDifficulty(event.target.value);
+    };
 
 
     const updateCard = (title, content) => {
@@ -118,6 +125,10 @@ const ChatContainer = () => {
         setLanguage(event.target.value);
     };
 
+    const handleSaveWord = (word) => {
+        console.log("Saved word: ", word);
+    };
+
     return (
         <div className={styles.chatContainer}>
             <ChatHeader className={styles.chatHeader}/>
@@ -129,10 +140,18 @@ const ChatContainer = () => {
                     ))}
                 </select>
             </div>
+            <div>
+                <label htmlFor="difficulty-select">Select Difficulty:</label>
+                <select id="difficulty-select" value={difficulty} onChange={handleDifficultyChange} disabled={isSituationUsed}>
+                    {difficultyLevels.map(level => (
+                        <option key={level} value={level}>{level}</option>
+                    ))}
+                </select>
+            </div>
             <MessageDisplayArea messages={conversationLog} segmentedMessages={segmentedConversation} onClickWord={updateCard} situation={situation} setSituation={setSituation} useSituation={useSituation} showSituation={true} openHelpChat={openHelpChat}/>
             <ChatInputArea onSendMessage={handleSubmit} />
             <SystemMessages />
-            <TranslationCard title={cardTitle} content={cardContent} onClickWord={updateCard} />
+            <TranslationCard title={cardTitle} content={cardContent} onClickWord={updateCard} handleSaveWord={handleSaveWord}/>
             <Button variant="contained" color="primary" onClick={openTranslator}>
                 Open Translator
             </Button>
