@@ -13,6 +13,7 @@ import { getCustomCompletion } from '../services/openaiService';
 import styles from './styles/ChatContainer.module.css';
 import TranslatorModal from './TranslatorModal';
 import HelpChatModal from './HelpChatModal';
+import SavedWordsDisplay from './SavedWordsDisplay';
 
 const model = "gpt-3.5-turbo";
 const firstMsgContent = "Say something just one thing to start the conversation. Do not surround your text with quotation marks or a name or anything. Do not ask for any more information on the situation, you should know everything.";
@@ -31,6 +32,7 @@ const ChatContainer = () => {
     const [language, setLanguage] = useState('Spanish'); // default language
     const [isSituationUsed, setIsSituationUsed] = useState(false);
     const [difficulty, setDifficulty] = useState('extremely beginner');
+    const [savedWords, setSavedWords] = useState([]);
     const difficultyLevels = ['extremely beginner', 'beginner', 'low medium', 'medium', 'high medium', 'advanced', 'extremely advanced'];
     const languages = ['English', 'Spanish', 'French', 'German', 'Italian', 'Portuguese'];
     const systemPre = `You are the character Sam in this situation and the user is Bob. Only speak in ${language} at a ${difficulty} difficulty, using ${difficulty} sentences and words. Keep your responses to 1-2 sentences: `;
@@ -113,6 +115,12 @@ const ChatContainer = () => {
         processLatestMessage();
     }, [conversationLog]);
 
+    useEffect(() => {
+        // Load saved words from localStorage when the component mounts
+        const loadedWords = JSON.parse(localStorage.getItem('savedWords')) || [];
+        setSavedWords(loadedWords);
+    }, []);
+
     // When the user submits a message
     const handleSubmit = async (input) => {
         // Update the conversation log immediately with user input
@@ -121,12 +129,20 @@ const ChatContainer = () => {
         setConversationLog(prev => [...prev, { role: 'user', content: input }]);
     };
 
-    const handleLanguageChange = (event) => {
-        setLanguage(event.target.value);
+    const handleSaveWord = (word) => {
+        // Check if the word is already saved
+        if (!savedWords.includes(word)) {
+            const newSavedWords = [...savedWords, word];
+            setSavedWords(newSavedWords);
+            localStorage.setItem('savedWords', JSON.stringify(newSavedWords));
+            console.log("Saved word: ", word);
+        } else {
+            console.log("Word already saved: ", word);
+        }
     };
 
-    const handleSaveWord = (word) => {
-        console.log("Saved word: ", word);
+    const handleLanguageChange = (event) => {
+        setLanguage(event.target.value);
     };
 
     return (
@@ -155,6 +171,7 @@ const ChatContainer = () => {
             <Button variant="contained" color="primary" onClick={openTranslator}>
                 Open Translator
             </Button>
+            <SavedWordsDisplay savedWords={savedWords} />
             <TranslatorModal isOpen={isTranslatorOpen} onRequestClose={closeTranslator} targetLanguage={language} />
             <HelpChatModal 
                 isOpen={isHelpChatOpen} 
@@ -162,6 +179,7 @@ const ChatContainer = () => {
                 language={language}
                 queryText={queryText}
             />
+            
         </div>
     );
 };
