@@ -15,7 +15,7 @@ import TranslatorModal from './TranslatorModal';
 import HelpChatModal from './HelpChatModal';
 import SavedWordsDisplay from './SavedWordsDisplay';
 
-const model = "gpt-3.5-turbo";
+const model = "gpt-4-1106-preview";
 const firstMsgContent = "Say something just one thing to start the conversation. Do not surround your text with quotation marks or a name or anything. Do not ask for any more information on the situation, you should know everything.";
 const difficulty = "extremely beginner";
 
@@ -33,9 +33,15 @@ const ChatContainer = () => {
     const [isSituationUsed, setIsSituationUsed] = useState(false);
     const [difficulty, setDifficulty] = useState('extremely beginner');
     const [savedWords, setSavedWords] = useState([]);
+    const [customVocab, setCustomVocab] = useState("");
     const difficultyLevels = ['extremely beginner', 'beginner', 'low medium', 'medium', 'high medium', 'advanced', 'extremely advanced'];
     const languages = ['English', 'Spanish', 'French', 'German', 'Italian', 'Portuguese'];
     const systemPre = `You are the character Sam in this situation and the user is Bob. Only speak in ${language} at a ${difficulty} difficulty, using ${difficulty} sentences and words. Keep your responses to 1-2 sentences: `;
+    const [systemPrompt, setSystemPrompt] = useState('');
+    const [currentModel, setCurrentModel] = useState(model);
+    const [streak, setStreak] = useState(0);
+    const [lastCompletedDate, setLastCompletedDate] = useState(null);
+    const [consecutiveUserMessages, setConsecutiveUserMessages] = useState(0);
 
     const openTranslator = () => setIsTranslatorOpen(true);
     const closeTranslator = () => setIsTranslatorOpen(false);
@@ -78,9 +84,19 @@ const ChatContainer = () => {
             return;
         }
 
-        const systemPrompt = systemPre + situation;
+        console.log("Custom vocab is: ", customVocab);
+
+        let newSystemPrompt = systemPre + situation;
+        if (customVocab !== "") {
+            console.log("integrating customVocab: ", customVocab);
+            newSystemPrompt += `Directly use these words while you talk in the conversation: ${customVocab}`;
+        }
+
+        setSystemPrompt(newSystemPrompt);
+        console.log("new systemPrompt: ", newSystemPrompt);
+
         const messages = [{role: 'user', content: firstMsgContent}];
-        const openAIResponse = await getCustomCompletion(systemPrompt, messages, model);
+        const openAIResponse = await getCustomCompletion(newSystemPrompt, messages, currentModel);
         setConversationLog([{ role: 'assistant', content: openAIResponse }]); // resets convo
         setIsSituationUsed(true);
     };
@@ -96,8 +112,8 @@ const ChatContainer = () => {
 
             if (lastMessage.role === 'user') {
                 // If the last message is from the user, send it to the API
-                const systemPrompt = systemPre + situation;
-                const openAIResponse = await getCustomCompletion(systemPrompt, conversationLog, model);
+                console.log("The system prompt is: ", systemPrompt);
+                const openAIResponse = await getCustomCompletion(systemPrompt, conversationLog, currentModel);
                 setConversationLog(prev => [...prev, { role: 'assistant', content: openAIResponse }]);
             } else if (lastMessage.role === 'assistant') {
                 // If the last message is from the bot, segment the text
@@ -121,12 +137,27 @@ const ChatContainer = () => {
         setSavedWords(loadedWords);
     }, []);
 
+    const incrementStreakIfNewDay = () => {
+        const today = new Date().toDateString();
+        if (lastCompletedDate !== today) {
+            setStreak(streak + 1);
+            setLastCompletedDate(today);
+        }
+    };
+
     // When the user submits a message
     const handleSubmit = async (input) => {
         // Update the conversation log immediately with user input
         console.log("HERE HI")
         setSegmentedConversation(prev => [...prev, { role: 'user', content: input }]);
         setConversationLog(prev => [...prev, { role: 'user', content: input }]);
+
+        setConsecutiveUserMessages(consecutiveUserMessages + 1);
+        if (consecutiveUserMessages + 1 === 7) {
+            incrementStreakIfNewDay();
+            setConsecutiveUserMessages(0);
+            alert("You've completed 7 messages in a row! Keep it up!");
+        }
     };
 
     const handleSaveWord = (word) => {
@@ -159,9 +190,16 @@ const ChatContainer = () => {
         setLanguage(event.target.value);
     };
 
+    const toggleModel = () => {
+        setCurrentModel(prevModel => prevModel === 'gpt-3.5-turbo' ? 'gpt-4-1106-preview' : 'gpt-3.5-turbo');
+    };
+
     return (
         <div className={styles.chatContainer}>
             <ChatHeader className={styles.chatHeader}/>
+            <Button variant="contained" color="primary" onClick={toggleModel}>
+                    Switch to {currentModel === 'gpt-3.5-turbo' ? 'GPT-4-1106-preview' : 'GPT-3.5-turbo'}
+                </Button>
             <div>
                 <label htmlFor="language-select">Choose a language to learn:</label>
                 <select id="language-select" value={language} onChange={handleLanguageChange} disabled={isSituationUsed}>
@@ -178,7 +216,7 @@ const ChatContainer = () => {
                     ))}
                 </select>
             </div>
-            <MessageDisplayArea messages={conversationLog} segmentedMessages={segmentedConversation} onClickWord={updateCard} situation={situation} setSituation={setSituation} useSituation={useSituation} showSituation={true} openHelpChat={openHelpChat}/>
+            <MessageDisplayArea messages={conversationLog} segmentedMessages={segmentedConversation} onClickWord={updateCard} situation={situation} setSituation={setSituation} useSituation={useSituation} showSituation={true} openHelpChat={openHelpChat} customVocab={customVocab} setCustomVocab={setCustomVocab}/>
             <ChatInputArea onSendMessage={handleSubmit} />
             <SystemMessages />
             <TranslationCard title={cardTitle} content={cardContent} onClickWord={updateCard} handleSaveWord={handleSaveWord}/>
@@ -197,6 +235,9 @@ const ChatContainer = () => {
                 language={language}
                 queryText={queryText}
             />
+            <div>
+                Your current streak: {streak}
+            </div>
             
         </div>
     );

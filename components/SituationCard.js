@@ -7,7 +7,7 @@ import defaultSituations from "../utils/defaultSituations";
 
 const model = "gpt-4-1106-preview"; // more advanced model
 
-const SituationCard = ({ content, setSituation, useSituation }) => {
+const SituationCard = ({ content, setSituation, useSituation, customVocab, setCustomVocab }) => {
     const [isSituationUsed, setIsSituationUsed] = useState(false);
     const [selectedDefaultSituation, setSelectedDefaultSituation] = useState("");
 
@@ -32,7 +32,6 @@ const SituationCard = ({ content, setSituation, useSituation }) => {
 
     return (
         <div className={styles.situationCard}>
-            <h3>Situation</h3>
             <FormControl fullWidth margin="normal">
                 <InputLabel>Default Situations</InputLabel>
                 <Select
@@ -55,6 +54,17 @@ const SituationCard = ({ content, setSituation, useSituation }) => {
                 onChange={(e) => setSituation(e.target.value)}
                 variant="outlined"
                 margin="normal"
+                disabled={isSituationUsed}
+                placeholder="Enter your situation here..." 
+            />
+            <TextField
+                label="Custom vocab" // Floating label
+                fullWidth
+                variant="outlined"
+                margin="normal"
+                placeholder="Enter your custom vocab here..."
+                value={customVocab}
+                onChange={(e) => setCustomVocab(e.target.value)}
                 disabled={isSituationUsed}
             />
             <Button

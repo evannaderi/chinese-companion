@@ -1,5 +1,9 @@
 const defaultSituations = [
     {
+        title: "Normal conversation",
+        dialogue: "Sam and Bob are having a normal conversation."
+    },
+    {
         title: "Ordering Food at a Restaurant",
         dialogue: "Sam and Bob are at a restaurant deciding what to order."
     },
