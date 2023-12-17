@@ -34,7 +34,11 @@ export default async function (req, res) {
     };
     
     
-    conversation.unshift(systemMessage);
+    if (conversation.length >= 6) {
+      conversation.splice(-5, 0, systemMessage);
+    } else {
+      conversation.unshift(systemMessage);
+    }
     console.log("conversation: ", conversation);
 
     try {
