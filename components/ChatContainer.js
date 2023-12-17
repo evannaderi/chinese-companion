@@ -137,10 +137,23 @@ const ChatContainer = () => {
         setSavedWords(loadedWords);
     }, []);
 
+    // Load streak from localStorage when the component mounts
+    useEffect(() => {
+        const savedStreak = localStorage.getItem('streak');
+        if (savedStreak) {
+            setStreak(parseInt(savedStreak, 10));
+        }
+    }, []);
+
+    // Save streak to localStorage whenever it changes
+    useEffect(() => {
+        localStorage.setItem('streak', streak.toString());
+    }, [streak]);
+
     const incrementStreakIfNewDay = () => {
         const today = new Date().toDateString();
         if (lastCompletedDate !== today) {
-            setStreak(streak + 1);
+            setStreak(prevStreak => prevStreak + 1);
             setLastCompletedDate(today);
         }
     };
