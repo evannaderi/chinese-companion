@@ -14,7 +14,6 @@ import styles from './styles/ChatContainer.module.css';
 import TranslatorModal from './TranslatorModal';
 import HelpChatModal from './HelpChatModal';
 import SavedWordsDisplay from './SavedWordsDisplay';
-import { set } from 'mongoose';
 
 const model = "gpt-3.5-turbo";
 const firstMsgContent = "Say something just one thing to start the conversation. Do not surround your text with quotation marks or a name or anything. Do not ask for any more information on the situation, you should know everything.";
