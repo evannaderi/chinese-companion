@@ -3,6 +3,7 @@ import MessageDisplayArea from './MessageDisplayArea';
 import ChatInputArea from './ChatInputArea';
 import { getCustomCompletion } from '../services/openaiService';
 import styles from './styles/ChatContainer.module.css';
+import modalStyles from './styles/HelpChatModal.module.css'; 
 import Modal from 'react-modal';
 
 const model="gpt-4-1106-preview"
@@ -20,7 +21,7 @@ const HelpChatModal = ({ isOpen, onRequestClose, language, queryText }) => {
         if (isOpen) {
             setConversationLog([{ role: 'user', content: prompt }]);
         }
-    }, [isOpen, queryText]);
+    }, [queryText]);
 
     const handleSubmit = async (input) => {
         // Update the conversation log with user input
@@ -55,9 +56,9 @@ const HelpChatModal = ({ isOpen, onRequestClose, language, queryText }) => {
 
     return (
         <Modal isOpen={isOpen} onRequestClose={onRequestClose}>
-            <div className={styles.simpleMessageDisplayArea} ref={scrollRef}>
+            <div className={modalStyles.simpleMessageDisplayArea} ref={scrollRef}>
                 {conversationLog.map((message, index) => (
-                    <div key={index} className={message.role === 'user' ? styles.userMessage : styles.assistantMessage}>
+                    <div key={index} className={message.role === 'user' ? modalStyles.userMessage : modalStyles.assistantMessage}>
                         {message.content}
                     </div>
                 ))}

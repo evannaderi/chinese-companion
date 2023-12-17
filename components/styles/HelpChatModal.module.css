@@ -1,0 +1,38 @@
+.simpleMessageDisplayArea {
+    flex-grow: 1;
+    padding: 10px;
+    background-color: #f0f0f0; /* Light grey background */
+    display: flex;
+    flex-direction: column;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+  
+  .userMessage {
+    font-family: Arial;
+    background-color: #a30000; /* Turkey red background for user messages */
+    color: white; /* White text for better contrast */
+    padding: 15px;
+    margin: 10px 5px;
+    border-radius: 10px;
+    max-width: 80%;
+    align-self: flex-end;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    border: 1px solid darken(#a30000, 15%); /* Slightly darker border for depth */
+  }
+  
+  .assistantMessage {
+    font-family: Arial;
+    background-color: #ffffff;
+    color: #333;
+    padding: 15px;
+    margin: 10px 5px;
+    border-radius: 10px;
+    max-width: 80%;
+    align-self: flex-start;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    border: 1px solid #dddddd;
+  }
+  
+  /* Additional styles for buttons and other components can be added here */
+  
