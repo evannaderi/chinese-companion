@@ -127,7 +127,6 @@ const ChatContainer = () => {
         // Update the conversation log immediately with user input
         console.log("HERE HI")
         setSegmentedConversation(prev => [...prev, { role: 'user', content: input }]);
-        setConversationLog(prev => [...prev, { role: 'system', content: systemPre + situation }]);
         setConversationLog(prev => [...prev, { role: 'user', content: input }]);
     };
 
@@ -141,6 +140,20 @@ const ChatContainer = () => {
         } else {
             console.log("Word already saved: ", word);
         }
+    };
+
+    const handleDeleteWord = (wordToDelete) => {
+        const updatedWords = savedWords.filter(word => word.Word !== wordToDelete);
+        setSavedWords(updatedWords);
+        localStorage.setItem('savedWords', JSON.stringify(updatedWords));
+    };
+
+    const handleUpdateWord = (wordToUpdate, newMeaning) => {
+        const updatedWords = savedWords.map(word => 
+            word.Word === wordToUpdate ? { ...word, Meaning: newMeaning } : word
+        );
+        setSavedWords(updatedWords);
+        localStorage.setItem('savedWords', JSON.stringify(updatedWords));
     };
 
     const handleLanguageChange = (event) => {
@@ -173,7 +186,11 @@ const ChatContainer = () => {
             <Button variant="contained" color="primary" onClick={openTranslator}>
                 Open Translator
             </Button>
-            <SavedWordsDisplay savedWords={savedWords} />
+            <SavedWordsDisplay 
+                savedWords={savedWords} 
+                onDeleteWord={handleDeleteWord} 
+                onUpdateWord={handleUpdateWord}
+            />
             <TranslatorModal isOpen={isTranslatorOpen} onRequestClose={closeTranslator} targetLanguage={language} />
             <HelpChatModal 
                 isOpen={isHelpChatOpen} 
