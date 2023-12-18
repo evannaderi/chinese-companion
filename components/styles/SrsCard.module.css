@@ -1,0 +1,26 @@
+.srsCard {
+    background-color: #ff7700; /* Safety Orange background */
+    padding: 20px;
+    border-radius: 10px;
+    color: white; /* White text for better readability */
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.selectedButton {
+    background-color: #efd28d; /* Peach Yellow for selected button */
+    color: black; /* Black text for contrast */
+    margin: 5px;
+}
+
+.button {
+    background-color: white; /* White background for buttons */
+    color: #ff7700; /* Safety Orange text */
+    margin: 5px;
+    border: 1px solid #ff7700; /* Safety Orange border */
+}
+
+.button:hover {
+    background-color: #ffd1a9; /* Lighter orange for hover effect */
+    color: black;
+}

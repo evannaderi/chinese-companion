@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button } from '@mui/material';
+import { Button, FormControlLabel, Switch } from '@mui/material';
 import { getMandarinCompletion } from '../services/openaiService';
 import { segmentTextJieba } from '../services/jiebaService';
 import ChatHeader from './ChatHeader';
@@ -7,6 +7,7 @@ import MessageDisplayArea from './MessageDisplayArea';
 import ChatInputArea from './ChatInputArea';
 import SystemMessages from './SystemMessages';
 import TranslationCard from './TranslationCard';
+import SrsCard from './SrsCard';
 import SituationCard from './SituationCard';
 import { spaceSegment } from '../services/SegmentService';
 import { getCustomCompletion } from '../services/openaiService';
@@ -14,6 +15,8 @@ import styles from './styles/ChatContainer.module.css';
 import TranslatorModal from './TranslatorModal';
 import HelpChatModal from './HelpChatModal';
 import SavedWordsDisplay from './SavedWordsDisplay';
+import { initialWordState, selectWordForReview, handleUserFeedback } from '../utils/spacedRepetition';
+
 
 const model = "gpt-4-1106-preview";
 const firstMsgContent = "Say something just one thing to start the conversation. Do not surround your text with quotation marks or a name or anything. Do not ask for any more information on the situation, you should know everything.";
@@ -42,6 +45,10 @@ const ChatContainer = () => {
     const [streak, setStreak] = useState(0);
     const [lastCompletedDate, setLastCompletedDate] = useState(null);
     const [consecutiveUserMessages, setConsecutiveUserMessages] = useState(0);
+    const [isSrsModeActive, setIsSrsModeActive] = useState(false);
+    const [currentReviewWord, setCurrentReviewWord] = useState(null);
+    const [isReviewWordKnown, setIsReviewWordKnown] = useState(null);
+    const [feedbackSelected, setFeedbackSelected] = useState(false);
 
     const openTranslator = () => setIsTranslatorOpen(true);
     const closeTranslator = () => setIsTranslatorOpen(false);
@@ -55,7 +62,6 @@ const ChatContainer = () => {
     const handleDifficultyChange = (event) => {
         setDifficulty(event.target.value);
     };
-
 
     const updateCard = (title, content) => {
         setCardTitle(title);
@@ -95,6 +101,15 @@ const ChatContainer = () => {
         setSystemPrompt(newSystemPrompt);
         console.log("new systemPrompt: ", newSystemPrompt);
 
+        if (isSrsModeActive) {
+            const wordForReview = selectWordForReview(savedWords);
+            setCurrentReviewWord(wordForReview);
+        }
+
+        if (isSrsModeActive && currentReviewWord) {
+            modifiedFirstMsgContent = firstMsgContent + ` Please use the word '${currentReviewWord.Word}' in your response.`;
+        }
+
         const messages = [{role: 'user', content: firstMsgContent}];
         const openAIResponse = await getCustomCompletion(newSystemPrompt, messages, currentModel);
         setConversationLog([{ role: 'assistant', content: openAIResponse }]); // resets convo
@@ -112,9 +127,19 @@ const ChatContainer = () => {
 
             if (lastMessage.role === 'user') {
                 // If the last message is from the user, send it to the API
+                let userMessage = lastMessage.content;
+
+                let modifiedConversationLog = conversationLog;
+                // Append specific text for SRS mode before sending to OpenAI
+                if (isSrsModeActive && currentReviewWord) {
+                    userMessage += ` Please use the word '${currentReviewWord.Word}' in your response.`;
+                    modifiedConversationLog = [...conversationLog];
+                    modifiedConversationLog[modifiedConversationLog.length - 1] = { ...lastMessage, content: userMessage };
+                }
                 console.log("The system prompt is: ", systemPrompt);
-                const openAIResponse = await getCustomCompletion(systemPrompt, conversationLog, currentModel);
+                const openAIResponse = await getCustomCompletion(systemPrompt, modifiedConversationLog, currentModel);
                 setConversationLog(prev => [...prev, { role: 'assistant', content: openAIResponse }]);
+                console.log("Just set conversationLog to: ", modifiedConversationLog);
             } else if (lastMessage.role === 'assistant') {
                 // If the last message is from the bot, segment the text
                 console.log("lastMessage.content: ", lastMessage.content)
@@ -131,8 +156,8 @@ const ChatContainer = () => {
         processLatestMessage();
     }, [conversationLog]);
 
+    // Load saved words from localStorage when the component mounts
     useEffect(() => {
-        // Load saved words from localStorage when the component mounts
         const loadedWords = JSON.parse(localStorage.getItem('savedWords')) || [];
         setSavedWords(loadedWords);
     }, []);
@@ -145,10 +170,30 @@ const ChatContainer = () => {
         }
     }, []);
 
+    // Save updated savedWords to localStorage whenever it changes
+    useEffect(() => {
+        localStorage.setItem('savedWords', JSON.stringify(savedWords));
+    }, [savedWords]);
+
     // Save streak to localStorage whenever it changes
     useEffect(() => {
         localStorage.setItem('streak', streak.toString());
     }, [streak]);
+
+    const handleUserWordFeedback = (knewTheWord) => {
+        if (currentReviewWord) {
+            const updatedWord = handleUserFeedback(currentReviewWord, knewTheWord);
+            const updatedWords = savedWords.map(word => 
+                word.Word === updatedWord.Word ? updatedWord : word
+            );
+            setSavedWords(updatedWords);
+    
+            if (isSrsModeActive) {
+                const nextWordForReview = selectWordForReview(updatedWords);
+                setCurrentReviewWord(nextWordForReview);
+            }
+        }
+    };
 
     const incrementStreakIfNewDay = () => {
         const today = new Date().toDateString();
@@ -160,10 +205,19 @@ const ChatContainer = () => {
 
     // When the user submits a message
     const handleSubmit = async (input) => {
+        if (isSrsModeActive &&  currentReviewWord && !feedbackSelected) {
+            alert("Please select whether you knew the word or not.");
+            return;
+        }
+
         // Update the conversation log immediately with user input
         console.log("HERE HI")
         setSegmentedConversation(prev => [...prev, { role: 'user', content: input }]);
         setConversationLog(prev => [...prev, { role: 'user', content: input }]);
+
+        if (isSrsModeActive) {
+            handleUserWordFeedback(isReviewWordKnown);
+        }
 
         setConsecutiveUserMessages(consecutiveUserMessages + 1);
         if (consecutiveUserMessages + 1 === 7) {
@@ -171,6 +225,9 @@ const ChatContainer = () => {
             setConsecutiveUserMessages(0);
             alert("You've completed 7 messages in a row! Keep it up!");
         }
+
+        setFeedbackSelected(false);
+        setIsReviewWordKnown(null);
     };
 
     const handleSaveWord = (word) => {
@@ -203,8 +260,17 @@ const ChatContainer = () => {
         setLanguage(event.target.value);
     };
 
+    const handleFeedbackSelection = (knewTheWord) => {
+        setIsReviewWordKnown(knewTheWord);
+        setFeedbackSelected(true);
+    };
+
     const toggleModel = () => {
         setCurrentModel(prevModel => prevModel === 'gpt-3.5-turbo' ? 'gpt-4-1106-preview' : 'gpt-3.5-turbo');
+    };
+
+    const toggleSrsMode = () => {
+        setIsSrsModeActive(!isSrsModeActive);
     };
 
     return (
@@ -221,6 +287,11 @@ const ChatContainer = () => {
                     ))}
                 </select>
             </div>
+            <FormControlLabel
+                control={<Switch checked={isSrsModeActive} onChange={toggleSrsMode} />}
+                label="SRS Mode"
+                disabled={isSituationUsed}
+            />
             <div>
                 <label htmlFor="difficulty-select">Select Difficulty:</label>
                 <select id="difficulty-select" value={difficulty} onChange={handleDifficultyChange} disabled={isSituationUsed}>
@@ -231,6 +302,13 @@ const ChatContainer = () => {
             </div>
             <MessageDisplayArea messages={conversationLog} segmentedMessages={segmentedConversation} onClickWord={updateCard} situation={situation} setSituation={setSituation} useSituation={useSituation} showSituation={true} openHelpChat={openHelpChat} customVocab={customVocab} setCustomVocab={setCustomVocab}/>
             <ChatInputArea onSendMessage={handleSubmit} />
+            {isSrsModeActive && (
+                <SrsCard 
+                    currentReviewWord={currentReviewWord} 
+                    isReviewWordKnown={isReviewWordKnown} 
+                    handleFeedbackSelection={handleFeedbackSelection} 
+                />
+            )}
             <SystemMessages />
             <TranslationCard title={cardTitle} content={cardContent} onClickWord={updateCard} handleSaveWord={handleSaveWord}/>
             <Button variant="contained" color="primary" onClick={openTranslator}>

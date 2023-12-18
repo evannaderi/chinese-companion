@@ -28,7 +28,13 @@ const SavedWordsDisplay = ({ savedWords, onDeleteWord, onUpdateWord }) => {
                 }>
                     <ListItemText 
                         primary={`Word: ${item.Word}`} 
-                        secondary={`Meaning: ${item.Meaning}`} 
+                        secondary={
+                            `Meaning: ${item.Meaning}, ` +
+                            `Interval: ${item.interval}, ` +
+                            `Repetition: ${item.repetition}, ` +
+                            `Ease Factor: ${item.easeFactor.toFixed(2)}, ` +
+                            `Next Review Date: ${item.nextReviewDate}`
+                        }  
                     />
                 </ListItem>
             ))}
