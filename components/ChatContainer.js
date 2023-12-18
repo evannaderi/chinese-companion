@@ -101,16 +101,15 @@ const ChatContainer = () => {
         setSystemPrompt(newSystemPrompt);
         console.log("new systemPrompt: ", newSystemPrompt);
 
+        let modifiedFirstMsgContent = firstMsgContent;
+        
         if (isSrsModeActive) {
             const wordForReview = selectWordForReview(savedWords);
             setCurrentReviewWord(wordForReview);
-        }
-
-        if (isSrsModeActive && currentReviewWord) {
             modifiedFirstMsgContent = firstMsgContent + ` Please use the word '${currentReviewWord.Word}' in your response.`;
         }
 
-        const messages = [{role: 'user', content: firstMsgContent}];
+        const messages = [{role: 'user', content: modifiedFirstMsgContent}];
         const openAIResponse = await getCustomCompletion(newSystemPrompt, messages, currentModel);
         setConversationLog([{ role: 'assistant', content: openAIResponse }]); // resets convo
         setIsSituationUsed(true);
