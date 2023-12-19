@@ -190,10 +190,11 @@ const ChatContainer = () => {
             );
             setSavedWords(updatedWords);
     
-            if (isSrsModeActive) {
-                const nextWordForReview = selectWordForReview(updatedWords);
-                setCurrentReviewWord(nextWordForReview);
-            }
+            const nextWordForReview = selectWordForReview(updatedWords);
+            setCurrentReviewWord(nextWordForReview);
+        } else {
+            const nextWordForReview = selectWordForReview(savedWords);
+            setCurrentReviewWord(nextWordForReview);
         }
     };
 
