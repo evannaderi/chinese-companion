@@ -102,11 +102,13 @@ const ChatContainer = () => {
         console.log("new systemPrompt: ", newSystemPrompt);
 
         let modifiedFirstMsgContent = firstMsgContent;
-        
+
         if (isSrsModeActive) {
             const wordForReview = selectWordForReview(savedWords);
+            if (wordForReview && wordForReview.Word) {
+                modifiedFirstMsgContent = firstMsgContent + ` Please use the word '${wordForReview}' in your response.`;
+            }
             setCurrentReviewWord(wordForReview);
-            modifiedFirstMsgContent = firstMsgContent + ` Please use the word '${currentReviewWord.Word}' in your response.`;
         }
 
         const messages = [{role: 'user', content: modifiedFirstMsgContent}];
