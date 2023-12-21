@@ -303,7 +303,7 @@ const ChatContainer = () => {
                     ))}
                 </select>
             </div>
-            <MessageDisplayArea messages={conversationLog} segmentedMessages={segmentedConversation} onClickWord={updateCard} situation={situation} setSituation={setSituation} useSituation={useSituation} showSituation={true} openHelpChat={openHelpChat} customVocab={customVocab} setCustomVocab={setCustomVocab}/>
+            <MessageDisplayArea messages={conversationLog} segmentedMessages={segmentedConversation} onClickWord={updateCard} situation={situation} setSituation={setSituation} useSituation={useSituation} showSituation={true} openHelpChat={openHelpChat} customVocab={customVocab} setCustomVocab={setCustomVocab} sourceLanguage={language}/>
             <ChatInputArea onSendMessage={handleSubmit} />
             {isSrsModeActive && (
                 <SrsCard 
@@ -313,7 +313,7 @@ const ChatContainer = () => {
                 />
             )}
             <SystemMessages />
-            <TranslationCard title={cardTitle} content={cardContent} onClickWord={updateCard} handleSaveWord={handleSaveWord}/>
+            <TranslationCard title={cardTitle} content={cardContent} onClickWord={updateCard} handleSaveWord={handleSaveWord} />
             <Button variant="contained" color="primary" onClick={openTranslator}>
                 Open Translator
             </Button>
@@ -322,7 +322,7 @@ const ChatContainer = () => {
                 onDeleteWord={handleDeleteWord} 
                 onUpdateWord={handleUpdateWord}
             />
-            <TranslatorModal isOpen={isTranslatorOpen} onRequestClose={closeTranslator} targetLanguage={language} />
+            <TranslatorModal isOpen={isTranslatorOpen} onRequestClose={closeTranslator} sourceLanguage={"English"} targetLanguage={language} />
             <HelpChatModal 
                 isOpen={isHelpChatOpen} 
                 onRequestClose={closeHelpChat}

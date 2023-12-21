@@ -23,18 +23,22 @@ const customStyles = {
     },
 };
 
-const TranslatorModal = ({ isOpen, onRequestClose, targetLanguage }) => {
+const TranslatorModal = ({ isOpen, onRequestClose, sourceLanguage, targetLanguage }) => {
     const [text, setText] = useState('');
     const [translatedText, setTranslatedText] = useState('');
 
     const handleTranslate = async () => {
         try {
-            const translation = await getGoogleTranslation(text, targetLanguage);
+            const translation = await getGoogleTranslation(text, sourceLanguage, targetLanguage);
             setTranslatedText(translation);
         } catch (error) {
             console.error("Translation error: ", error.message);
             setTranslatedText("Error in translation");
         }
+    };
+
+    const handleClearText = () => {
+        setText('');
     };
 
     return (
@@ -57,6 +61,9 @@ const TranslatorModal = ({ isOpen, onRequestClose, targetLanguage }) => {
                 </Button>
                 <Button variant="outlined" color="secondary" onClick={onRequestClose}>
                     Close
+                </Button>
+                <Button variant="outlined" color="secondary" onClick={handleClearText}>
+                    Clear
                 </Button>
             </Box>
             <Typography variant="subtitle1" gutterBottom style={{ marginTop: '20px', color: '#ff7700' }}>

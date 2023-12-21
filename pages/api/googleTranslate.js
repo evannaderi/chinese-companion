@@ -1,17 +1,17 @@
-const {Translate} = require('@google-cloud/translate').v2;
+const { Translate } = require('@google-cloud/translate').v2;
 
-const translate = new Translate({key: process.env.GOOGLE_TRANSLATE_API_KEY});
+const translate = new Translate({ key: process.env.GOOGLE_TRANSLATE_API_KEY });
 
 export default async function (req, res) {
     try {
-        const { text, targetLanguage } = req.body;
+        const { text, sourceLanguage, targetLanguage } = req.body;
 
-        if (!text || !targetLanguage) {
-            return res.status(400).json({ error: 'Missing text or targetLanguage in request body' });
+        if (!text || !sourceLanguage || !targetLanguage) {
+            return res.status(400).json({ error: 'Missing text, sourceLanguage, or targetLanguage in request body' });
         }
 
-        console.log("calling google translate api with text: ", text, " and targetLanguage: ", targetLanguage);
-        const [translation] = await translate.translate(text, targetLanguage);
+        console.log("Calling Google Translate API with text: ", text, " from sourceLanguage: ", sourceLanguage, " to targetLanguage: ", targetLanguage);
+        const [translation] = await translate.translate(text, { from: sourceLanguage, to: targetLanguage });
 
         res.status(200).json({ translation });
     } catch (error) {

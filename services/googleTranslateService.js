@@ -10,18 +10,20 @@ const languageCodeMap = {
     // Add more languages as needed
 };
 
-export const getGoogleTranslation = async(text, targetLanguage) => {
+export const getGoogleTranslation = async(text, sourceLanguage, targetLanguage) => {
     const apiURL = "/api/googleTranslate";
 
+    const sourceLanguageCode = languageCodeMap[sourceLanguage];
     const targetLanguageCode = languageCodeMap[targetLanguage];
 
-    if (!targetLanguageCode) {
-        throw new Error(`Unsupported language: ${targetLanguageName}`);
+    if (!targetLanguageCode || !sourceLanguageCode) {
+        throw new Error(`Unsupported language: ${targetLanguageName} or ${sourceLanguageName}`);
     }
 
     try {
         const response = await axios.post(apiURL, {
             text: text,
+            sourceLanguage: sourceLanguageCode,
             targetLanguage: targetLanguageCode
         });
 

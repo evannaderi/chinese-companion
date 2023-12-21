@@ -5,7 +5,7 @@ import { getTTS } from '../services/openaiService';
 import { getGoogleTranslation } from '../services/googleTranslateService';
 import Box from '@mui/material/Box';
 
-const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat }) => {
+const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceLanguage }) => {
     const [isPlaying, setIsPlaying] = React.useState(false);
     const [audioLoaded, setAudioLoaded] = React.useState(false);
     const [playbackSpeed, setPlaybackSpeed] = React.useState(1);
@@ -41,7 +41,7 @@ const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat }) => {
     const handleSegmentClick = async (segment) => {
         // Handle the click event, such as displaying more information or triggering an action
         console.log("Clicked segment:", segment);
-        const translation = await getGoogleTranslation(segment, "English");
+        const translation = await getGoogleTranslation(segment, sourceLanguage, "English");
         onClickWord(segment, translation);
     };
 
