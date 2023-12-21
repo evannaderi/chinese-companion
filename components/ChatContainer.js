@@ -38,7 +38,7 @@ const ChatContainer = () => {
     const [savedWords, setSavedWords] = useState([]);
     const [customVocab, setCustomVocab] = useState("");
     const difficultyLevels = ['extremely beginner', 'beginner', 'low medium', 'medium', 'high medium', 'advanced', 'extremely advanced'];
-    const languages = ['English', 'Spanish', 'French', 'German', 'Italian', 'Portuguese'];
+    const languages = ['English', 'Spanish', 'French', 'German', 'Italian', 'Portuguese', 'Chinese'];
     const systemPre = `You are the character Sam in this situation and the user is Bob. Only speak in ${language} at a ${difficulty} difficulty, using ${difficulty} sentences and words. Keep your responses to 1-2 sentences: `;
     const [systemPrompt, setSystemPrompt] = useState('');
     const [currentModel, setCurrentModel] = useState(model);
@@ -145,7 +145,13 @@ const ChatContainer = () => {
             } else if (lastMessage.role === 'assistant') {
                 // If the last message is from the bot, segment the text
                 console.log("lastMessage.content: ", lastMessage.content)
-                const segmentedResponse = spaceSegment(lastMessage.content);
+                let segmentedResponse = [];
+                if (language === "Chinese") {
+                    segmentedResponse = await segmentTextJieba(lastMessage.content);
+                }
+                else {
+                    segmentedResponse = spaceSegment(lastMessage.content);
+                }
                 console.log("segmentedResponse: ", segmentedResponse)
 
                 setSegmentedConversation(prev => [...prev, { role: 'assistant', content: segmentedResponse }]);

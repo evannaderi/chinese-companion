@@ -6,7 +6,11 @@ const languageCodeMap = {
     "French": "fr",
     "German": "de",
     "Italian": "it",
-    "Portuguese": "pt"
+    "Portuguese": "pt",
+    "Russian": "ru",
+    "Japanese": "ja",
+    "Korean": "ko",
+    "Chinese": "zh",
     // Add more languages as needed
 };
 
