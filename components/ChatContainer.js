@@ -14,9 +14,11 @@ import { getCustomCompletion } from '../services/openaiService';
 import styles from './styles/ChatContainer.module.css';
 import TranslatorModal from './TranslatorModal';
 import HelpChatModal from './HelpChatModal';
+import SavedWordsModal from './SavedWordsModal';
 import SavedWordsDisplay from './SavedWordsDisplay';
 import { initialWordState, selectWordForReview, handleUserFeedback } from '../utils/spacedRepetition';
-
+import Badge from '@mui/material/Badge';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 
 const model = "gpt-4-1106-preview";
 const firstMsgContent = "Say something just one thing to start the conversation. Do not surround your text with quotation marks or a name or anything. Do not ask for any more information on the situation, you should know everything.";
@@ -31,6 +33,7 @@ const ChatContainer = () => {
     const [situation, setSituation] = useState('');
     const [isTranslatorOpen, setIsTranslatorOpen] = useState(false);
     const [isHelpChatOpen, setIsHelpChatOpen] = useState(false);
+    const [isSavedWordsModalOpen, setIsSavedWordsModalOpen] = useState(false);
     const [queryText, setQueryText] = useState('Hola amigo');
     const [language, setLanguage] = useState('Spanish'); // default language
     const [isSituationUsed, setIsSituationUsed] = useState(false);
@@ -52,6 +55,9 @@ const ChatContainer = () => {
 
     const openTranslator = () => setIsTranslatorOpen(true);
     const closeTranslator = () => setIsTranslatorOpen(false);
+
+    const openSavedWordsModal = () => setIsSavedWordsModalOpen(true);
+    const closeSavedWordsModal = () => setIsSavedWordsModalOpen(false);
 
     const openHelpChat = (queryText) => {
         setQueryText(queryText);
@@ -173,8 +179,13 @@ const ChatContainer = () => {
     // Load streak from localStorage when the component mounts
     useEffect(() => {
         const savedStreak = localStorage.getItem('streak');
+        const savedLastCompletedDate = localStorage.getItem('lastCompletedDate');
+
         if (savedStreak) {
             setStreak(parseInt(savedStreak, 10));
+        }
+        if (savedLastCompletedDate) {
+            setLastCompletedDate(savedLastCompletedDate);
         }
     }, []);
 
@@ -186,7 +197,8 @@ const ChatContainer = () => {
     // Save streak to localStorage whenever it changes
     useEffect(() => {
         localStorage.setItem('streak', streak.toString());
-    }, [streak]);
+        localStorage.setItem('lastCompletedDate', lastCompletedDate);
+    }, [streak, lastCompletedDate]);
 
     const handleUserWordFeedback = (knewTheWord) => {
         if (currentReviewWord) {
@@ -323,9 +335,14 @@ const ChatContainer = () => {
             <Button variant="contained" color="primary" onClick={openTranslator}>
                 Open Translator
             </Button>
-            <SavedWordsDisplay 
-                savedWords={savedWords} 
-                onDeleteWord={handleDeleteWord} 
+            <Button variant="contained" color="primary" onClick={openSavedWordsModal}>
+                View Saved Words
+            </Button>
+            <SavedWordsModal
+                isOpen={isSavedWordsModalOpen}
+                onClose={closeSavedWordsModal}
+                savedWords={savedWords}
+                onDeleteWord={handleDeleteWord}
                 onUpdateWord={handleUpdateWord}
             />
             <TranslatorModal isOpen={isTranslatorOpen} onRequestClose={closeTranslator} sourceLanguage={"English"} targetLanguage={language} />
@@ -335,8 +352,11 @@ const ChatContainer = () => {
                 language={language}
                 queryText={queryText}
             />
-            <div>
-                Your current streak: {streak}
+            <div className={styles.streakDisplay}>
+                <Badge badgeContent={streak} color="primary">
+                    <EmojiEventsIcon /> {/* Replace with your preferred icon */}
+                </Badge>
+                <p>Your current streak: {streak}</p>
             </div>
             
         </div>

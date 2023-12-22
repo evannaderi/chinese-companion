@@ -14,7 +14,7 @@ const SavedWordsDisplay = ({ savedWords, onDeleteWord, onUpdateWord }) => {
     };
 
     return (
-        <List>
+        <List sx={{ maxHeight: 300, overflow: 'auto' }}>
             {savedWords.map((item, index) => (
                 <ListItem key={index} secondaryAction={
                     <>
