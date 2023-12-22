@@ -14,7 +14,6 @@ const ChatInputArea = ({ onSendMessage, userInput, setUserInput }) => {
     const handleSend = () => {
         if (userInput.trim() !== '') {
             onSendMessage(userInput);
-            setUserInput('');
         }
     };
 

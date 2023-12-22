@@ -249,6 +249,8 @@ const ChatContainer = () => {
 
         setFeedbackSelected(false);
         setIsReviewWordKnown(null);
+
+        setUserInput('');
     };
 
     const handleSaveWord = (word) => {
