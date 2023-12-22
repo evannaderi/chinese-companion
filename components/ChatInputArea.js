@@ -5,16 +5,16 @@ import styles from './styles/ChatInputArea.module.css';
 
 const transcriptionModel = "whisper-1";
 
-const ChatInputArea = ({ onSendMessage }) => {
+const ChatInputArea = ({ onSendMessage, userInput, setUserInput }) => {
     const [input, setInput] = useState('');
     const [recording, setRecording] = useState(false);
     const mediaRecorderRef = useRef(null);
     const audioChunksRef = useRef([]);
 
     const handleSend = () => {
-        if (input.trim() !== '') {
-            onSendMessage(input);
-            setInput('');
+        if (userInput.trim() !== '') {
+            onSendMessage(userInput);
+            setUserInput('');
         }
     };
 
@@ -100,7 +100,7 @@ const ChatInputArea = ({ onSendMessage }) => {
             const result = await getTranscription(base64Audio, audioID, transcriptionModel);
             console.log("called getTranscription");
             console.log("The result of transcription is: ", result);
-            setInput(result);
+            setUserInput(result);
         } catch (error) {
             console.error("Error in saveRecording: ", error);
         } finally {
@@ -120,8 +120,8 @@ const ChatInputArea = ({ onSendMessage }) => {
         <div className={styles.chatInputArea}>
             <TextField
                 fullWidth
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
+                value={userInput}
+                onChange={(e) => setUserInput(e.target.value)}
                 placeholder="Type your message..."
                 variant="outlined"
                 margin="normal"

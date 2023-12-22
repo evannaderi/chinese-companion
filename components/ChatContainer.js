@@ -322,7 +322,7 @@ const ChatContainer = () => {
                 </select>
             </div>
             <MessageDisplayArea messages={conversationLog} segmentedMessages={segmentedConversation} onClickWord={updateCard} situation={situation} setSituation={setSituation} useSituation={useSituation} showSituation={true} openHelpChat={openHelpChat} customVocab={customVocab} setCustomVocab={setCustomVocab} sourceLanguage={language}/>
-            <ChatInputArea onSendMessage={handleSubmit} />
+            <ChatInputArea onSendMessage={handleSubmit} userInput={userInput} setUserInput={setUserInput} />
             {isSrsModeActive && (
                 <SrsCard 
                     currentReviewWord={currentReviewWord} 
