@@ -14,13 +14,13 @@ const SrsCard = ({ currentReviewWord, isReviewWordKnown, handleFeedbackSelection
             <p><b>Review Word: {currentReviewWord.word}</b></p>
             <Button 
                 onClick={() => handleFeedbackSelection(true)}
-                className={isReviewWordKnown ? styles.selectedButton : ''}
+                className={isReviewWordKnown ? styles.selectedButton : styles.button}
             >
                 I Knew This
             </Button>
             <Button 
                 onClick={() => handleFeedbackSelection(false)}
-                className={isReviewWordKnown === false ? styles.selectedButton : ''}
+                className={isReviewWordKnown === false ? styles.selectedButton : styles.button}
             >
                 I Didn't Know This
             </Button>
