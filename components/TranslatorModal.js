@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
-import { Button, TextField, Typography, Box } from '@mui/material';
+import { Button, TextField, Typography, Box, Select, MenuItem } from '@mui/material';
 import { getGoogleTranslation } from '../services/googleTranslateService';
 
 // Custom styles for React Modal
@@ -26,10 +26,14 @@ const customStyles = {
 const TranslatorModal = ({ isOpen, onRequestClose, sourceLanguage, targetLanguage }) => {
     const [text, setText] = useState('');
     const [translatedText, setTranslatedText] = useState('');
+    const [srcLanguage, setSrcLanguage] = useState(sourceLanguage);
+    const [trgtLanguage, setTrgtLanguage] = useState(targetLanguage);
+
+    const languages = ['English', 'Spanish', 'French', 'German', 'Chinese', 'Japanese', 'Russian', 'Italian', 'Portuguese', 'Korean'];
 
     const handleTranslate = async () => {
         try {
-            const translation = await getGoogleTranslation(text, sourceLanguage, targetLanguage);
+            const translation = await getGoogleTranslation(text, srcLanguage, trgtLanguage);
             setTranslatedText(translation);
         } catch (error) {
             console.error("Translation error: ", error.message);
@@ -40,6 +44,16 @@ const TranslatorModal = ({ isOpen, onRequestClose, sourceLanguage, targetLanguag
     const handleClearText = () => {
         setText('');
     };
+
+    const handleSwitchLanguages = () => {
+        setSrcLanguage(trgtLanguage);
+        setTrgtLanguage(srcLanguage);
+    };
+
+    useEffect(() => {
+        setSrcLanguage(sourceLanguage || 'English');
+        setTrgtLanguage(targetLanguage || 'Spanish');
+    }, [sourceLanguage, targetLanguage]);
 
     return (
         <Modal isOpen={isOpen} onRequestClose={onRequestClose} style={customStyles}>
@@ -55,15 +69,40 @@ const TranslatorModal = ({ isOpen, onRequestClose, sourceLanguage, targetLanguag
                 margin="normal"
                 variant="outlined"
             />
+            <Box display="flex" justifyContent="space-between" mb={2}>
+                <Select
+                    value={srcLanguage}
+                    onChange={(e) => setSrcLanguage(e.target.value)}
+                >
+                    {languages.map((lang) => (
+                        <MenuItem key={lang} value={lang}>
+                            {lang}
+                        </MenuItem>
+                    ))}
+                </Select>
+                <Select
+                    value={trgtLanguage}
+                    onChange={(e) => setTrgtLanguage(e.target.value)}
+                >
+                    {languages.map((lang) => (
+                        <MenuItem key={lang} value={lang}>
+                            {lang}
+                        </MenuItem>
+                    ))}
+                </Select>
+            </Box>
             <Box mt={2}>
                 <Button variant="contained" color="primary" onClick={handleTranslate} style={{ marginRight: '10px' }}>
                     Translate
                 </Button>
-                <Button variant="outlined" color="secondary" onClick={onRequestClose}>
-                    Close
+                <Button variant="outlined" color="secondary" onClick={handleSwitchLanguages} style={{ marginRight: '10px' }}>
+                    Switch Languages
                 </Button>
                 <Button variant="outlined" color="secondary" onClick={handleClearText}>
                     Clear
+                </Button>
+                <Button variant="outlined" color="secondary" onClick={onRequestClose}>
+                    Close
                 </Button>
             </Box>
             <Typography variant="subtitle1" gutterBottom style={{ marginTop: '20px', color: '#ff7700' }}>
