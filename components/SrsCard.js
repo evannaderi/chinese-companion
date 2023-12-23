@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { Button } from '@mui/material';
+import CustomButton from './CustomButton';
 import styles from './styles/SrsCard.module.css'; // Adjust path as needed
 
 const SrsCard = ({ currentReviewWord, isReviewWordKnown, handleFeedbackSelection }) => {
@@ -12,18 +13,18 @@ const SrsCard = ({ currentReviewWord, isReviewWordKnown, handleFeedbackSelection
     return (
         <div className={styles.srsCard}>
             <p><b>Review Word: {currentReviewWord.word}</b></p>
-            <Button 
+            <CustomButton 
+                selected={isReviewWordKnown}
                 onClick={() => handleFeedbackSelection(true)}
-                className={isReviewWordKnown ? styles.selectedButton : styles.srsCardButton}
             >
                 I Knew This
-            </Button>
-            <Button 
+            </CustomButton>
+            <CustomButton 
+                selected={isReviewWordKnown == false}
                 onClick={() => handleFeedbackSelection(false)}
-                className={isReviewWordKnown === false ? styles.selectedButton : styles.srsCardButton}
             >
                 I Didn't Know This
-            </Button>
+            </CustomButton>
         </div>
     );
 };
