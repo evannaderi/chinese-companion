@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, FormControlLabel, Switch } from '@mui/material';
+import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { getMandarinCompletion } from '../services/openaiService';
 import { segmentTextJieba } from '../services/jiebaService';
 import ChatHeader from './ChatHeader';
@@ -314,12 +315,11 @@ const ChatContainer = () => {
 
     const handleUpdateWord = (originalWord, newWord, newMeaning, newLanguage, newTags) => {
         const updatedWords = savedWords.map(word => 
-            word.word === originalWord ? { ...word, word: newWord, meaning: newMeaning, Language: newLanguage, tags: newTags } : word
+            word.word === originalWord ? { ...word, word: newWord, eaning: newMeaning, Language: newLanguage, tags: newTags } : word
         );
         setSavedWords(updatedWords);
         localStorage.setItem('savedWords', JSON.stringify(updatedWords));
     };
-    
     const handleLanguageChange = (event) => {
         setLanguage(event.target.value);
     };
@@ -343,28 +343,40 @@ const ChatContainer = () => {
             <ChatHeader className={styles.chatHeader}/>
             <Button variant="contained" color="primary" onClick={toggleModel}>
                     Switch to {currentModel === 'gpt-3.5-turbo' ? 'GPT-4-1106-preview' : 'GPT-3.5-turbo'}
-                </Button>
-            <div>
-                <label htmlFor="language-select">Choose a language to learn:</label>
-                <select id="language-select" value={language} onChange={handleLanguageChange} disabled={isSituationUsed}>
+            </Button>
+            <FormControl variant="outlined" style={{ minWidth: 120, margin: '10px' }}>
+                <InputLabel htmlFor="language-select">Language</InputLabel>
+                <Select
+                    label="Language"
+                    id="language-select"
+                    value={language}
+                    onChange={handleLanguageChange}
+                    disabled={isSituationUsed}
+                >
                     {languages.map(lang => (
-                        <option key={lang} value={lang}>{lang}</option>
+                        <MenuItem key={lang} value={lang}>{lang}</MenuItem>
                     ))}
-                </select>
-            </div>
+                </Select>
+            </FormControl>
             <FormControlLabel
                 control={<Switch checked={isSrsModeActive} onChange={toggleSrsMode} />}
                 label="SRS Mode"
                 disabled={isSituationUsed}
             />
-            <div>
-                <label htmlFor="difficulty-select">Select Difficulty:</label>
-                <select id="difficulty-select" value={difficulty} onChange={handleDifficultyChange} disabled={isSituationUsed}>
+            <FormControl variant="outlined" style={{ minWidth: 120, margin: '10px' }}>
+                <InputLabel htmlFor="difficulty-select">Difficulty</InputLabel>
+                <Select
+                    label="Difficulty"
+                    id="difficulty-select"
+                    value={difficulty}
+                    onChange={handleDifficultyChange}
+                    disabled={isSituationUsed}
+                >
                     {difficultyLevels.map(level => (
-                        <option key={level} value={level}>{level}</option>
+                        <MenuItem key={level} value={level}>{level}</MenuItem>
                     ))}
-                </select>
-            </div>
+                </Select>
+            </FormControl>
             <MessageDisplayArea messages={conversationLog} segmentedMessages={segmentedConversation} onClickWord={updateCard} situation={situation} setSituation={setSituation} useSituation={useSituation} showSituation={true} openHelpChat={openHelpChat} customVocab={customVocab} setCustomVocab={setCustomVocab} sourceLanguage={language} aiCharName={aiCharName} userCharName={userCharName}/>
             <ChatInputArea onSendMessage={handleSubmit} userInput={userInput} setUserInput={setUserInput} />
             {isSrsModeActive && (

@@ -1,6 +1,11 @@
 import React from 'react';
 import styles from './styles/SegmentedChatMessage.module.css';
+import Button from '@mui/material/Button';
+import { IconButton, Slider } from '@mui/material';
 import { getSpanishTranslation } from '../services/openaiService';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import PauseIcon from '@mui/icons-material/Pause';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { getTTS } from '../services/openaiService';
 import { getGoogleTranslation } from '../services/googleTranslateService';
 import Box from '@mui/material/Box';
@@ -73,25 +78,25 @@ const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceL
             </div>
             {message.role === 'assistant' && ( // Conditional rendering based on role
                 <div>
-                    <button onClick={isPlaying ? handlePause : handlePlay}>
-                        {isPlaying ? 'Pause' : 'Play'}
-                    </button>
+                    <IconButton onClick={isPlaying ? handlePause : handlePlay}>
+                        {isPlaying ? <PauseIcon /> : <PlayArrowIcon />}
+                    </IconButton>
                     <audio ref={audioRef} onEnded={() => setIsPlaying(false)}/>
                     <div>
                         <label htmlFor="speed-slider">Speed: {typeof playbackSpeed === 'number' ? playbackSpeed.toFixed(1) : playbackSpeed}x</label>
-                        <input 
-                            type="range" 
+                        <Slider 
                             id="speed-slider" 
-                            min="0.5" 
-                            max="2" 
-                            step="0.1" 
+                            min={0.5} 
+                            max={2} 
+                            step={0.1} 
                             value={playbackSpeed} 
-                            onChange={handleSpeedChange}
+                            onChange={handleSpeedChange} 
+                            style={{ width: '200px', marginLeft: '10px' }}
                         />
                     </div>
-                    <button onClick={onClickHelp}>
-                        Help
-                    </button>
+                    <IconButton onClick={onClickHelp}>
+                        <HelpOutlineIcon />
+                    </IconButton>
                 </div>
             )}
             
