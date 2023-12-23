@@ -112,7 +112,7 @@ const ChatContainer = () => {
         let modifiedFirstMsgContent = firstMsgContent;
 
         if (isSrsModeActive) {
-            const wordForReview = selectWordForReview(savedWords);
+            const wordForReview = selectWordForReview(savedWords, language);
             if (wordForReview && wordForReview.word) {
                 modifiedFirstMsgContent = firstMsgContent + ` Please use the word '${wordForReview.word}' in your response.`;
             }
@@ -210,10 +210,10 @@ const ChatContainer = () => {
             );
             setSavedWords(updatedWords);
     
-            const nextWordForReview = selectWordForReview(updatedWords);
+            const nextWordForReview = selectWordForReview(updatedWords, language);
             setCurrentReviewWord(nextWordForReview);
         } else {
-            const nextWordForReview = selectWordForReview(savedWords);
+            const nextWordForReview = selectWordForReview(savedWords, language);
             setCurrentReviewWord(nextWordForReview);
         }
     };

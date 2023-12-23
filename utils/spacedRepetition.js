@@ -34,9 +34,9 @@ const updateWord = (word, performanceRating) => {
     return word;
 };
 
-export const selectWordForReview = (savedWords) => {
+export const selectWordForReview = (savedWords, currentLanguage) => {
     const today = new Date();
-    return savedWords.filter(word => new Date(word.nextReviewDate) <= today)[0];
+    return savedWords.filter(word => new Date(word.nextReviewDate) <= today && word.language === currentLanguage)[0];
 };
 
 export const handleUserFeedback = (word, knewTheWord) => {
