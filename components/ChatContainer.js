@@ -299,6 +299,7 @@ const ChatContainer = () => {
     const handleFeedbackSelection = (knewTheWord) => {
         setIsReviewWordKnown(knewTheWord);
         setFeedbackSelected(true);
+        console.log("Feedback selected: ", knewTheWord);
     };
 
     const toggleModel = () => {
