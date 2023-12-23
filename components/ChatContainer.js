@@ -312,13 +312,14 @@ const ChatContainer = () => {
         localStorage.setItem('savedWords', JSON.stringify(updatedWords));
     };
 
-    const handleUpdateWord = (wordToUpdate, newMeaning, newLanguage, newTags) => {
+    const handleUpdateWord = (originalWord, newWord, newMeaning, newLanguage, newTags) => {
         const updatedWords = savedWords.map(word => 
-            word.word === wordToUpdate ? { ...word, Meaning: newMeaning, Language: newLanguage, tags: newTags } : word
+            word.word === originalWord ? { ...word, word: newWord, meaning: newMeaning, Language: newLanguage, tags: newTags } : word
         );
         setSavedWords(updatedWords);
         localStorage.setItem('savedWords', JSON.stringify(updatedWords));
     };
+    
     const handleLanguageChange = (event) => {
         setLanguage(event.target.value);
     };
@@ -387,6 +388,8 @@ const ChatContainer = () => {
                 savedWords={savedWords}
                 onDeleteWord={handleDeleteWord}
                 onUpdateWord={handleUpdateWord}
+                onAddWord={handleSaveWord}
+                language={language}
             />
             <TranslatorModal isOpen={isTranslatorOpen} onRequestClose={closeTranslator} sourceLanguage={"English"} targetLanguage={language} />
             <HelpChatModal 

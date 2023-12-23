@@ -19,7 +19,7 @@ const style = {
     p: 4,
 };
 
-const SavedWordsModal = ({ isOpen, onClose, savedWords, onDeleteWord, onUpdateWord }) => {
+const SavedWordsModal = ({ isOpen, onClose, savedWords, onDeleteWord, onUpdateWord, onAddWord, language }) => {
     return (
         <Modal
             open={isOpen}
@@ -31,7 +31,7 @@ const SavedWordsModal = ({ isOpen, onClose, savedWords, onDeleteWord, onUpdateWo
                 <Typography id="saved-words-modal-title" variant="h6" component="h2">
                     Saved Words
                 </Typography>
-                <SavedWordsDisplay savedWords={savedWords} onDeleteWord={onDeleteWord} onUpdateWord={onUpdateWord} />
+                <SavedWordsDisplay savedWords={savedWords} onDeleteWord={onDeleteWord} onUpdateWord={onUpdateWord} onAddWord={onAddWord} language={language} />
                 <Button onClick={() => exportToCsv(savedWords)}>Export to Anki</Button>
                 <Button onClick={onClose}>Close</Button>
             </Box>
