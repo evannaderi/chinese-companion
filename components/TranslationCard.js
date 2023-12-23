@@ -2,12 +2,17 @@ import styles from './styles/Cards.module.css';
 import { Button } from '@mui/material';
 import { initialWordState } from '../utils/spacedRepetition'; 
 
-const TranslationCard = ({ title, content, handleSaveWord }) => {
+const TranslationCard = ({ title, content, handleSaveWord, language }) => {
     const handleSaveWordClick = () => {
-        handleSaveWord({"Word": title, 
-                        "Meaning": content,
-                        ...initialWordState
-                    });
+        handleSaveWord(title,
+                        content,
+                        language,
+                        [],
+                        1,
+                        0,
+                        2,5,
+                        new Date()
+                    );
     };
 
     return (

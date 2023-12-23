@@ -7,7 +7,7 @@ const SrsCard = ({ currentReviewWord, isReviewWordKnown, handleFeedbackSelection
 
     return (
         <div className={styles.srsCard}>
-            <p><b>Review Word: {currentReviewWord.Word}</b></p>
+            <p><b>Review Word: {currentReviewWord.word}</b></p>
             <Button 
                 onClick={() => handleFeedbackSelection(true)}
                 className={isReviewWordKnown ? styles.selectedButton : ''}

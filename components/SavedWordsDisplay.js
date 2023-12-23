@@ -18,22 +18,24 @@ const SavedWordsDisplay = ({ savedWords, onDeleteWord, onUpdateWord, onAddWord }
             {savedWords.map((item, index) => (
                 <ListItem key={index} secondaryAction={
                     <>
-                        <IconButton edge="end" onClick={() => promptAndUpdateWord(item.Word)}>
+                        <IconButton edge="end" onClick={() => promptAndUpdateWord(item.word)}>
                             <EditIcon />
                         </IconButton>
-                        <IconButton edge="end" onClick={() => onDeleteWord(item.Word)}>
+                        <IconButton edge="end" onClick={() => onDeleteWord(item.word)}>
                             <DeleteIcon />
                         </IconButton>
                     </>
                 }>
                     <ListItemText 
-                        primary={`Word: ${item.Word}`} 
+                        primary={`Word: ${item.word}`} 
                         secondary={
-                            `Meaning: ${item.Meaning}, ` +
+                            `Meaning: ${item.meaning}, ` +
                             `Interval: ${item.interval}, ` +
                             `Repetition: ${item.repetition}, ` +
                             `Ease Factor: ${item.easeFactor.toFixed(2)}, ` +
-                            `Next Review Date: ${item.nextReviewDate}`
+                            `Next Review Date: ${item.nextReviewDate}` +
+                            `Language: ${item.language}, ` +
+                            `Tags: ${item.tags}`
                         }  
                     />
                 </ListItem>

@@ -113,8 +113,8 @@ const ChatContainer = () => {
 
         if (isSrsModeActive) {
             const wordForReview = selectWordForReview(savedWords);
-            if (wordForReview && wordForReview.Word) {
-                modifiedFirstMsgContent = firstMsgContent + ` Please use the word '${wordForReview.Word}' in your response.`;
+            if (wordForReview && wordForReview.word) {
+                modifiedFirstMsgContent = firstMsgContent + ` Please use the word '${wordForReview.word}' in your response.`;
             }
             setCurrentReviewWord(wordForReview);
         }
@@ -142,7 +142,7 @@ const ChatContainer = () => {
                 let modifiedConversationLog = conversationLog;
                 // Append specific text for SRS mode before sending to OpenAI
                 if (isSrsModeActive && currentReviewWord) {
-                    userMessage += ` Please use the word '${currentReviewWord.Word}' in your response.`;
+                    userMessage += ` Please use the word '${currentReviewWord.word}' in your response.`;
                     modifiedConversationLog = [...conversationLog];
                     modifiedConversationLog[modifiedConversationLog.length - 1] = { ...lastMessage, content: userMessage };
                 }
@@ -206,7 +206,7 @@ const ChatContainer = () => {
         if (currentReviewWord) {
             const updatedWord = handleUserFeedback(currentReviewWord, knewTheWord);
             const updatedWords = savedWords.map(word => 
-                word.Word === updatedWord.Word ? updatedWord : word
+                word.word === updatedWord.word ? updatedWord : word
             );
             setSavedWords(updatedWords);
     
@@ -255,32 +255,43 @@ const ChatContainer = () => {
         setUserInput('');
     };
 
-    const handleSaveWord = (word) => {
+    const handleSaveWord = (word, meaning, language, tags, interval, repetition, easeFactor, nextReviewDate) => {
+        const newWord = {
+            word: word,
+            meaning: meaning, // Assign default meaning or get from user
+            language: language,
+            tags: tags, // Tags should be an array of strings
+            interval: interval,
+            repetition: repetition,
+            easeFactor: easeFactor,
+            nextReviewDate: nextReviewDate,
+        };
+
+        console.log("Saved word hahaha: ", newWord);
+
         // Check if the word is already saved
-        if (!savedWords.includes(word)) {
-            const newSavedWords = [...savedWords, word];
+        if (!savedWords.some(savedWord => savedWord.word === word)) {
+            const newSavedWords = [...savedWords, newWord];
             setSavedWords(newSavedWords);
             localStorage.setItem('savedWords', JSON.stringify(newSavedWords));
-            console.log("Saved word: ", word);
         } else {
             console.log("Word already saved: ", word);
         }
     };
 
     const handleDeleteWord = (wordToDelete) => {
-        const updatedWords = savedWords.filter(word => word.Word !== wordToDelete);
+        const updatedWords = savedWords.filter(word => word.word !== wordToDelete);
         setSavedWords(updatedWords);
         localStorage.setItem('savedWords', JSON.stringify(updatedWords));
     };
 
-    const handleUpdateWord = (wordToUpdate, newMeaning) => {
+    const handleUpdateWord = (wordToUpdate, newMeaning, newLanguage, newTags) => {
         const updatedWords = savedWords.map(word => 
-            word.Word === wordToUpdate ? { ...word, Meaning: newMeaning } : word
+            word.word === wordToUpdate ? { ...word, Meaning: newMeaning, Language: newLanguage, tags: newTags } : word
         );
         setSavedWords(updatedWords);
         localStorage.setItem('savedWords', JSON.stringify(updatedWords));
     };
-
     const handleLanguageChange = (event) => {
         setLanguage(event.target.value);
     };
@@ -335,7 +346,7 @@ const ChatContainer = () => {
                 />
             )}
             <SystemMessages />
-            <TranslationCard title={cardTitle} content={cardContent} onClickWord={updateCard} handleSaveWord={handleSaveWord} />
+            <TranslationCard title={cardTitle} content={cardContent} onClickWord={updateCard} handleSaveWord={handleSaveWord} language={language} />
             <Button variant="contained" color="primary" onClick={openTranslator}>
                 Open Translator
             </Button>
