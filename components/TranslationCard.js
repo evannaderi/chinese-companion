@@ -10,7 +10,7 @@ const TranslationCard = ({ title, content, handleSaveWord, language }) => {
                         [],
                         1,
                         0,
-                        2,5,
+                        2.5,
                         new Date()
                     );
     };
