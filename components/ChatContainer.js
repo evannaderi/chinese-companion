@@ -126,6 +126,33 @@ const ChatContainer = () => {
         setIsSituationUsed(true);
     };
 
+    useEffect(() => {
+        const savedLanguage = localStorage.getItem('language');
+        const savedDifficulty = localStorage.getItem('difficulty');
+        const savedCustomVocab = localStorage.getItem('customVocab');
+        const savedAiCharName = localStorage.getItem('aiCharName');
+        const savedUserCharName = localStorage.getItem('userCharName');
+        const savedCurrentModel = localStorage.getItem('currentModel');
+        // Set these values if they exist in localStorage
+        if (savedLanguage) setLanguage(savedLanguage);
+        if (savedDifficulty) setDifficulty(savedDifficulty);
+        if (savedCustomVocab) setCustomVocab(savedCustomVocab);
+        if (savedAiCharName) setAiCharName(savedAiCharName);
+        if (savedUserCharName) setUserCharName(savedUserCharName);
+        if (savedCurrentModel) setCurrentModel(savedCurrentModel);
+        // Add other settings as needed
+      }, []);
+
+    useEffect(() => {
+        localStorage.setItem('language', language);
+        localStorage.setItem('difficulty', difficulty);
+        localStorage.setItem('customVocab', customVocab);
+        localStorage.setItem('aiCharName', aiCharName);
+        localStorage.setItem('userCharName', userCharName);
+        localStorage.setItem('currentModel', currentModel);
+        // Add other settings as needed
+      }, [language, difficulty, customVocab, aiCharName, userCharName, currentModel]);
+
     // Since state updates are asyncronous, we need to use useEffect to wait for the conversationLog state to update
     useEffect(() => {
         const processLatestMessage = async () => {
