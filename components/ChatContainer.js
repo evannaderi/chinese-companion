@@ -40,8 +40,8 @@ const ChatContainer = () => {
     const [difficulty, setDifficulty] = useState('extremely beginner');
     const [savedWords, setSavedWords] = useState([]);
     const [customVocab, setCustomVocab] = useState("");
-    const [aiCharName, setAiCharName] = useState("Sam");
-    const [userCharName, setUserCharName] = useState("Bob");
+    const [aiCharName, setAiCharName] = useState("Lihua");
+    const [userCharName, setUserCharName] = useState("Frenkie");
     const difficultyLevels = ['extremely beginner', 'beginner', 'low medium', 'medium', 'high medium', 'advanced', 'extremely advanced'];
     const languages = ['English', 'Spanish', 'French', 'German', 'Italian', 'Portuguese', 'Chinese'];
     const systemPre = `You are the character ${aiCharName} in this situation and the er is ${userCharName}. Only speak in ${language} at a ${difficulty} difficulty, using ${difficulty} sentences and words. Keep your responses to 1-2 sentences: `;
@@ -325,7 +325,7 @@ const ChatContainer = () => {
                     ))}
                 </select>
             </div>
-            <MessageDisplayArea messages={conversationLog} segmentedMessages={segmentedConversation} onClickWord={updateCard} situation={situation} setSituation={setSituation} useSituation={useSituation} showSituation={true} openHelpChat={openHelpChat} customVocab={customVocab} setCustomVocab={setCustomVocab} sourceLanguage={language}/>
+            <MessageDisplayArea messages={conversationLog} segmentedMessages={segmentedConversation} onClickWord={updateCard} situation={situation} setSituation={setSituation} useSituation={useSituation} showSituation={true} openHelpChat={openHelpChat} customVocab={customVocab} setCustomVocab={setCustomVocab} sourceLanguage={language} aiCharName={aiCharName} userCharName={userCharName}/>
             <ChatInputArea onSendMessage={handleSubmit} userInput={userInput} setUserInput={setUserInput} />
             {isSrsModeActive && (
                 <SrsCard 
