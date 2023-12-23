@@ -11,10 +11,10 @@ const systemPrompts = {
             `
     }),
 
-    createSituation: (word) => ({
+    createSituation: (word, aiCharName, userCharName) => ({
         prompt: `
                 Create a description of a situation that two people 
-                (Sam and Bob) 
+                (${aiCharName} and ${userCharName}) 
                 are in that leads to conversation in one sentence. Make sure
                 it is a simple, real-world, practical scenario. 
                 It should be no longer than one sentence.

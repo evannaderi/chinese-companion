@@ -22,7 +22,7 @@ const SituationCard = ({ content, setSituation, useSituation, customVocab, setCu
     const makeSituation = async () => {
         const word = getRandomNoun();
         console.log("word: ", word);
-        const openAIResponse = await createSituation(word, model);
+        const openAIResponse = await createSituation(word, model, aiCharName, userCharName);
         setSituation(openAIResponse);
     };
 
