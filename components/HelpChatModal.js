@@ -63,7 +63,7 @@ const HelpChatModal = ({ isOpen, onRequestClose, language, queryText }) => {
                     </div>
                 ))}
             </div>
-            <ChatInputArea onSendMessage={handleSubmit} />
+            <ChatInputArea onSendMessage={handleSubmit} userInput={userInput} setUserInput={setUserInput} />
             <button onClick={onRequestClose}>Close</button>
         </Modal>
     );

@@ -40,9 +40,11 @@ const ChatContainer = () => {
     const [difficulty, setDifficulty] = useState('extremely beginner');
     const [savedWords, setSavedWords] = useState([]);
     const [customVocab, setCustomVocab] = useState("");
+    const [aiCharName, setAiCharName] = useState("Sam");
+    const [userCharName, setUserCharName] = useState("Bob");
     const difficultyLevels = ['extremely beginner', 'beginner', 'low medium', 'medium', 'high medium', 'advanced', 'extremely advanced'];
     const languages = ['English', 'Spanish', 'French', 'German', 'Italian', 'Portuguese', 'Chinese'];
-    const systemPre = `You are the character Sam in this situation and the user is Bob. Only speak in ${language} at a ${difficulty} difficulty, using ${difficulty} sentences and words. Keep your responses to 1-2 sentences: `;
+    const systemPre = `You are the character ${aiCharName} in this situation and the er is ${userCharName}. Only speak in ${language} at a ${difficulty} difficulty, using ${difficulty} sentences and words. Keep your responses to 1-2 sentences: `;
     const [systemPrompt, setSystemPrompt] = useState('');
     const [currentModel, setCurrentModel] = useState(model);
     const [streak, setStreak] = useState(0);

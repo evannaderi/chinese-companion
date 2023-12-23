@@ -3,13 +3,17 @@ import { useState } from "react";
 import getRandomNoun from "../utils/getRandomNoun";
 import { Button, TextField, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import styles from "./styles/Cards.module.css";
-import defaultSituations from "../utils/defaultSituations";
+import getDefaultSituations from "../utils/defaultSituations";
 
 const model = "gpt-4-1106-preview"; // more advanced model
+
+const userCharName = "Frenkie";
+const aiCharName = "Lihua";
 
 const SituationCard = ({ content, setSituation, useSituation, customVocab, setCustomVocab }) => {
     const [isSituationUsed, setIsSituationUsed] = useState(false);
     const [selectedDefaultSituation, setSelectedDefaultSituation] = useState("");
+    const defaultSituations = getDefaultSituations(userCharName, aiCharName);
 
     const handleSelectChange = (event) => {
         const selectedTitle = event.target.value;

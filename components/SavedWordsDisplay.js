@@ -4,7 +4,7 @@ import { List, ListItem, ListItemText, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 
-const SavedWordsDisplay = ({ savedWords, onDeleteWord, onUpdateWord }) => {
+const SavedWordsDisplay = ({ savedWords, onDeleteWord, onUpdateWord, onAddWord }) => {
     // Function to handle update - you might want to create a modal or prompt for the new meaning
     const promptAndUpdateWord = (word) => {
         const newMeaning = prompt(`Update meaning for "${word}":`, "");
