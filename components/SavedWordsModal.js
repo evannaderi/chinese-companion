@@ -5,6 +5,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import SavedWordsDisplay from './SavedWordsDisplay';
+import exportToCsv from '../utils/export';
 
 const style = {
     position: 'absolute',
@@ -31,6 +32,7 @@ const SavedWordsModal = ({ isOpen, onClose, savedWords, onDeleteWord, onUpdateWo
                     Saved Words
                 </Typography>
                 <SavedWordsDisplay savedWords={savedWords} onDeleteWord={onDeleteWord} onUpdateWord={onUpdateWord} />
+                <Button onClick={() => exportToCsv(savedWords)}>Export to Anki</Button>
                 <Button onClick={onClose}>Close</Button>
             </Box>
         </Modal>
