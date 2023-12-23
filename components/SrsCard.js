@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button } from '@mui/material';
 import styles from './styles/SrsCard.module.css'; // Adjust path as needed
 
 const SrsCard = ({ currentReviewWord, isReviewWordKnown, handleFeedbackSelection }) => {
     if (!currentReviewWord) return null;
+
+    useEffect(() => {
+        console.log("component reload with isReviewWordKnown: ", isReviewWordKnown);
+    });
 
     return (
         <div className={styles.srsCard}>
