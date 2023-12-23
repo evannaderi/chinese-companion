@@ -13,14 +13,15 @@
     margin: 5px;
 }
 
-.button {
+.srsCardButton {
     background-color: white; /* White background for buttons */
     color: #ff7700; /* Safety Orange text */
     margin: 5px;
     border: 1px solid #ff7700; /* Safety Orange border */
 }
 
-.button:hover {
+.srsCardButton:hover {
     background-color: #ffd1a9; /* Lighter orange for hover effect */
     color: black;
 }
+
