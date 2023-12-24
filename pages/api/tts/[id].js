@@ -9,10 +9,10 @@ export default function handler(req, res) {
         // If the file exists, stream it back to the client
         res.setHeader('Content-Type', 'audio/mpeg');
         fs.createReadStream(filePath).pipe(res);
-        console.log("File exists!!");
+        console.log("File exists!!", filePath);
     } else {
         // If the file does not exist, return a 404 error
         res.status(404).json({ error: "File not found" });
-        console.log("File does not exist!!");
+        console.log("File does not exist!!", filePath);
     }
 }
