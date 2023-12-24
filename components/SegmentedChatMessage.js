@@ -19,7 +19,9 @@ const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceL
 
     const fetchAndSetAudio = async () => {
         const messageText = Array.isArray(message.content) ? message.content.join(' ') : message;
+        console.log("About to get response from openAI");
         const openAIResponse = await getTTS('tts-1', 'alloy', messageText);
+        console.log("Got response from openAI");
         if (openAIResponse && openAIResponse.file) {
             audioRef.current.src = openAIResponse.file; // Directly set the audio source
         }
