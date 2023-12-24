@@ -40,7 +40,7 @@ export default async function (req, res) {
             id: id
         });
     } catch (error) {
-        alert("error", error);
+        console.log("error", error);
         if (error.response) {
             res.status(error.response.status).json(error.response.data);
         } else {
