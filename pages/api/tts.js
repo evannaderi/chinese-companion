@@ -8,7 +8,9 @@ const openai = new OpenAI({
 });
 
 export default async function (req, res) {
+    console.log("in tts@!");
     if (!openai.apiKey) {
+        console.log("Error here at openai.apiKey");
         res.status(500).json({
           error: {
             message: "OpenAI API key not configured, please follow instructions in README.md",
