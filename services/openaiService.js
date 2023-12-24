@@ -134,13 +134,17 @@ export const getSpanishTranslation = async (word, model) => {
 
 export const getTTS = async (model, voice, input, id) => {
     const apiURL = "/api/tts";
+
+    console.log("in getTTS@!");
     
     try {
+        console.log("About to send request in getTTS@!");
         const response = await axios.post(apiURL, {
             model: model,
             voice: voice,
             input: input
         });
+        console.log("successfull request in getTTS@!");
 
         return response.data;
 
