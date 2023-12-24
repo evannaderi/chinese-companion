@@ -24,7 +24,14 @@ export default async function (req, res) {
     const input = req.body.input;
 
     const id = uuidv4();
-    const speechFile = path.resolve(`./public/tts/${id}.mp3`);
+    const isProduction = process.env.NODE_ENV === 'production';
+    const baseDir = isProduction ? '/tmp' : './public/tts';
+
+    if (!fs.existsSync(baseDir)) {
+        fs.mkdirSync(baseDir, { recursive: true });
+    }
+
+    const speechFile = path.join(baseDir, `${id}.mp3`);
 
     try {
         const mp3 = await openai.audio.speech.create({
@@ -36,9 +43,10 @@ export default async function (req, res) {
         const buffer = Buffer.from(await mp3.arrayBuffer());
         await fs.promises.writeFile(speechFile, buffer);
 
+        const fileUrl = isProduction ? `/api/tts/${id}.mp3` : `/tts/${id}.mp3`;
         res.status(200).json({
             message: 'Audio file created successfully',
-            file: `/tts/${id}.mp3`,
+            file: fileUrl,
             id: id
         });
     } catch (error) {
