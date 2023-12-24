@@ -1,4 +1,5 @@
 import React from 'react';
+import { useEffect } from 'react';
 import styles from './styles/SegmentedChatMessage.module.css';
 import Button from '@mui/material/Button';
 import { IconButton, Slider } from '@mui/material';
@@ -10,7 +11,7 @@ import { getTTS } from '../services/openaiService';
 import { getGoogleTranslation } from '../services/googleTranslateService';
 import Box from '@mui/material/Box';
 
-const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceLanguage }) => {
+const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceLanguage, autoplay }) => {
     const [isPlaying, setIsPlaying] = React.useState(false);
     const [audioLoaded, setAudioLoaded] = React.useState(false);
     const [playbackSpeed, setPlaybackSpeed] = React.useState(1);
@@ -67,6 +68,13 @@ const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceL
         const messageText = Array.isArray(message.content) ? message.content.join(' ') : message.content;
         openHelpChat(messageText);
     };
+
+    useEffect(() => {
+        console.log("In this useEffect and autoplay is: ", autoplay);
+        if (autoplay) {
+            handlePlay();
+        }
+    }, []);
 
     return (
         <div className={messageBoxClass}>

@@ -55,6 +55,7 @@ const ChatContainer = () => {
     const [currentReviewWord, setCurrentReviewWord] = useState(null);
     const [isReviewWordKnown, setIsReviewWordKnown] = useState(null);
     const [feedbackSelected, setFeedbackSelected] = useState(false);
+    const [autoplay, setAutoplay] = useState(false);
 
     const openTranslator = () => setIsTranslatorOpen(true);
     const closeTranslator = () => setIsTranslatorOpen(false);
@@ -334,6 +335,10 @@ const ChatContainer = () => {
         setCurrentModel(prevModel => prevModel === 'gpt-3.5-turbo' ? 'gpt-4-1106-preview' : 'gpt-3.5-turbo');
     };
 
+    const toggleAutoplay = () => {
+        setAutoplay(!autoplay);
+    };
+
     const toggleSrsMode = () => {
         setIsSrsModeActive(!isSrsModeActive);
     };
@@ -343,6 +348,9 @@ const ChatContainer = () => {
             <ChatHeader className={styles.chatHeader}/>
             <Button variant="contained" color="primary" onClick={toggleModel}>
                     Switch to {currentModel === 'gpt-3.5-turbo' ? 'GPT-4-1106-preview' : 'GPT-3.5-turbo'}
+            </Button>
+            <Button variant="contained" color="primary" onClick={toggleAutoplay}>
+                    Turn autoplay {autoplay ? 'off' : 'on'}
             </Button>
             <FormControl variant="outlined" style={{ minWidth: 120, margin: '10px' }}>
                 <InputLabel htmlFor="language-select">Language</InputLabel>
@@ -377,7 +385,7 @@ const ChatContainer = () => {
                     ))}
                 </Select>
             </FormControl>
-            <MessageDisplayArea messages={conversationLog} segmentedMessages={segmentedConversation} onClickWord={updateCard} situation={situation} setSituation={setSituation} useSituation={useSituation} showSituation={true} openHelpChat={openHelpChat} customVocab={customVocab} setCustomVocab={setCustomVocab} sourceLanguage={language} aiCharName={aiCharName} userCharName={userCharName}/>
+            <MessageDisplayArea messages={conversationLog} segmentedMessages={segmentedConversation} onClickWord={updateCard} situation={situation} setSituation={setSituation} useSituation={useSituation} showSituation={true} openHelpChat={openHelpChat} customVocab={customVocab} setCustomVocab={setCustomVocab} sourceLanguage={language} aiCharName={aiCharName} userCharName={userCharName} autoplay={autoplay} />
             <ChatInputArea onSendMessage={handleSubmit} userInput={userInput} setUserInput={setUserInput} />
             {isSrsModeActive && (
                 <SrsCard 
