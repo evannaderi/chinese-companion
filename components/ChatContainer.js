@@ -24,6 +24,7 @@ import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 const model = "gpt-4-1106-preview";
 const firstMsgContent = "Say something just one thing to start the conversation. Do not surround your text with quotation marks or a name or anything. Do not ask for any more information on the situation, you should know everything.";
 const difficulty = "extremely beginner";
+const voice = "alloy";
 
 const ChatContainer = () => {
     const [userInput, setUserInput] = useState('');
@@ -37,6 +38,7 @@ const ChatContainer = () => {
     const [isSavedWordsModalOpen, setIsSavedWordsModalOpen] = useState(false);
     const [queryText, setQueryText] = useState('Hola amigo');
     const [language, setLanguage] = useState('Spanish'); // default language
+    const [voice, setVoice] = useState('alloy'); // default voice
     const [isSituationUsed, setIsSituationUsed] = useState(false);
     const [difficulty, setDifficulty] = useState('extremely beginner');
     const [savedWords, setSavedWords] = useState([]);
@@ -45,6 +47,7 @@ const ChatContainer = () => {
     const [userCharName, setUserCharName] = useState("Frenkie");
     const difficultyLevels = ['extremely beginner', 'beginner', 'low medium', 'medium', 'high medium', 'advanced', 'extremely advanced'];
     const languages = ['English', 'Spanish', 'French', 'German', 'Italian', 'Portuguese', 'Chinese'];
+    const voices = ['alloy', 'echo', 'fable', 'nova', 'onyx', 'shimmer'];
     const systemPre = `You are the character ${aiCharName} in this situation and the er is ${userCharName}. Only speak in ${language} at a ${difficulty} difficulty, using ${difficulty} sentences and words. Keep your responses to 1-2 sentences: `;
     const [systemPrompt, setSystemPrompt] = useState('');
     const [currentModel, setCurrentModel] = useState(model);
@@ -325,6 +328,10 @@ const ChatContainer = () => {
         setLanguage(event.target.value);
     };
 
+    const handleVoiceChange = (event) => {
+        setVoice(event.target.value);
+    };
+
     const handleFeedbackSelection = (knewTheWord) => {
         setIsReviewWordKnown(knewTheWord);
         setFeedbackSelected(true);
@@ -366,6 +373,20 @@ const ChatContainer = () => {
                     ))}
                 </Select>
             </FormControl>
+            <FormControl variant="outlined" style={{ minWidth: 120, margin: '10px' }}>
+                <InputLabel htmlFor="language-select">Voice</InputLabel>
+                <Select
+                    label="Voice"
+                    id="voice-select"
+                    value={voice}
+                    onChange={handleVoiceChange}
+                    disabled={isSituationUsed}
+                >
+                    {voices.map(voice => (
+                        <MenuItem key={voice} value={voice}>{voice}</MenuItem>
+                    ))}
+                </Select>
+            </FormControl>
             <FormControlLabel
                 control={<Switch checked={isSrsModeActive} onChange={toggleSrsMode} />}
                 label="SRS Mode"
@@ -385,7 +406,7 @@ const ChatContainer = () => {
                     ))}
                 </Select>
             </FormControl>
-            <MessageDisplayArea messages={conversationLog} segmentedMessages={segmentedConversation} onClickWord={updateCard} situation={situation} setSituation={setSituation} useSituation={useSituation} showSituation={true} openHelpChat={openHelpChat} customVocab={customVocab} setCustomVocab={setCustomVocab} sourceLanguage={language} aiCharName={aiCharName} userCharName={userCharName} autoplay={autoplay} />
+            <MessageDisplayArea messages={conversationLog} segmentedMessages={segmentedConversation} onClickWord={updateCard} situation={situation} setSituation={setSituation} useSituation={useSituation} showSituation={true} openHelpChat={openHelpChat} customVocab={customVocab} setCustomVocab={setCustomVocab} sourceLanguage={language} aiCharName={aiCharName} userCharName={userCharName} autoplay={autoplay} voice={voice} />
             <ChatInputArea onSendMessage={handleSubmit} userInput={userInput} setUserInput={setUserInput} />
             {isSrsModeActive && (
                 <SrsCard 

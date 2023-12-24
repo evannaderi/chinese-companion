@@ -11,7 +11,7 @@ import { getTTS } from '../services/openaiService';
 import { getGoogleTranslation } from '../services/googleTranslateService';
 import Box from '@mui/material/Box';
 
-const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceLanguage, autoplay }) => {
+const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceLanguage, autoplay, voice }) => {
     const [isPlaying, setIsPlaying] = React.useState(false);
     const [audioLoaded, setAudioLoaded] = React.useState(false);
     const [playbackSpeed, setPlaybackSpeed] = React.useState(1);
@@ -21,7 +21,7 @@ const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceL
     const fetchAndSetAudio = async () => {
         const messageText = Array.isArray(message.content) ? message.content.join(' ') : message;
         console.log("About to get response from openAI");
-        const openAIResponse = await getTTS('tts-1', 'alloy', messageText);
+        const openAIResponse = await getTTS('tts-1', voice, messageText);
         console.log("Got response from openAI");
 
         if (openAIResponse && openAIResponse.audioData) {
