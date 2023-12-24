@@ -22,8 +22,11 @@ const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceL
         console.log("About to get response from openAI");
         const openAIResponse = await getTTS('tts-1', 'alloy', messageText);
         console.log("Got response from openAI");
-        if (openAIResponse && openAIResponse.file) {
-            audioRef.current.src = openAIResponse.file; // Directly set the audio source
+
+        if (openAIResponse && openAIResponse.audioData) {
+            const audioBlob = new Blob([new Uint8Array(Buffer.from(openAIResponse.audioData, 'base64'))], { type: 'audio/mpeg' });
+            const audioUrl = URL.createObjectURL(audioBlob);
+            audioRef.current.src = audioUrl;
         }
         setAudioLoaded(true);
         console.log("Just loaded audio");

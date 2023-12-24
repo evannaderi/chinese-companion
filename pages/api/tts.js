@@ -42,13 +42,9 @@ export default async function (req, res) {
         });
 
         const buffer = Buffer.from(await mp3.arrayBuffer());
-        await fs.promises.writeFile(speechFile, buffer);
-
-        const fileUrl = isProduction ? `/api/tts/${id}.mp3` : `/tts/${id}.mp3`;
         res.status(200).json({
-            message: 'Audio file created successfully',
-            file: fileUrl,
-            id: id
+            message: 'Audio data generated successfully',
+            audioData: buffer.toString('base64'), // Send as base64
         });
     } catch (error) {
         console.log("the error is mwahahahahaha", error);
