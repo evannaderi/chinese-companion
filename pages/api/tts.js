@@ -32,6 +32,7 @@ export default async function (req, res) {
     }
 
     const speechFile = path.join(baseDir, `${id}.mp3`);
+    console.log("The speech file is: ", speechFile);
 
     try {
         const mp3 = await openai.audio.speech.create({
