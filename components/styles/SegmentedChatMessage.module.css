@@ -32,3 +32,8 @@
   border: 1px solid #dddddd;
 }
   
+.controlRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

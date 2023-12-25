@@ -2,7 +2,7 @@ import React from 'react';
 import { useEffect } from 'react';
 import styles from './styles/SegmentedChatMessage.module.css';
 import Button from '@mui/material/Button';
-import { IconButton, Slider } from '@mui/material';
+import { IconButton, Slider, Tooltip } from '@mui/material';
 import { getSpanishTranslation } from '../services/openaiService';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
@@ -89,8 +89,8 @@ const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceL
                     <p>{message.content}</p>
                 }
             </div>
-            {message.role === 'assistant' && ( // Conditional rendering based on role
-                <div>
+            {message.role === 'assistant' && (
+                <div className={styles.controlRow}>
                     <IconButton onClick={isPlaying ? handlePause : handlePlay}>
                         {isPlaying ? <PauseIcon /> : <PlayArrowIcon />}
                     </IconButton>
@@ -107,9 +107,11 @@ const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceL
                             style={{ width: '200px', marginLeft: '10px' }}
                         />
                     </div>
-                    <IconButton onClick={onClickHelp}>
-                        <HelpOutlineIcon />
-                    </IconButton>
+                    <Tooltip title="Get GPT-4 Help">
+                        <IconButton onClick={onClickHelp}>
+                            <HelpOutlineIcon />
+                        </IconButton>
+                    </Tooltip>
                 </div>
             )}
             

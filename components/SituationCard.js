@@ -84,7 +84,7 @@ const SituationCard = ({ content, setSituation, useSituation, customVocab, setCu
                 disabled={isSituationUsed}
                 style={{ margin: '5px' }}
             >
-                Use situation
+                Start Conversation
             </Button>
         </div>
     );
