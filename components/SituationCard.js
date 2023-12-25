@@ -27,6 +27,10 @@ const SituationCard = ({ content, setSituation, useSituation, customVocab, setCu
     };
 
     const handleUseSituation = () => {
+        if (content.trim() === '') {
+            alert("Please enter a situation first!");
+            return;
+        }
         setIsSituationUsed(true);
         useSituation();
     };

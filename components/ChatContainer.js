@@ -379,12 +379,20 @@ const ChatContainer = () => {
                 Open Settings
             </Button>
             
-            
+            <div>
             <FormControlLabel
                 control={<Switch checked={isSrsModeActive} onChange={toggleSrsMode} />}
                 label="SRS Mode"
                 disabled={isSituationUsed}
             />
+            <div className={styles.streakDisplay}>
+                <Badge badgeContent={streak} color="primary">
+                    <EmojiEventsIcon /> {/* Replace with your preferred icon */}
+                </Badge>
+                <p>Your current streak: {streak}</p>
+            </div>
+            </div>
+            
             <MessageDisplayArea messages={conversationLog} segmentedMessages={segmentedConversation} onClickWord={updateCard} situation={situation} setSituation={setSituation} useSituation={useSituation} showSituation={true} openHelpChat={openHelpChat} customVocab={customVocab} setCustomVocab={setCustomVocab} sourceLanguage={language} aiCharName={aiCharName} userCharName={userCharName} autoplay={autoplay} voice={voice} />
             <ChatInputArea onSendMessage={handleSubmit} userInput={userInput} setUserInput={setUserInput} isSituationUsed={isSituationUsed} />
             {isSrsModeActive && (
@@ -419,12 +427,7 @@ const ChatContainer = () => {
                 queryText={queryText}
                 isSituationUsed={isSituationUsed}
             />
-            <div className={styles.streakDisplay}>
-                <Badge badgeContent={streak} color="primary">
-                    <EmojiEventsIcon /> {/* Replace with your preferred icon */}
-                </Badge>
-                <p>Your current streak: {streak}</p>
-            </div>
+            
             <Modal
                 open={isSettingsModalOpen}
                 onClose={closeSettingsModal}
