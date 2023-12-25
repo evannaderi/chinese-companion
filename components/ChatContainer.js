@@ -20,6 +20,7 @@ import SavedWordsDisplay from './SavedWordsDisplay';
 import { initialWordState, selectWordForReview, handleUserFeedback } from '../utils/spacedRepetition';
 import Badge from '@mui/material/Badge';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 const style = {
     position: 'absolute',
@@ -369,8 +370,13 @@ const ChatContainer = () => {
         <div className={styles.chatContainer}>
             <ChatHeader className={styles.chatHeader}/>
 
-            <Button variant="contained" color="primary" onClick={openSettingsModal}>
-                Settings
+            <Button 
+                variant="contained" 
+                color="primary" 
+                onClick={openSettingsModal}
+                startIcon={<SettingsIcon />}
+            >
+                Open Settings
             </Button>
             
             
@@ -411,6 +417,7 @@ const ChatContainer = () => {
                 onRequestClose={closeHelpChat}
                 language={language}
                 queryText={queryText}
+                isSituationUsed={isSituationUsed}
             />
             <div className={styles.streakDisplay}>
                 <Badge badgeContent={streak} color="primary">

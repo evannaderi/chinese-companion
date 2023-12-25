@@ -9,7 +9,7 @@ import Modal from 'react-modal';
 const model="gpt-4-1106-preview"
 const systemPrompt = "You are a language learning assistant. Keep responses brief.";
 
-const HelpChatModal = ({ isOpen, onRequestClose, language, queryText }) => {
+const HelpChatModal = ({ isOpen, onRequestClose, language, queryText, isSituationUsed }) => {
     const [userInput, setUserInput] = useState('');
     const [conversationLog, setConversationLog] = useState([]);
     const scrollRef = useRef(null);
@@ -63,7 +63,7 @@ const HelpChatModal = ({ isOpen, onRequestClose, language, queryText }) => {
                     </div>
                 ))}
             </div>
-            <ChatInputArea onSendMessage={handleSubmit} userInput={userInput} setUserInput={setUserInput} />
+            <ChatInputArea onSendMessage={handleSubmit} userInput={userInput} setUserInput={setUserInput} isSituationUsed={isSituationUsed} />
             <button onClick={onRequestClose}>Close</button>
         </Modal>
     );

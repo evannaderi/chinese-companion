@@ -34,7 +34,7 @@ const SituationCard = ({ content, setSituation, useSituation, customVocab, setCu
     return (
         <div className={styles.situationCard}>
             <FormControl fullWidth margin="normal">
-                <InputLabel>Default Situations</InputLabel>
+                <InputLabel>Select a Situation</InputLabel>
                 <Select
                     value={selectedDefaultSituation}
                     onChange={handleSelectChange}
@@ -56,14 +56,13 @@ const SituationCard = ({ content, setSituation, useSituation, customVocab, setCu
                 variant="outlined"
                 margin="normal"
                 disabled={isSituationUsed}
-                placeholder="Enter your situation here..." 
+                placeholder="Or enter a custom situation here..." 
             />
             <TextField
-                label="Custom vocab" // Floating label
                 fullWidth
                 variant="outlined"
                 margin="normal"
-                placeholder="Enter your custom vocab here..."
+                placeholder="Optionally add custom vocab here..."
                 value={customVocab}
                 onChange={(e) => setCustomVocab(e.target.value)}
                 disabled={isSituationUsed}
@@ -75,7 +74,7 @@ const SituationCard = ({ content, setSituation, useSituation, customVocab, setCu
                 disabled={isSituationUsed}
                 style={{ margin: '5px' }}
             >
-                Random situation
+                Get Random situation
             </Button>
             <Button
                 variant="contained"
