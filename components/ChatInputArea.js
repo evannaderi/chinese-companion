@@ -5,7 +5,7 @@ import styles from './styles/ChatInputArea.module.css';
 
 const transcriptionModel = "whisper-1";
 
-const ChatInputArea = ({ onSendMessage, userInput, setUserInput }) => {
+const ChatInputArea = ({ onSendMessage, userInput, setUserInput, isSituationUsed }) => {
     const [input, setInput] = useState('');
     const [recording, setRecording] = useState(false);
     const mediaRecorderRef = useRef(null);
@@ -131,6 +131,7 @@ const ChatInputArea = ({ onSendMessage, userInput, setUserInput }) => {
                 color="primary" 
                 onClick={handleSend}
                 style={{ margin: '5px' }}
+                disabled={!isSituationUsed}
             >
                 Send
             </Button>

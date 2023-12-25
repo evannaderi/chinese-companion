@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, FormControlLabel, Switch } from '@mui/material';
-import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { FormControl, InputLabel, Select, MenuItem, Box, Modal } from '@mui/material';
 import { getMandarinCompletion } from '../services/openaiService';
 import { segmentTextJieba } from '../services/jiebaService';
 import ChatHeader from './ChatHeader';
@@ -20,6 +20,17 @@ import SavedWordsDisplay from './SavedWordsDisplay';
 import { initialWordState, selectWordForReview, handleUserFeedback } from '../utils/spacedRepetition';
 import Badge from '@mui/material/Badge';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    boxShadow: 24,
+    p: 4,
+};
 
 const model = "gpt-4-1106-preview";
 const firstMsgContent = "Say something just one thing to start the conversation. Do not surround your text with quotation marks or a name or anything. Do not ask for any more information on the situation, you should know everything.";
@@ -59,6 +70,10 @@ const ChatContainer = () => {
     const [isReviewWordKnown, setIsReviewWordKnown] = useState(null);
     const [feedbackSelected, setFeedbackSelected] = useState(false);
     const [autoplay, setAutoplay] = useState(false);
+    const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+
+    const openSettingsModal = () => setIsSettingsModalOpen(true);
+    const closeSettingsModal = () => setIsSettingsModalOpen(false);
 
     const openTranslator = () => setIsTranslatorOpen(true);
     const closeTranslator = () => setIsTranslatorOpen(false);
@@ -353,61 +368,19 @@ const ChatContainer = () => {
     return (
         <div className={styles.chatContainer}>
             <ChatHeader className={styles.chatHeader}/>
-            <Button variant="contained" color="primary" onClick={toggleModel}>
-                    Switch to {currentModel === 'gpt-3.5-turbo' ? 'GPT-4-1106-preview' : 'GPT-3.5-turbo'}
+
+            <Button variant="contained" color="primary" onClick={openSettingsModal}>
+                Settings
             </Button>
-            <Button variant="contained" color="primary" onClick={toggleAutoplay}>
-                    Turn autoplay {autoplay ? 'off' : 'on'}
-            </Button>
-            <FormControl variant="outlined" style={{ minWidth: 120, margin: '10px' }}>
-                <InputLabel htmlFor="language-select">Language</InputLabel>
-                <Select
-                    label="Language"
-                    id="language-select"
-                    value={language}
-                    onChange={handleLanguageChange}
-                    disabled={isSituationUsed}
-                >
-                    {languages.map(lang => (
-                        <MenuItem key={lang} value={lang}>{lang}</MenuItem>
-                    ))}
-                </Select>
-            </FormControl>
-            <FormControl variant="outlined" style={{ minWidth: 120, margin: '10px' }}>
-                <InputLabel htmlFor="language-select">Voice</InputLabel>
-                <Select
-                    label="Voice"
-                    id="voice-select"
-                    value={voice}
-                    onChange={handleVoiceChange}
-                    disabled={isSituationUsed}
-                >
-                    {voices.map(voice => (
-                        <MenuItem key={voice} value={voice}>{voice}</MenuItem>
-                    ))}
-                </Select>
-            </FormControl>
+            
+            
             <FormControlLabel
                 control={<Switch checked={isSrsModeActive} onChange={toggleSrsMode} />}
                 label="SRS Mode"
                 disabled={isSituationUsed}
             />
-            <FormControl variant="outlined" style={{ minWidth: 120, margin: '10px' }}>
-                <InputLabel htmlFor="difficulty-select">Difficulty</InputLabel>
-                <Select
-                    label="Difficulty"
-                    id="difficulty-select"
-                    value={difficulty}
-                    onChange={handleDifficultyChange}
-                    disabled={isSituationUsed}
-                >
-                    {difficultyLevels.map(level => (
-                        <MenuItem key={level} value={level}>{level}</MenuItem>
-                    ))}
-                </Select>
-            </FormControl>
             <MessageDisplayArea messages={conversationLog} segmentedMessages={segmentedConversation} onClickWord={updateCard} situation={situation} setSituation={setSituation} useSituation={useSituation} showSituation={true} openHelpChat={openHelpChat} customVocab={customVocab} setCustomVocab={setCustomVocab} sourceLanguage={language} aiCharName={aiCharName} userCharName={userCharName} autoplay={autoplay} voice={voice} />
-            <ChatInputArea onSendMessage={handleSubmit} userInput={userInput} setUserInput={setUserInput} />
+            <ChatInputArea onSendMessage={handleSubmit} userInput={userInput} setUserInput={setUserInput} isSituationUsed={isSituationUsed} />
             {isSrsModeActive && (
                 <SrsCard 
                     currentReviewWord={currentReviewWord} 
@@ -445,6 +418,64 @@ const ChatContainer = () => {
                 </Badge>
                 <p>Your current streak: {streak}</p>
             </div>
+            <Modal
+                open={isSettingsModalOpen}
+                onClose={closeSettingsModal}
+                aria-labelledby="settings-modal-title"
+                aria-describedby="settings-modal-description"
+            >
+                <Box sx={style}>
+                    <h2 id="settings-modal-title">Settings</h2>
+                    <Button variant="contained" color="primary" onClick={toggleModel}>
+                        Switch to {currentModel === 'gpt-3.5-turbo' ? 'GPT-4-1106-preview' : 'GPT-3.5-turbo'}
+                    </Button>
+                    <Button variant="contained" color="primary" onClick={toggleAutoplay}>
+                            Turn autoplay {autoplay ? 'off' : 'on'}
+                    </Button>
+                    <FormControl variant="outlined" style={{ minWidth: 120, margin: '10px' }}>
+                        <InputLabel htmlFor="language-select">Language</InputLabel>
+                        <Select
+                            label="Language"
+                            id="language-select"
+                            value={language}
+                            onChange={handleLanguageChange}
+                            disabled={isSituationUsed}
+                        >
+                            {languages.map(lang => (
+                                <MenuItem key={lang} value={lang}>{lang}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                    <FormControl variant="outlined" style={{ minWidth: 120, margin: '10px' }}>
+                        <InputLabel htmlFor="voice-select">Voice</InputLabel>
+                        <Select
+                            label="Voice"
+                            id="voice-select"
+                            value={voice}
+                            onChange={handleVoiceChange}
+                            disabled={isSituationUsed}
+                        >
+                            {voices.map(voice => (
+                                <MenuItem key={voice} value={voice}>{voice}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                    <FormControl variant="outlined" style={{ minWidth: 120, margin: '10px' }}>
+                        <InputLabel htmlFor="difficulty-select">Difficulty</InputLabel>
+                        <Select
+                            label="Difficulty"
+                            id="difficulty-select"
+                            value={difficulty}
+                            onChange={handleDifficultyChange}
+                            disabled={isSituationUsed}
+                        >
+                            {difficultyLevels.map(level => (
+                                <MenuItem key={level} value={level}>{level}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </Box>
+            </Modal>
             
         </div>
     );
