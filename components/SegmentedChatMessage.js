@@ -10,6 +10,7 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { getTTS } from '../services/openaiService';
 import { getGoogleTranslation } from '../services/googleTranslateService';
 import Box from '@mui/material/Box';
+import pinyin from 'pinyin';
 
 const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceLanguage, autoplay, voice }) => {
     const [isPlaying, setIsPlaying] = React.useState(false);
@@ -52,7 +53,13 @@ const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceL
     const handleSegmentClick = async (segment) => {
         // Handle the click event, such as displaying more information or triggering an action
         console.log("Clicked segment:", segment);
-        const translation = await getGoogleTranslation(segment, sourceLanguage, "English");
+        let translation = await getGoogleTranslation(segment, sourceLanguage, "English");
+
+        if (sourceLanguage === "Chinese") {
+            const pinyinText = pinyin(segment, { style: pinyin.STYLE_NORMAL }).join(' ');
+            segment += ` (${pinyinText})`;
+        }
+        
         onClickWord(segment, translation);
     };
 
