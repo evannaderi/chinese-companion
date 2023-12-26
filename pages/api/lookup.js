@@ -4,6 +4,7 @@ import path from 'path';
 
 export default async function (req, res) {
   if (req.method === 'POST') {
+    console.log("in lookup.js query is: ", req.body.query);
     const query = req.body.query;
     const dictionaryPath = path.join(process.cwd(), 'public', 'chinese_dict.txt');
     const stream = fs.createReadStream(dictionaryPath);

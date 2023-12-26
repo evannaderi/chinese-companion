@@ -2,6 +2,11 @@ import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import { Button, TextField, Typography, Box, Select, MenuItem } from '@mui/material';
 import { getGoogleTranslation } from '../services/googleTranslateService';
+import { getPinyin } from '../services/pinyinService';
+import { convertPinyinToneNumbers } from '../services/pinyinService';
+import { segmentTextJieba } from '../services/jiebaService';
+
+const regex = /\[([^\]]+)\]/;
 
 // Custom styles for React Modal
 const customStyles = {
@@ -33,7 +38,22 @@ const TranslatorModal = ({ isOpen, onRequestClose, sourceLanguage, targetLanguag
 
     const handleTranslate = async () => {
         try {
-            const translation = await getGoogleTranslation(text, srcLanguage, trgtLanguage);
+            let translation = await getGoogleTranslation(text, srcLanguage, trgtLanguage);
+
+            if (targetLanguage === 'Chinese') {
+                const segments = await segmentTextJieba(translation);
+                console.log("here is segments", segments);
+                for (const segment of segments) {
+                    const pinyin = await getPinyin(segment);
+                    const match = pinyin.match(regex);
+                    if (!match) {
+                        translation += ` No pinyin found`;
+                        continue;
+                    }
+                    const pinyinWithToneNumbers = convertPinyinToneNumbers(match[1]);
+                    translation += ` ${pinyinWithToneNumbers}`;;
+                }
+            }
             setTranslatedText(translation);
         } catch (error) {
             console.error("Translation error: ", error.message);

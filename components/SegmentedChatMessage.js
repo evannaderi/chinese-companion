@@ -10,7 +10,11 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { getTTS } from '../services/openaiService';
 import { getGoogleTranslation } from '../services/googleTranslateService';
 import Box from '@mui/material/Box';
-import pinyin from 'pinyin';
+import { getRomanizedText } from '../services/googleTranslateService';
+import { getPinyin } from '../services/pinyinService';
+import { convertPinyinToneNumbers } from '../services/pinyinService';
+
+const regex = /\[([^\]]+)\]/;
 
 const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceLanguage, autoplay, voice }) => {
     const [isPlaying, setIsPlaying] = React.useState(false);
@@ -53,13 +57,34 @@ const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceL
     const handleSegmentClick = async (segment) => {
         // Handle the click event, such as displaying more information or triggering an action
         console.log("Clicked segment:", segment);
+        
         let translation = await getGoogleTranslation(segment, sourceLanguage, "English");
+        
 
         if (sourceLanguage === "Chinese") {
             const pinyinText = pinyin(segment, { style: pinyin.STYLE_NORMAL }).join(' ');
-            segment += ` (${pinyinText})`;
+            translation += ` (${pinyinText})`;
         }
-        
+
+        if (sourceLanguage === "Chinese") {
+            const text = await getPinyin(segment);
+            const match = text.match(regex);
+
+            if (match) {
+                const pinyin = convertPinyinToneNumbers(match[1]); // 'qu4'
+                console.log(pinyin);
+                translation += ` (${pinyin})`;
+            }
+            
+        }
+
+        // if (sourceLanguage === "Chinese") {
+        //     const text = await getRomanizedText(segment, sourceLanguage);
+        //     translation += ` (${text})`;
+            
+        // }
+
+
         onClickWord(segment, translation);
     };
 
