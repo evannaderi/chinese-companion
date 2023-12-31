@@ -8,13 +8,19 @@ import Modal from 'react-modal';
 import Button from '@mui/material/Button';
 
 const model="gpt-3.5-turbo"
-const systemPrompt = "You are a language learning assistant. Keep responses brief. On the first prompt you explain in this format: 1. phrase: short meaning \\n 2. phrase: short meaning \\n 3. phrase: short meaning ...";
 
 const HelpChatModal = ({ isOpen, onRequestClose, language, queryText, isSituationUsed, helpType }) => {
     const [userInput, setUserInput] = useState('');
     const [conversationLog, setConversationLog] = useState([]);
     const scrollRef = useRef(null);
     const [isFirstResponse, setIsFirstReponse] = useState(true);
+
+    let systemPrompt = '';
+    if (helpType === 'translation') {
+        systemPrompt = `You are a language learning assistant. Keep responses brief. On the first prompt you explain in this format: 1. phrase: short meaning \\n 2. phrase: short meaning \\n 3. phrase: short meaning ...`;
+    } else if (helpType === 'feedback') {
+        systemPrompt = `You are a language learning assistant. Keep responses brief. On the first prompt you give feedback on the correctness of the text in ${language}.`;
+    }
 
     let prompt = '';
     if (helpType === 'translation') {
