@@ -7,17 +7,18 @@ import modalStyles from './styles/HelpChatModal.module.css';
 import Modal from 'react-modal';
 import Button from '@mui/material/Button';
 
-const model="gpt-4-1106-preview"
-const systemPrompt = "You are a language learning assistant. Keep responses brief.";
+const model="gpt-3.5-turbo"
+const systemPrompt = "You are a language learning assistant. Keep responses brief. On the first prompt you explain in this format: 1. phrase: short meaning \\n 2. phrase: short meaning \\n 3. phrase: short meaning ...";
 
 const HelpChatModal = ({ isOpen, onRequestClose, language, queryText, isSituationUsed, helpType }) => {
     const [userInput, setUserInput] = useState('');
     const [conversationLog, setConversationLog] = useState([]);
     const scrollRef = useRef(null);
+    const [isFirstResponse, setIsFirstReponse] = useState(true);
 
     let prompt = '';
     if (helpType === 'translation') {
-        prompt = `Translate this text from ${language} into English: ${queryText}`;
+        prompt = `Briefly explain how each short phrase (of 1-4 words) in this ${language} text contributes to the overall meaning. Explain in English in a concise bullet-point numbered list (1. phrase: concise meaning) format seperated by \\n characters: ${queryText}`;
     } else if (helpType === 'feedback') {
         prompt = `Give feedback on the correctness of this text in ${language}: ${queryText}`;
     }
@@ -25,6 +26,7 @@ const HelpChatModal = ({ isOpen, onRequestClose, language, queryText, isSituatio
     useEffect(() => {
         // When modal opens and if the conversation log is empty, add the queryText
         if (isOpen) {
+            setIsFirstReponse(true);
             setConversationLog([{ role: 'user', content: prompt }]);
         }
     }, [queryText]);
@@ -39,11 +41,19 @@ const HelpChatModal = ({ isOpen, onRequestClose, language, queryText, isSituatio
     useEffect(() => {
         const processMessage = async () => {
             if (conversationLog.length === 0) return;
+            console.log("processinga nd first response is: ", isFirstResponse);
 
             const lastMessage = conversationLog[conversationLog.length - 1];
             if (lastMessage.role === 'user') {
                 const openAIResponse = await getCustomCompletion(systemPrompt, conversationLog, model);
-                setConversationLog(prev => [...prev, { role: 'assistant', content: openAIResponse }]);
+                if (isFirstResponse) {
+                    const modifiedResponse = openAIResponse + '\n\nEnter a number (1, 2, ...) to get a numbered list of how each individual word adds meaning to this phrase in the form (1. word: significance).'
+                    setConversationLog(prev => [...prev, { role: 'assistant', content: modifiedResponse }]);
+                    setIsFirstReponse(false)
+                } else {
+                    console.log("Is not first response")
+                    setConversationLog(prev => [...prev, { role: 'assistant', content: openAIResponse }]);
+                }    
             }
         };
 
@@ -62,12 +72,21 @@ const HelpChatModal = ({ isOpen, onRequestClose, language, queryText, isSituatio
         return null;
     }
 
+    function replaceNewlinesWithBreaks(text) {
+        return text.split('\n').map((line, index) => (
+            <React.Fragment key={index}>
+                {line}
+                <br />
+            </React.Fragment>
+        ));
+    }
+
     return (
         <Modal isOpen={isOpen} onRequestClose={onRequestClose}>
             <div className={modalStyles.simpleMessageDisplayArea} ref={scrollRef}>
                 {conversationLog.map((message, index) => (
                     <div key={index} className={message.role === 'user' ? modalStyles.userMessage : modalStyles.assistantMessage}>
-                        {message.content}
+                        {replaceNewlinesWithBreaks(message.content)}
                     </div>
                 ))}
             </div>

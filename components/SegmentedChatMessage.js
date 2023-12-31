@@ -1,5 +1,5 @@
 import React from 'react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './styles/SegmentedChatMessage.module.css';
 import Button from '@mui/material/Button';
 import { IconButton, Slider, Tooltip } from '@mui/material';
@@ -12,6 +12,7 @@ import { getGoogleTranslation } from '../services/googleTranslateService';
 import Box from '@mui/material/Box';
 import { getRomanizedText } from '../services/googleTranslateService';
 import { getPinyin } from '../services/pinyinService';
+import TranslateIcon from '@mui/icons-material/Translate';
 import { convertPinyinToneNumbers } from '../services/pinyinService';
 
 const regex = /\[([^\]]+)\]/;
@@ -20,6 +21,7 @@ const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceL
     const [isPlaying, setIsPlaying] = React.useState(false);
     const [audioLoaded, setAudioLoaded] = React.useState(false);
     const [playbackSpeed, setPlaybackSpeed] = React.useState(1);
+    const [translatedText, setTranslatedText] = useState("");
     const audioRef = React.useRef(null);
     const messageBoxClass = message.role === 'user' ? styles.userMessage : styles.assistantMessage;
 
@@ -101,6 +103,11 @@ const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceL
         openHelpChat(messageText, "translation");
     };
 
+    const handleTranslateClick = async () => {
+        const translation = await getGoogleTranslation(message.content.join(' '), sourceLanguage, "English");
+        setTranslatedText(translation);
+    };
+
     useEffect(() => {
         console.log("In this useEffect and autoplay is: ", autoplay);
         if (autoplay) {
@@ -120,6 +127,11 @@ const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceL
                     :
                     <p>{message.content}</p>
                 }
+                {translatedText && (
+                    <div className={styles.translatedText}>
+                        {translatedText}
+                    </div>
+                )}
             </div>
             {message.role === 'assistant' && (
                 <div className={styles.controlRow}>
@@ -142,6 +154,11 @@ const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceL
                     <Tooltip title="Get GPT-4 Help">
                         <IconButton onClick={onClickHelp}>
                             <HelpOutlineIcon />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Translate">
+                        <IconButton onClick={handleTranslateClick}>
+                            <TranslateIcon />
                         </IconButton>
                     </Tooltip>
                 </div>

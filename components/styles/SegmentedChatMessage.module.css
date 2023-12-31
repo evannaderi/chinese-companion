@@ -37,3 +37,8 @@
   align-items: center;
   justify-content: center;
 }
+
+.translatedText {
+  color: #a30000;
+  margin-top: 10px;
+}
