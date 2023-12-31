@@ -98,7 +98,7 @@ const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceL
 
     const onClickHelp = () => {
         const messageText = Array.isArray(message.content) ? message.content.join(' ') : message.content;
-        openHelpChat(messageText);
+        openHelpChat(messageText, "translation");
     };
 
     useEffect(() => {

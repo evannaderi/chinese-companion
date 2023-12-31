@@ -1,11 +1,12 @@
 import React, { useState, useRef } from 'react';
-import { TextField, Button } from '@mui/material';
+import { TextField, Button, IconButton } from '@mui/material';
+import FeedbackIcon from '@mui/icons-material/Feedback';
 import { getTranscription } from '../services/openaiService';
 import styles from './styles/ChatInputArea.module.css';
 
 const transcriptionModel = "whisper-1";
 
-const ChatInputArea = ({ onSendMessage, userInput, setUserInput, isSituationUsed }) => {
+const ChatInputArea = ({ onSendMessage, userInput, setUserInput, isSituationUsed, openHelpChat }) => {
     const [input, setInput] = useState('');
     const [recording, setRecording] = useState(false);
     const mediaRecorderRef = useRef(null);
@@ -115,6 +116,18 @@ const ChatInputArea = ({ onSendMessage, userInput, setUserInput, isSituationUsed
         }
     };
 
+    const handleGetFeedback = async () => {
+        if (userInput.trim() !== '') {
+            try {
+                const feedback = openHelpChat(userInput, "feedback"); // Call the feedback service
+                console.log('Feedback:', feedback); // Handle the feedback response (e.g., display it or log it)
+                // You may also want to update the UI based on this feedback
+            } catch (error) {
+                console.error('Error getting feedback:', error);
+            }
+        }
+    };
+
     return (
         <div className={styles.chatInputArea}>
             <TextField
@@ -143,6 +156,13 @@ const ChatInputArea = ({ onSendMessage, userInput, setUserInput, isSituationUsed
             >
                 {recording ? 'Stop Recording' : 'Start Recording'}
             </Button>
+            <IconButton 
+                onClick={handleGetFeedback}
+                style={{ margin: '5px' }}
+                disabled={!userInput.trim()} // Disable if there's no input
+            >
+                <FeedbackIcon />
+            </IconButton>
         </div>
     );
 };

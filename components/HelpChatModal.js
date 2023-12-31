@@ -5,16 +5,22 @@ import { getCustomCompletion } from '../services/openaiService';
 import styles from './styles/ChatContainer.module.css';
 import modalStyles from './styles/HelpChatModal.module.css'; 
 import Modal from 'react-modal';
+import Button from '@mui/material/Button';
 
 const model="gpt-4-1106-preview"
 const systemPrompt = "You are a language learning assistant. Keep responses brief.";
 
-const HelpChatModal = ({ isOpen, onRequestClose, language, queryText, isSituationUsed }) => {
+const HelpChatModal = ({ isOpen, onRequestClose, language, queryText, isSituationUsed, helpType }) => {
     const [userInput, setUserInput] = useState('');
     const [conversationLog, setConversationLog] = useState([]);
     const scrollRef = useRef(null);
 
-    const prompt = `Translate this text from ${language} into English: ${queryText}`;
+    let prompt = '';
+    if (helpType === 'translation') {
+        prompt = `Translate this text from ${language} into English: ${queryText}`;
+    } else if (helpType === 'feedback') {
+        prompt = `Give feedback on the correctness of this text in ${language}: ${queryText}`;
+    }
 
     useEffect(() => {
         // When modal opens and if the conversation log is empty, add the queryText
@@ -26,6 +32,8 @@ const HelpChatModal = ({ isOpen, onRequestClose, language, queryText, isSituatio
     const handleSubmit = async (input) => {
         // Update the conversation log with user input
         setConversationLog(prev => [...prev, { role: 'user', content: input }]);
+        // Clear the userInput state to clear the chat input area
+        setUserInput('');
     };
 
     useEffect(() => {
@@ -64,7 +72,7 @@ const HelpChatModal = ({ isOpen, onRequestClose, language, queryText, isSituatio
                 ))}
             </div>
             <ChatInputArea onSendMessage={handleSubmit} userInput={userInput} setUserInput={setUserInput} isSituationUsed={isSituationUsed} />
-            <button onClick={onRequestClose}>Close</button>
+            <Button onClick={onRequestClose}>Close</Button>
         </Modal>
     );
 };
