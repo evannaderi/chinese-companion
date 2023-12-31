@@ -1,5 +1,5 @@
     import React, { useState, useEffect } from 'react';
-    import { Button, FormControlLabel, Switch } from '@mui/material';
+    import { Button, FormControlLabel, Switch, Tooltip } from '@mui/material';
     import { FormControl, InputLabel, Select, MenuItem, Box, Modal } from '@mui/material';
     import { getMandarinCompletion } from '../services/openaiService';
     import { segmentTextJieba } from '../services/jiebaService';
@@ -382,11 +382,13 @@
                 </Button>
                 
                 <div>
-                <FormControlLabel
-                    control={<Switch checked={isSrsModeActive} onChange={toggleSrsMode} />}
-                    label="SRS Mode"
-                    disabled={isSituationUsed}
-                />
+                    <Tooltip title="Review your saved words using a sophisticated spaced repetition algorithm">
+                        <FormControlLabel
+                            control={<Switch checked={isSrsModeActive} onChange={toggleSrsMode} />}
+                            label= "Spaced Repetition Mode"
+                            disabled={isSituationUsed}
+                        />
+                    </Tooltip>
                 <div className={styles.streakDisplay}>
                     <Badge badgeContent={streak} color="primary">
                         <EmojiEventsIcon /> {/* Replace with your preferred icon */}

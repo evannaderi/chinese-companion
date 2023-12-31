@@ -38,7 +38,7 @@ const SituationCard = ({ content, setSituation, useSituation, customVocab, setCu
     return (
         <div className={styles.situationCard}>
             <FormControl fullWidth margin="normal">
-                <InputLabel>Select a Situation</InputLabel>
+                <InputLabel>First, select a situation</InputLabel>
                 <Select
                     value={selectedDefaultSituation}
                     onChange={handleSelectChange}

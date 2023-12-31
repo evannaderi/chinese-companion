@@ -1,9 +1,11 @@
 import React, { useState, useRef } from 'react';
-import { TextField, Button, IconButton } from '@mui/material';
-import FeedbackIcon from '@mui/icons-material/Feedback';
+import { TextField, Button, IconButton, Tooltip } from '@mui/material';
+import SendIcon from '@mui/icons-material/Send';
+import MicIcon from '@mui/icons-material/Mic';
+import MicOffIcon from '@mui/icons-material/MicOff';
+import FeedbackIcon from '@mui/icons-material/Feedback'; // Importing Feedback icon
 import { getTranscription } from '../services/openaiService';
 import styles from './styles/ChatInputArea.module.css';
-
 const transcriptionModel = "whisper-1";
 
 const ChatInputArea = ({ onSendMessage, userInput, setUserInput, isSituationUsed, openHelpChat }) => {
@@ -139,30 +141,34 @@ const ChatInputArea = ({ onSendMessage, userInput, setUserInput, isSituationUsed
                 margin="normal"
                 onKeyPress={handleKeyPress}
             />
-            <Button 
-                variant="contained" 
-                color="primary" 
-                onClick={handleSend}
-                style={{ margin: '5px' }}
-                disabled={!isSituationUsed}
-            >
-                Send
-            </Button>
-            <Button 
-                variant="contained" 
-                color={recording ? "secondary" : "primary"}
-                onClick={handleRecordButtonClick}
-                style={{ margin: '5px' }}
-            >
-                {recording ? 'Stop Recording' : 'Start Recording'}
-            </Button>
-            <IconButton 
-                onClick={handleGetFeedback}
-                style={{ margin: '5px' }}
-                disabled={!userInput.trim()} // Disable if there's no input
-            >
-                <FeedbackIcon />
-            </IconButton>
+            <Tooltip title="Get feedback on correctness of your message">
+                <IconButton 
+                    onClick={handleGetFeedback}
+                    style={{ margin: '5px' }}
+                    disabled={!userInput.trim()} // Disable if there's no input
+                >
+                    <FeedbackIcon />
+                </IconButton>
+            </Tooltip>
+            <Tooltip title="Send Message">
+                <IconButton 
+                    onClick={handleSend}
+                    style={{ margin: '5px' }}
+                    disabled={!userInput.trim() || !isSituationUsed } // Disable if there's no input
+                >
+                    <SendIcon />
+                </IconButton>
+            </Tooltip>
+            <Tooltip title={recording ? 'Stop Recording' : 'Start Recording'}>
+                <IconButton 
+                    onClick={handleRecordButtonClick}
+                    style={{ margin: '5px' }}
+                    color={recording ? "secondary" : "primary"}
+                >
+                    {recording ? <MicOffIcon /> : <MicIcon />}
+                </IconButton>
+            </Tooltip>
+            
         </div>
     );
 };
