@@ -21,6 +21,7 @@
     import Badge from '@mui/material/Badge';
     import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
     import SettingsIcon from '@mui/icons-material/Settings';
+    import BookIcon from '@mui/icons-material/Book';
 
     const style = {
         position: 'absolute',
@@ -62,7 +63,10 @@
         const voices = ['alloy', 'echo', 'fable', 'nova', 'onyx', 'shimmer'];
         const systemPre = `You are the character ${aiCharName} in this situation and the er is ${userCharName}. Only speak in ${language} at a ${difficulty} difficulty, using ${difficulty} sentences and words. Keep your responses to 1-2 sentences: `;
         const [systemPrompt, setSystemPrompt] = useState('');
-        const [currentModel, setCurrentModel] = useState(model);
+        const [completionModel, setCompletionModel] = useState('gpt-4-1106-preview');
+        const [helpChatModel, setHelpChatModel] = useState('gpt-4-1106-preview');
+        const [translationModel, setTranslationModel] = useState('gpt-4-1106-preview');
+        const availableModels = ["gpt-3.5-turbo", "gpt-4-1106-preview"];
         const [streak, setStreak] = useState(0);
         const [lastCompletedDate, setLastCompletedDate] = useState(null);
         const [consecutiveUserMessages, setConsecutiveUserMessages] = useState(0);
@@ -70,9 +74,10 @@
         const [currentReviewWord, setCurrentReviewWord] = useState(null);
         const [isReviewWordKnown, setIsReviewWordKnown] = useState(null);
         const [feedbackSelected, setFeedbackSelected] = useState(false);
-        const [autoplay, setAutoplay] = useState(false);
+        const [autoplay, setAutoplay] = useState(true);
         const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
         const [helpType, setHelpType] = useState('');
+        const [wordsLearntToday, setWordsLearntToday] = useState(0);
 
         const openSettingsModal = () => setIsSettingsModalOpen(true);
         const closeSettingsModal = () => setIsSettingsModalOpen(false);
@@ -144,7 +149,7 @@
 
             const messages = [{role: 'user', content: modifiedFirstMsgContent}];
             console.log("Messages: ", messages);
-            const openAIResponse = await getCustomCompletion(newSystemPrompt, messages, currentModel);
+            const openAIResponse = await getCustomCompletion(newSystemPrompt, messages, completionModel);
             setConversationLog([{ role: 'assistant', content: openAIResponse }]); // resets convo
             setIsSituationUsed(true);
         };
@@ -155,14 +160,18 @@
             const savedCustomVocab = localStorage.getItem('customVocab');
             const savedAiCharName = localStorage.getItem('aiCharName');
             const savedUserCharName = localStorage.getItem('userCharName');
-            const savedCurrentModel = localStorage.getItem('currentModel');
+            const savedCompletionModel = localStorage.getItem('completionModel');
+            const savedHelpChatModel = localStorage.getItem('helpChatModel');
+            const savedTranslationModel = localStorage.getItem('translationModel');
             // Set these values if they exist in localStorage
             if (savedLanguage) setLanguage(savedLanguage);
             if (savedDifficulty) setDifficulty(savedDifficulty);
             if (savedCustomVocab) setCustomVocab(savedCustomVocab);
             if (savedAiCharName) setAiCharName(savedAiCharName);
             if (savedUserCharName) setUserCharName(savedUserCharName);
-            if (savedCurrentModel) setCurrentModel(savedCurrentModel);
+            if (savedCompletionModel) setCompletionModel(savedCompletionModel);
+            if (savedHelpChatModel) setHelpChatModel(savedHelpChatModel);
+            if (savedTranslationModel) setTranslationModel(savedTranslationModel);
             // Add other settings as needed
         }, []);
 
@@ -172,9 +181,11 @@
             localStorage.setItem('customVocab', customVocab);
             localStorage.setItem('aiCharName', aiCharName);
             localStorage.setItem('userCharName', userCharName);
-            localStorage.setItem('currentModel', currentModel);
+            localStorage.setItem('completionModel', completionModel);
+            localStorage.setItem('helpChatModel', helpChatModel);
+            localStorage.setItem('translationModel', translationModel);
             // Add other settings as needed
-        }, [language, difficulty, customVocab, aiCharName, userCharName, currentModel]);
+        }, [language, difficulty, customVocab, aiCharName, userCharName, completionModel, helpChatModel, translationModel]);
 
         // Since state updates are asyncronous, we need to use useEffect to wait for the conversationLog state to update
         useEffect(() => {
@@ -197,7 +208,7 @@
                         modifiedConversationLog[modifiedConversationLog.length - 1] = { ...lastMessage, content: userMessage };
                     }
                     console.log("The system prompt is: ", systemPrompt);
-                    const openAIResponse = await getCustomCompletion(systemPrompt, modifiedConversationLog, currentModel);
+                    const openAIResponse = await getCustomCompletion(systemPrompt, modifiedConversationLog, completionModel);
                     setConversationLog(prev => [...prev, { role: 'assistant', content: openAIResponse }]);
                     console.log("Just set conversationLog to: ", modifiedConversationLog);
                 } else if (lastMessage.role === 'assistant') {
@@ -240,6 +251,28 @@
                 setLastCompletedDate(savedLastCompletedDate);
             }
         }, []);
+
+        useEffect(() => {
+            const lastCompletedDate = localStorage.getItem('lastCompletedDate');
+            const today = new Date().toDateString();
+    
+            if (lastCompletedDate === today) {
+                const savedWordsLearntToday = parseInt(localStorage.getItem('wordsLearntToday'), 10) || 0;
+                setWordsLearntToday(savedWordsLearntToday);
+            } else {
+                setWordsLearntToday(0);
+                localStorage.setItem('wordsLearntToday', '0');
+                localStorage.setItem('lastCompletedDate', today);
+            }
+        }, []);
+
+        const addWordLearntToday = () => {
+            setWordsLearntToday(prev => {
+                const newCount = prev + 1;
+                localStorage.setItem('wordsLearntToday', newCount.toString());
+                return newCount;
+            });
+        };
 
         // Save updated savedWords to localStorage whenever it changes
         useEffect(() => {
@@ -324,6 +357,7 @@
                 const newSavedWords = [...savedWords, newWord];
                 setSavedWords(newSavedWords);
                 localStorage.setItem('savedWords', JSON.stringify(newSavedWords));
+                addWordLearntToday();
             } else {
                 console.log("Word already saved: ", word);
             }
@@ -356,8 +390,16 @@
             console.log("Feedback selected: ", knewTheWord);
         };
 
-        const toggleModel = () => {
-            setCurrentModel(prevModel => prevModel === 'gpt-3.5-turbo' ? 'gpt-4-1106-preview' : 'gpt-3.5-turbo');
+        const handleCompletionModelChange = (event) => {
+            setCompletionModel(event.target.value);
+        };
+    
+        const handleHelpChatModelChange = (event) => {
+            setHelpChatModel(event.target.value);
+        };
+    
+        const handleTranslationModelChange = (event) => {
+            setTranslationModel(event.target.value);
         };
 
         const toggleAutoplay = () => {
@@ -381,7 +423,7 @@
                     Open Settings
                 </Button>
                 
-                <div>
+                <div className={styles.horizontalSettings}>
                     <Tooltip title="Review your saved words using a sophisticated spaced repetition algorithm">
                         <FormControlLabel
                             control={<Switch checked={isSrsModeActive} onChange={toggleSrsMode} />}
@@ -389,15 +431,26 @@
                             disabled={isSituationUsed}
                         />
                     </Tooltip>
-                <div className={styles.streakDisplay}>
-                    <Badge badgeContent={streak} color="primary">
-                        <EmojiEventsIcon /> {/* Replace with your preferred icon */}
-                    </Badge>
-                    <p>Your current streak: {streak}</p>
-                </div>
+                    <div className={styles.horizontalSettings}>
+                        <div className={styles.wordsLearntToday}>
+                            <Tooltip title={`Words learnt today: ${wordsLearntToday}`}>
+                                <Badge badgeContent={wordsLearntToday} color="secondary">
+                                    <BookIcon /> {/* Replace with your preferred icon */}
+                                </Badge>
+                            </Tooltip>
+                        </div>
+                        <div className={styles.streakDisplay}>
+                            <Tooltip title={`Your current streak : ${streak}`}>
+                                <Badge badgeContent={streak} color="primary">
+                                    <EmojiEventsIcon /> {/* Replace with your preferred icon */}
+                                </Badge>
+                            </Tooltip>
+                        </div>
+                    </div>
+                    
                 </div>
                 
-                <MessageDisplayArea messages={conversationLog} segmentedMessages={segmentedConversation} onClickWord={updateCard} situation={situation} setSituation={setSituation} useSituation={useSituation} showSituation={true} openHelpChat={openHelpChat} customVocab={customVocab} setCustomVocab={setCustomVocab} sourceLanguage={language} aiCharName={aiCharName} userCharName={userCharName} autoplay={autoplay} voice={voice} />
+                <MessageDisplayArea messages={conversationLog} segmentedMessages={segmentedConversation} onClickWord={updateCard} situation={situation} setSituation={setSituation} useSituation={useSituation} showSituation={true} openHelpChat={openHelpChat} customVocab={customVocab} setCustomVocab={setCustomVocab} sourceLanguage={language} aiCharName={aiCharName} userCharName={userCharName} autoplay={autoplay} voice={voice} model={"alloy"} />
                 <ChatInputArea 
                     onSendMessage={handleSubmit} 
                     userInput={userInput} 
@@ -413,7 +466,7 @@
                     />
                 )}
                 <SystemMessages />
-                <TranslationCard title={cardTitle} content={cardContent} onClickWord={updateCard} handleSaveWord={handleSaveWord} language={language} />
+                <TranslationCard title={cardTitle} content={cardContent} onClickWord={updateCard} handleSaveWord={handleSaveWord} language={language} addWordLearntToday={addWordLearntToday} />
                 <Button variant="contained" color="primary" onClick={openTranslator}>
                     Open Translator
                 </Button>
@@ -437,6 +490,7 @@
                     queryText={queryText}
                     isSituationUsed={isSituationUsed}
                     helpType={helpType}
+                    model={helpChatModel}
                 />
                 
                 <Modal
@@ -447,9 +501,52 @@
                 >
                     <Box sx={style}>
                         <h2 id="settings-modal-title">Settings</h2>
-                        <Button variant="contained" color="primary" onClick={toggleModel}>
-                            Switch to {currentModel === 'gpt-3.5-turbo' ? 'GPT-4-1106-preview' : 'GPT-3.5-turbo'}
-                        </Button>
+                        <FormControl variant="outlined" style={{ minWidth: 120, margin: '10px' }}>
+                            <InputLabel id="completion-model-label">Completion Model</InputLabel>
+                            <Select
+                                labelId="completion-model-label"
+                                id="completion-model-select"
+                                value={completionModel}
+                                onChange={handleCompletionModelChange}
+                                label="Completion Model"
+                            >
+                                {availableModels.map(model => (
+                                    <MenuItem key={model} value={model}>{model}</MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+
+                        {/* Model Selection for Help Chat */}
+                        <FormControl variant="outlined" style={{ minWidth: 120, margin: '10px' }}>
+                            <InputLabel id="help-chat-model-label">Help Chat Model</InputLabel>
+                            <Select
+                                labelId="help-chat-model-label"
+                                id="help-chat-model-select"
+                                value={helpChatModel}
+                                onChange={handleHelpChatModelChange}
+                                label="Help Chat Model"
+                            >
+                                {availableModels.map(model => (
+                                    <MenuItem key={model} value={model}>{model}</MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+
+                        {/* Model Selection for Translation */}
+                        <FormControl variant="outlined" style={{ minWidth: 120, margin: '10px' }}>
+                            <InputLabel id="translation-model-label">Translation Model</InputLabel>
+                            <Select
+                                labelId="translation-model-label"
+                                id="translation-model-select"
+                                value={translationModel}
+                                onChange={handleTranslationModelChange}
+                                label="Translation Model"
+                            >
+                                {availableModels.map(model => (
+                                    <MenuItem key={model} value={model}>{model}</MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
                         <Button variant="contained" color="primary" onClick={toggleAutoplay}>
                                 Turn autoplay {autoplay ? 'off' : 'on'}
                         </Button>

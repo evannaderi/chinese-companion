@@ -9,7 +9,7 @@ import Button from '@mui/material/Button';
 
 const model="gpt-3.5-turbo"
 
-const HelpChatModal = ({ isOpen, onRequestClose, language, queryText, isSituationUsed, helpType }) => {
+const HelpChatModal = ({ isOpen, onRequestClose, language, queryText, isSituationUsed, helpType, model }) => {
     const [userInput, setUserInput] = useState('');
     const [conversationLog, setConversationLog] = useState([]);
     const scrollRef = useRef(null);
@@ -17,14 +17,14 @@ const HelpChatModal = ({ isOpen, onRequestClose, language, queryText, isSituatio
 
     let systemPrompt = '';
     if (helpType === 'translation') {
-        systemPrompt = `You are a language learning assistant. Keep responses brief. On the first prompt you explain in this format: 1. phrase: short meaning \\n 2. phrase: short meaning \\n 3. phrase: short meaning ...`;
+        systemPrompt = `You are a language learning assistant. Keep responses brief. On the first prompt you explain in this format: 1. phrase: short meaning \n 2. phrase: short meaning \n 3. phrase: short meaning ...`;
     } else if (helpType === 'feedback') {
         systemPrompt = `You are a language learning assistant. Keep responses brief. On the first prompt you give feedback on the correctness of the text in ${language}.`;
     }
 
     let prompt = '';
     if (helpType === 'translation') {
-        prompt = `Briefly explain how each short phrase (of 1-4 words) in this ${language} text contributes to the overall meaning. Explain in English in a concise bullet-point numbered list (1. phrase: concise meaning) format seperated by \\n characters: ${queryText}`;
+        prompt = `Briefly explain how each short phrase (of 1-4 words) in this ${language} text contributes to the overall meaning. Explain in English in a concise bullet-point numbered list (1. phrase: concise meaning) format seperated by a new line: ${queryText}`;
     } else if (helpType === 'feedback') {
         prompt = `Give feedback on the correctness of this text in ${language}: ${queryText}`;
     }

@@ -7,7 +7,7 @@ import getDefaultSituations from "../utils/defaultSituations";
 
 const model = "gpt-4-1106-preview"; // more advanced model
 
-const SituationCard = ({ content, setSituation, useSituation, customVocab, setCustomVocab, aiCharName, userCharName }) => {
+const SituationCard = ({ content, setSituation, useSituation, customVocab, setCustomVocab, aiCharName, userCharName, model }) => {
     const [isSituationUsed, setIsSituationUsed] = useState(false);
     const [selectedDefaultSituation, setSelectedDefaultSituation] = useState("");
     const defaultSituations = getDefaultSituations(userCharName, aiCharName);

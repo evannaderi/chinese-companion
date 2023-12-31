@@ -151,16 +151,17 @@ const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceL
                             style={{ width: '200px', marginLeft: '10px' }}
                         />
                     </div>
-                    <Tooltip title="Get GPT-4 Help">
-                        <IconButton onClick={onClickHelp}>
-                            <HelpOutlineIcon />
-                        </IconButton>
-                    </Tooltip>
                     <Tooltip title="Translate">
                         <IconButton onClick={handleTranslateClick}>
                             <TranslateIcon />
                         </IconButton>
                     </Tooltip>
+                    <Tooltip title="Get AI Help">
+                        <IconButton onClick={onClickHelp}>
+                            <HelpOutlineIcon />
+                        </IconButton>
+                    </Tooltip>
+                    
                 </div>
             )}
             
