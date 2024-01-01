@@ -1,7 +1,7 @@
 // SavedWordsDisplay.js
 import React from 'react';
 import { useState } from 'react';
-import { List, ListItem, ListItemText, TextField, IconButton, Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import { List, ListItem, ListItemText, TextField, IconButton, Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
@@ -12,6 +12,7 @@ const SavedWordsDisplay = ({ savedWords, onDeleteWord, onUpdateWord, onAddWord, 
     const [showAddWordFields, setShowAddWordFields] = useState(false);
     const [editDialogOpen, setEditDialogOpen] = useState(false);
     const [wordToEdit, setWordToEdit] = useState({ word: '', meaning: '' });
+    const [searchQuery, setSearchQuery] = useState('');
     
     const handleAddWord = () => {
         if (newWord && newMeaning) {
@@ -39,6 +40,11 @@ const SavedWordsDisplay = ({ savedWords, onDeleteWord, onUpdateWord, onAddWord, 
             onUpdateWord(originalWord, newWord, newMeaning);
         }
     };
+
+    const filteredWords = savedWords.filter(item =>
+        item.word.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.meaning.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     const handleEditWord = () => {
         onUpdateWord(wordToEdit.originalWord, wordToEdit.word, wordToEdit.meaning);
@@ -80,6 +86,13 @@ const SavedWordsDisplay = ({ savedWords, onDeleteWord, onUpdateWord, onAddWord, 
                     <Button onClick={handleEditWord}>Save</Button>
                 </DialogActions>
             </Dialog>
+            <TextField
+                label="Search Words"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                size="small"
+                style={{ marginBottom: '10px' }}
+            />
             {!showAddWordFields && (
                 <Button variant="outlined" startIcon={<AddIcon />} onClick={() => setShowAddWordFields(true)}>
                     Add New Word
@@ -108,31 +121,35 @@ const SavedWordsDisplay = ({ savedWords, onDeleteWord, onUpdateWord, onAddWord, 
                 </div>
             )}
             <List sx={{ maxHeight: 300, overflow: 'auto' }}>
-                {savedWords.map((item, index) => (
-                    <ListItem key={index} secondaryAction={
-                        <>
-                            <IconButton edge="end" onClick={() => openEditDialog(item.word, item.meaning)}>
-                                <EditIcon />
-                            </IconButton>
-                            <IconButton edge="end" onClick={() => onDeleteWord(item.word)}>
-                                <DeleteIcon />
-                            </IconButton>
-                        </>
-                    }>
-                        <ListItemText 
-                            primary={`Word: ${item.word}`} 
-                            secondary={
-                                `Meaning: ${item.meaning}, ` +
-                                `Interval: ${item.interval}, ` +
-                                `Repetition: ${item.repetition}, ` +
-                                `Ease Factor: ${item.easeFactor.toFixed(2)}, ` +
-                                `Next Review Date: ${item.nextReviewDate}` +
-                                `Language: ${item.language}, ` +
-                                `Tags: ${item.tags}`
-                            }  
-                        />
-                    </ListItem>
-                ))}
+                {filteredWords.length > 0 ? (
+                    filteredWords.map((item, index) => (
+                        <ListItem key={index} secondaryAction={
+                            <>
+                                <IconButton edge="end" onClick={() => openEditDialog(item.word, item.meaning)}>
+                                    <EditIcon />
+                                </IconButton>
+                                <IconButton edge="end" onClick={() => onDeleteWord(item.word)}>
+                                    <DeleteIcon />
+                                </IconButton>
+                            </>
+                        }>
+                            <ListItemText 
+                                primary={`Word: ${item.word}`} 
+                                secondary={
+                                    `Meaning: ${item.meaning}, ` +
+                                    `Interval: ${item.interval}, ` +
+                                    `Repetition: ${item.repetition}, ` +
+                                    `Ease Factor: ${item.easeFactor.toFixed(2)}, ` +
+                                    `Next Review Date: ${item.nextReviewDate}` +
+                                    `Language: ${item.language}, ` +
+                                    `Tags: ${item.tags}`
+                                }  
+                            />
+                        </ListItem>
+                    ))
+                ) : (
+                    <Typography>No words found matching the search criteria.</Typography>
+                )}
             </List>
         </>  
     );
