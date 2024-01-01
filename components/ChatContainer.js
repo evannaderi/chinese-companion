@@ -1,5 +1,5 @@
     import React, { useState, useEffect } from 'react';
-    import { Button, FormControlLabel, Switch, Tooltip } from '@mui/material';
+    import { Button, FormControlLabel, Switch, Tooltip, TextField } from '@mui/material';
     import { FormControl, InputLabel, Select, MenuItem, Box, Modal } from '@mui/material';
     import { getMandarinCompletion } from '../services/openaiService';
     import { segmentTextJieba } from '../services/jiebaService';
@@ -80,6 +80,9 @@
         const [helpType, setHelpType] = useState('');
         const [wordsLearntToday, setWordsLearntToday] = useState(0);
         const [isReviewWordsModalOpen, setIsReviewWordsModalOpen] = useState(false);
+        const [editableAiCharName, setEditableAiCharName] = useState(aiCharName);
+        const [editableUserCharName, setEditableUserCharName] = useState(userCharName);
+
 
         const openSettingsModal = () => setIsSettingsModalOpen(true);
         const closeSettingsModal = () => setIsSettingsModalOpen(false);
@@ -134,6 +137,14 @@
         //     processSituation();
         // }, [situation]);
 
+        const saveCharacterNames = () => {
+            setAiCharName(editableAiCharName);
+            setUserCharName(editableUserCharName);
+            localStorage.setItem('aiCharName', editableAiCharName);
+            localStorage.setItem('userCharName', editableUserCharName);
+            closeSettingsModal();
+        };
+
         const useSituation = async () => {
             if (situation === '') {
                 return;
@@ -168,23 +179,33 @@
         };
 
         useEffect(() => {
+            let newSystemPrompt = `You are the character ${aiCharName} in this situation and the other is ${userCharName}. Only speak in ${language} at a ${difficulty} difficulty, using ${difficulty} sentences and words. Keep your responses to 1-2 sentences: `;
+        
+            if (customVocab !== "") {
+                newSystemPrompt += `Directly use these words while you talk in the conversation: ${customVocab}`;
+            }
+        
+            setSystemPrompt(newSystemPrompt);
+        }, [aiCharName, userCharName, language, difficulty, customVocab]);
+
+        useEffect(() => {
             const savedLanguage = localStorage.getItem('language');
             const savedDifficulty = localStorage.getItem('difficulty');
             const savedCustomVocab = localStorage.getItem('customVocab');
-            const savedAiCharName = localStorage.getItem('aiCharName');
-            const savedUserCharName = localStorage.getItem('userCharName');
             const savedCompletionModel = localStorage.getItem('completionModel');
             const savedHelpChatModel = localStorage.getItem('helpChatModel');
             const savedTranslationModel = localStorage.getItem('translationModel');
+            const aiCharName = localStorage.getItem('aiCharName');
+            const userCharName = localStorage.getItem('userCharName');
             // Set these values if they exist in localStorage
             if (savedLanguage) setLanguage(savedLanguage);
             if (savedDifficulty) setDifficulty(savedDifficulty);
             if (savedCustomVocab) setCustomVocab(savedCustomVocab);
-            if (savedAiCharName) setAiCharName(savedAiCharName);
-            if (savedUserCharName) setUserCharName(savedUserCharName);
             if (savedCompletionModel) setCompletionModel(savedCompletionModel);
             if (savedHelpChatModel) setHelpChatModel(savedHelpChatModel);
             if (savedTranslationModel) setTranslationModel(savedTranslationModel);
+            if (aiCharName) setAiCharName(aiCharName);
+            if (userCharName) setUserCharName(userCharName);
             // Add other settings as needed
         }, []);
 
@@ -199,6 +220,13 @@
             localStorage.setItem('translationModel', translationModel);
             // Add other settings as needed
         }, [language, difficulty, customVocab, aiCharName, userCharName, completionModel, helpChatModel, translationModel]);
+
+        useEffect(() => {
+            const savedAiCharName = localStorage.getItem('aiCharName');
+            const savedUserCharName = localStorage.getItem('userCharName');
+            if (savedAiCharName) setEditableAiCharName(savedAiCharName);
+            if (savedUserCharName) setEditableUserCharName(savedUserCharName);
+        }, [aiCharName, userCharName]);
 
         // Since state updates are asyncronous, we need to use useEffect to wait for the conversationLog state to update
         useEffect(() => {
@@ -437,7 +465,7 @@
                 </Button>
                 
                 <div className={styles.horizontalSettings}>
-                    <Tooltip title="Review your saved words using a sophisticated spaced repetition algorithm">
+                    <Tooltip title="Review your saved words during your conversation using a sophisticated spaced repetition algorithm">
                         <FormControlLabel
                             control={<Switch checked={isSrsModeActive} onChange={toggleSrsMode} />}
                             label= "Spaced Repetition Mode"
@@ -463,7 +491,7 @@
                     
                 </div>
                 
-                <MessageDisplayArea messages={conversationLog} segmentedMessages={segmentedConversation} onClickWord={updateCard} situation={situation} setSituation={setSituation} useSituation={useSituation} showSituation={true} openHelpChat={openHelpChat} customVocab={customVocab} setCustomVocab={setCustomVocab} sourceLanguage={language} aiCharName={aiCharName} userCharName={userCharName} autoplay={autoplay} voice={voice} model={"alloy"} />
+                <MessageDisplayArea messages={conversationLog} segmentedMessages={segmentedConversation} onClickWord={updateCard} situation={situation} setSituation={setSituation} useSituation={useSituation} showSituation={true} openHelpChat={openHelpChat} customVocab={customVocab} setCustomVocab={setCustomVocab} sourceLanguage={language} aiCharName={aiCharName} userCharName={userCharName} autoplay={autoplay} voice={voice} model={completionModel} />
                 <ChatInputArea 
                     onSendMessage={handleSubmit} 
                     userInput={userInput} 
@@ -608,6 +636,29 @@
                                 ))}
                             </Select>
                         </FormControl>
+                        <TextField
+                            label="AI Character Name"
+                            value={editableAiCharName}
+                            onChange={(e) => setEditableAiCharName(e.target.value)}
+                            style={{ margin: '10px', minWidth: 120 }}
+                            disabled={isSituationUsed}
+                        />
+                        <TextField
+                            label="User Character Name"
+                            value={editableUserCharName}
+                            onChange={(e) => setEditableUserCharName(e.target.value)}
+                            style={{ margin: '10px', minWidth: 120 }}
+                            disabled={isSituationUsed}
+                        />
+                        <Button 
+                            variant="contained" 
+                            color="primary" 
+                            onClick={saveCharacterNames}
+                            style={{ margin: '10px' }}
+                            disabled={isSituationUsed}
+                        >
+                            Save Changes
+                        </Button>
                     </Box>
                 </Modal>
                 

@@ -60,7 +60,7 @@ const SituationCard = ({ content, setSituation, useSituation, customVocab, setCu
                 variant="outlined"
                 margin="normal"
                 disabled={isSituationUsed}
-                placeholder="Or enter a custom situation here..." 
+                placeholder={`Or enter a custom situation here... (with your character names ${aiCharName} (AI) and ${userCharName} (you))`}
             />
             <TextField
                 fullWidth
