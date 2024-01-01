@@ -1,7 +1,7 @@
 // SavedWordsDisplay.js
 import React from 'react';
 import { useState } from 'react';
-import { List, ListItem, ListItemText, TextField, IconButton, Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
+import { List, ListItem, ListItemText, TextField, IconButton, Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography,  Select, MenuItem} from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
@@ -13,6 +13,11 @@ const SavedWordsDisplay = ({ savedWords, onDeleteWord, onUpdateWord, onAddWord, 
     const [editDialogOpen, setEditDialogOpen] = useState(false);
     const [wordToEdit, setWordToEdit] = useState({ word: '', meaning: '' });
     const [searchQuery, setSearchQuery] = useState('');
+    const [selectedLanguage, setSelectedLanguage] = useState(language);
+    const languages = ['English', 'Spanish', 'French', 'German', 'Italian', 'Portuguese', 'Chinese'];
+    
+
+    
     
     const handleAddWord = () => {
         if (newWord && newMeaning) {
@@ -42,9 +47,10 @@ const SavedWordsDisplay = ({ savedWords, onDeleteWord, onUpdateWord, onAddWord, 
     };
 
     const filteredWords = savedWords.filter(item =>
-        item.word.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.meaning.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+        (item.word.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.meaning.toLowerCase().includes(searchQuery.toLowerCase())) &&
+        (selectedLanguage === '' || item.language === selectedLanguage)
+    );    
 
     const handleEditWord = () => {
         onUpdateWord(wordToEdit.originalWord, wordToEdit.word, wordToEdit.meaning);
@@ -93,6 +99,17 @@ const SavedWordsDisplay = ({ savedWords, onDeleteWord, onUpdateWord, onAddWord, 
                 size="small"
                 style={{ marginBottom: '10px' }}
             />
+            <Select
+                value={selectedLanguage}
+                onChange={(e) => setSelectedLanguage(e.target.value)}
+                displayEmpty
+                style={{ marginBottom: '10px' }}
+            >
+                <MenuItem value="">All Languages</MenuItem>
+                {languages.map((language, index) => (
+                    <MenuItem key={index} value={language}>{language}</MenuItem>
+                ))}
+            </Select>
             {!showAddWordFields && (
                 <Button variant="outlined" startIcon={<AddIcon />} onClick={() => setShowAddWordFields(true)}>
                     Add New Word
