@@ -1,8 +1,9 @@
 .chatHeader {
-    background-color: #004777; /* Indigo Dye for primary color */
+    background-color: #004777;
     color: white;
-    padding: 5px;
+    padding: 0px;
     text-align: center;
     font-size: 1.2em;
     font-weight: bold;
+    font-family: 'Roboto', sans-serif;
 }

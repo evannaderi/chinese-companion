@@ -21,10 +21,10 @@ const customStyles = {
         padding: '20px',
         borderRadius: '10px',
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-        width: '50vw', // 50% of the viewport width
-        height: '50vh', // 50% of the viewport height
+        width: '70vw', // 50% of the viewport width
+        height: '70vh', // 50% of the viewport height
         maxWidth: '800px', // Maximum width
-        maxHeight: '600px', // Maximum height
+        maxHeight: '800px', // Maximum height
     },
 };
 

@@ -30,3 +30,10 @@
     gap: 5px; /* Spacing between icon and text */
 }
 
+.header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: #004777;
+}
+

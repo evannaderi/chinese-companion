@@ -1,6 +1,6 @@
     import React, { useState, useEffect } from 'react';
     import { Button, FormControlLabel, Switch, Tooltip, TextField } from '@mui/material';
-    import { FormControl, InputLabel, Select, MenuItem, Box, Modal } from '@mui/material';
+    import { FormControl, InputLabel, Select, MenuItem, Box, Modal, IconButton } from '@mui/material';
     import { getMandarinCompletion } from '../services/openaiService';
     import { segmentTextJieba } from '../services/jiebaService';
     import ChatHeader from './ChatHeader';
@@ -23,6 +23,11 @@
     import SettingsIcon from '@mui/icons-material/Settings';
     import BookIcon from '@mui/icons-material/Book';
     import ReviewWordsModal from './ReviewWordsModal';
+    import TranslateIcon from '@mui/icons-material/Translate';
+    import SaveIcon from '@mui/icons-material/Save';
+    import ReviewIcon from '@mui/icons-material/RateReview';
+    import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+    import HelpInstructionsModal from './HelpInstructionsModal';
 
     const style = {
         position: 'absolute',
@@ -82,6 +87,8 @@
         const [isReviewWordsModalOpen, setIsReviewWordsModalOpen] = useState(false);
         const [editableAiCharName, setEditableAiCharName] = useState(aiCharName);
         const [editableUserCharName, setEditableUserCharName] = useState(userCharName);
+        const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
+
 
 
         const openSettingsModal = () => setIsSettingsModalOpen(true);
@@ -89,6 +96,10 @@
 
         const openTranslator = () => setIsTranslatorOpen(true);
         const closeTranslator = () => setIsTranslatorOpen(false);
+
+        const openHelpModal = () => setIsHelpModalOpen(true);
+        const closeHelpModal = () => setIsHelpModalOpen(false);
+
 
         const openSavedWordsModal = () => setIsSavedWordsModalOpen(true);
         const closeSavedWordsModal = () => setIsSavedWordsModalOpen(false);
@@ -453,22 +464,58 @@
 
         return (
             <div className={styles.chatContainer}>
-                <ChatHeader className={styles.chatHeader}/>
+                <div className={styles.header}>
+                    <ChatHeader className={styles.chatHeader}/>
+                    <div>
+                    <Tooltip title="Help">
+                        <IconButton onClick={openHelpModal} style={{ color: '#FFFFFF' }}>
+                            <HelpOutlineIcon /> {/* Import HelpOutlineIcon from @mui/icons-material */}
+                        </IconButton>
+                    </Tooltip>
+                        <Tooltip title="Open Translator">
+                            <IconButton 
+                                style={{ color: '#FFFFFF' }} 
+                                onClick={openTranslator}
+                            >
+                                <TranslateIcon />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Manage Saved Words">
+                            <IconButton 
+                                style={{ color: '#FFFFFF' }}  
+                                onClick={openSavedWordsModal}
+                            >
+                                <SaveIcon />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Manually Review Words">
+                            <IconButton 
+                                style={{ color: '#FFFFFF' }} 
+                                onClick={openReviewWordsModal}
+                            >
+                                <ReviewIcon />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Open Settings">
+                            <IconButton 
+                                style={{ color: '#FFFFFF' }} 
+                                onClick={openSettingsModal}
+                            >
+                                <SettingsIcon />
+                            </IconButton>
+                        </Tooltip>
+                    </div>
+                    
+                </div>
+                
 
-                <Button 
-                    variant="contained" 
-                    color="primary" 
-                    onClick={openSettingsModal}
-                    startIcon={<SettingsIcon />}
-                >
-                    Open Settings
-                </Button>
+                
                 
                 <div className={styles.horizontalSettings}>
                     <Tooltip title="Review your saved words during your conversation using a sophisticated spaced repetition algorithm">
                         <FormControlLabel
                             control={<Switch checked={isSrsModeActive} onChange={toggleSrsMode} />}
-                            label= "Spaced Repetition Mode"
+                            label= "Spaced Repetition Conversation Mode"
                             disabled={isSituationUsed}
                         />
                     </Tooltip>
@@ -508,15 +555,6 @@
                 )}
                 <SystemMessages />
                 <TranslationCard title={cardTitle} content={cardContent} onClickWord={updateCard} handleSaveWord={handleSaveWord} language={language} addWordLearntToday={addWordLearntToday} />
-                <Button variant="contained" color="primary" onClick={openTranslator}>
-                    Open Translator
-                </Button>
-                <Button variant="contained" color="primary" onClick={openSavedWordsModal}>
-                    View Saved Words
-                </Button>
-                <Button variant="contained" color="primary" onClick={openReviewWordsModal}>
-                    Review Words
-                </Button>
                 <SavedWordsModal
                     isOpen={isSavedWordsModalOpen}
                     onClose={closeSavedWordsModal}
@@ -669,6 +707,12 @@
                     onClose={closeReviewWordsModal}
                     onUserFeedback={handleUserWordFeedback}
                 />
+
+                <HelpInstructionsModal 
+                    isOpen={isHelpModalOpen}
+                    onClose={closeHelpModal}
+                />
+
                 
             </div>
         );
