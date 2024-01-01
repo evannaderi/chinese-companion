@@ -22,6 +22,7 @@
     import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
     import SettingsIcon from '@mui/icons-material/Settings';
     import BookIcon from '@mui/icons-material/Book';
+    import ReviewWordsModal from './ReviewWordsModal';
 
     const style = {
         position: 'absolute',
@@ -78,6 +79,7 @@
         const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
         const [helpType, setHelpType] = useState('');
         const [wordsLearntToday, setWordsLearntToday] = useState(0);
+        const [isReviewWordsModalOpen, setIsReviewWordsModalOpen] = useState(false);
 
         const openSettingsModal = () => setIsSettingsModalOpen(true);
         const closeSettingsModal = () => setIsSettingsModalOpen(false);
@@ -87,6 +89,17 @@
 
         const openSavedWordsModal = () => setIsSavedWordsModalOpen(true);
         const closeSavedWordsModal = () => setIsSavedWordsModalOpen(false);
+
+        const openReviewWordsModal = () => {
+            const wordForReview = selectWordForReview(savedWords, language);
+            setCurrentReviewWord(wordForReview);
+            setIsReviewWordsModalOpen(true);
+        };
+    
+        const closeReviewWordsModal = () => {
+            setIsReviewWordsModalOpen(false);
+            setCurrentReviewWord(null);
+        };
 
         const openHelpChat = (queryText, type) => {
             setQueryText(queryText);
@@ -473,6 +486,9 @@
                 <Button variant="contained" color="primary" onClick={openSavedWordsModal}>
                     View Saved Words
                 </Button>
+                <Button variant="contained" color="primary" onClick={openReviewWordsModal}>
+                    Review Words
+                </Button>
                 <SavedWordsModal
                     isOpen={isSavedWordsModalOpen}
                     onClose={closeSavedWordsModal}
@@ -594,6 +610,14 @@
                         </FormControl>
                     </Box>
                 </Modal>
+                
+
+                <ReviewWordsModal 
+                    wordToReview={currentReviewWord}
+                    isOpen={isReviewWordsModalOpen}
+                    onClose={closeReviewWordsModal}
+                    onUserFeedback={handleUserWordFeedback}
+                />
                 
             </div>
         );
