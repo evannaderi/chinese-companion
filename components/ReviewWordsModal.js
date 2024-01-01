@@ -13,7 +13,7 @@ const ReviewWordsModal = ({ wordToReview, isOpen, onClose, onUserFeedback }) => 
         if (isOpen) {
             setShowMeaning(false);
         }
-    }, [isOpen]);
+    }, [isOpen, wordToReview]);
 
     return (
         <Modal open={isOpen} onClose={onClose}>
