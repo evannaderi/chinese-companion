@@ -3,11 +3,14 @@ const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 const path = require('path');
 
-const ttsClient = new textToSpeech.TextToSpeechClient();
+const serviceAccount = JSON.parse(Buffer.from(process.env.GOOGLE_APPLICATION_CREDENTIALS_ENCODED, 'base64').toString());
+
+const ttsClient = new textToSpeech.TextToSpeechClient({
+    credentials: serviceAccount
+});
 
 export default async function (req, res) {
     try {
-        console.log("the key is: ", process.env.GOOGLE_TTS_API_KEY);
         const { text, languageCode, voiceName, audioEncoding = 'MP3' } = req.body;
 
         if (!text || !languageCode || !voiceName) {
