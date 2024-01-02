@@ -31,3 +31,5 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 .vercel
+
+.chinese-companion-6e7069e782b6.json
