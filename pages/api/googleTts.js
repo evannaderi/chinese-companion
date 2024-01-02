@@ -30,20 +30,6 @@ export default async function (req, res) {
         console.log("type of response is: ", typeof response);
         console.log("response is: ", response);
 
-        const id = uuidv4();
-        const isProduction = process.env.NODE_ENV === 'production';
-        const baseDir = isProduction ? '/tmp' : './public/tts';
-
-        if (!fs.existsSync(baseDir)) {
-            fs.mkdirSync(baseDir, { recursive: true });
-        }
-
-        const speechFile = path.join(baseDir, `${id}.mp3`);
-        console.log("The speech file is: ", speechFile);
-
-        await fs.promises.writeFile(speechFile, response.audioContent, 'binary');
-        console.log(`Audio content written to file: ${speechFile}`);
-
         const audioBase64 = response.audioContent.toString('base64');
         res.status(200).json({ audioData: audioBase64  });
 
