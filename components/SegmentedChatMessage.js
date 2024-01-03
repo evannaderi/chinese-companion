@@ -63,10 +63,10 @@ const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceL
         let translation = await getGoogleTranslation(segment, sourceLanguage, "English");
         
 
-        if (sourceLanguage === "Chinese") {
-            const pinyinText = pinyin(segment, { style: pinyin.STYLE_NORMAL }).join(' ');
-            translation += ` (${pinyinText})`;
-        }
+        // if (sourceLanguage === "Chinese") {
+        //     const pinyinText = pinyin(segment, { style: pinyin.STYLE_NORMAL }).join(' ');
+        //     translation += ` (${pinyinText})`;
+        // }
 
         if (sourceLanguage === "Chinese") {
             const text = await getPinyin(segment);

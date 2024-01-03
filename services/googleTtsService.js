@@ -6,6 +6,9 @@ const languageVoiceMap = {
     "Spanish": { languageCode: "es-ES", defaultVoice: "es-ES-Wavenet-B", gender: "NEUTRAL" },
     "French": { languageCode: "fr-FR", defaultVoice: "fr-FR-Wavenet-E", gender: "NEUTRAL" },
     "German": { languageCode: "de-DE", defaultVoice: "de-DE-Wavenet-F", gender: "NEUTRAL" },
+    "Italian": {languageCode: "it-IT", defaultVoice: "it-IT-Wavenet-A", gender: "NEUTRAL" },
+    "Portugese": {languageCode: "pt-PT", defaultVoice: "pt-PT-Wavenet-A", gender: "NEUTRAL" },
+    "Chinese": {languageCode: "cmn-CN", defaultVoice: "cmn-CN-Standard-B", gender: "NEUTRAL" },
 };
 
 export const getGoogleTTS = async (options) => {
