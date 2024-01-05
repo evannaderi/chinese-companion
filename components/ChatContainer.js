@@ -554,7 +554,9 @@
                     />
                 )}
                 <SystemMessages />
-                <TranslationCard title={cardTitle} content={cardContent} onClickWord={updateCard} handleSaveWord={handleSaveWord} language={language} addWordLearntToday={addWordLearntToday} />
+                {   cardTitle != '' &&
+                    <TranslationCard title={cardTitle} content={cardContent} onClickWord={updateCard} handleSaveWord={handleSaveWord} language={language} addWordLearntToday={addWordLearntToday} />
+                }
                 <SavedWordsModal
                     isOpen={isSavedWordsModalOpen}
                     onClose={closeSavedWordsModal}
