@@ -1,6 +1,6 @@
     import React, { useState, useEffect } from 'react';
     import { Button, FormControlLabel, Switch, Tooltip, TextField } from '@mui/material';
-    import { FormControl, InputLabel, Select, MenuItem, Box, Modal, IconButton } from '@mui/material';
+    import { FormControl, InputLabel, Select, MenuItem, Box, Modal, IconButton, Divider } from '@mui/material';
     import { getMandarinCompletion } from '../services/openaiService';
     import { segmentTextJieba } from '../services/jiebaService';
     import ChatHeader from './ChatHeader';
@@ -34,11 +34,35 @@
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)',
-        width: 400,
+        width: 600,
         bgcolor: 'background.paper',
         boxShadow: 24,
         p: 4,
     };
+
+    // Custom styles for the modal and its elements
+const modalStyle = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 'auto',
+    minWidth: '40%',
+    bgcolor: 'background.paper',
+    boxShadow: 24,
+    p: 4,
+    borderRadius: '8px',
+};
+
+const customSelectStyle = {
+    minWidth: 150,
+    margin: '10px',
+};
+
+const customTextFieldStyle = {
+    margin: '10px',
+    minWidth: 150,
+};
 
     const model = "gpt-4-1106-preview";
     const firstMsgContent = "Say something just one thing to start the conversation. Do not surround your text with quotation marks or a name or anything. Do not ask for any more information on the situation, you should know everything.";
@@ -585,111 +609,126 @@
                 >
                     <Box sx={style}>
                         <h2 id="settings-modal-title">Settings</h2>
-                        <FormControl variant="outlined" style={{ minWidth: 120, margin: '10px' }}>
-                            <InputLabel id="completion-model-label">Completion Model</InputLabel>
-                            <Select
-                                labelId="completion-model-label"
-                                id="completion-model-select"
-                                value={completionModel}
-                                onChange={handleCompletionModelChange}
-                                label="Completion Model"
-                            >
-                                {availableModels.map(model => (
-                                    <MenuItem key={model} value={model}>{model}</MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
+                        <Divider style={{ marginBottom: '20px' }} />
 
-                        {/* Model Selection for Help Chat */}
-                        <FormControl variant="outlined" style={{ minWidth: 120, margin: '10px' }}>
-                            <InputLabel id="help-chat-model-label">Help Chat Model</InputLabel>
-                            <Select
-                                labelId="help-chat-model-label"
-                                id="help-chat-model-select"
-                                value={helpChatModel}
-                                onChange={handleHelpChatModelChange}
-                                label="Help Chat Model"
-                            >
-                                {availableModels.map(model => (
-                                    <MenuItem key={model} value={model}>{model}</MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
+                        <Box style={{ marginBottom: '20px' }}>
+                            <FormControl variant="outlined" style={{ minWidth: 120, margin: '10px' }}>
+                                <InputLabel htmlFor="language-select">Language</InputLabel>
+                                <Select
+                                    label="Language"
+                                    id="language-select"
+                                    value={language}
+                                    onChange={handleLanguageChange}
+                                    disabled={isSituationUsed}
+                                >
+                                    {languages.map(lang => (
+                                        <MenuItem key={lang} value={lang}>{lang}</MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                            <FormControl variant="outlined" sx={customSelectStyle}>
+                                <InputLabel id="completion-model-label">Completion Model</InputLabel>
+        
+                                <Select
+                                    labelId="completion-model-label"
+                                    id="completion-model-select"
+                                    value={completionModel}
+                                    onChange={handleCompletionModelChange}
+                                    label="Completion Model"
+                                >
+                                    {availableModels.map(model => (
+                                        <MenuItem key={model} value={model}>{model}</MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
 
-                        {/* Model Selection for Translation */}
-                        <FormControl variant="outlined" style={{ minWidth: 120, margin: '10px' }}>
-                            <InputLabel id="translation-model-label">Translation Model</InputLabel>
-                            <Select
-                                labelId="translation-model-label"
-                                id="translation-model-select"
-                                value={translationModel}
-                                onChange={handleTranslationModelChange}
-                                label="Translation Model"
-                            >
-                                {availableModels.map(model => (
-                                    <MenuItem key={model} value={model}>{model}</MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
+                            <FormControl variant="outlined" style={{ minWidth: 120, margin: '10px' }}>
+                                <InputLabel id="help-chat-model-label">Help Chat Model</InputLabel>
+                                <Select
+                                    labelId="help-chat-model-label"
+                                    id="help-chat-model-select"
+                                    value={helpChatModel}
+                                    onChange={handleHelpChatModelChange}
+                                    label="Help Chat Model"
+                                >
+                                    {availableModels.map(model => (
+                                        <MenuItem key={model} value={model}>{model}</MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                            {/* Model Selection for Translation */}
+                            <FormControl variant="outlined" style={{ minWidth: 120, margin: '10px' }}>
+                                <InputLabel id="translation-model-label">Translation Model</InputLabel>
+                                <Select
+                                    labelId="translation-model-label"
+                                    id="translation-model-select"
+                                    value={translationModel}
+                                    onChange={handleTranslationModelChange}
+                                    label="Translation Model"
+                                >
+                                    {availableModels.map(model => (
+                                        <MenuItem key={model} value={model}>{model}</MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                            <FormControl variant="outlined" style={{ minWidth: 120, margin: '10px' }}>
+                                <InputLabel htmlFor="voice-select">Voice</InputLabel>
+                                <Select
+                                    label="Voice"
+                                    id="voice-select"
+                                    value={voice}
+                                    onChange={handleVoiceChange}
+                                    disabled={isSituationUsed}
+                                >
+                                    {voices.map(voice => (
+                                        <MenuItem key={voice} value={voice}>{voice}</MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                            <FormControl variant="outlined" style={{ minWidth: 120, margin: '10px' }}>
+                                <InputLabel htmlFor="difficulty-select">Difficulty</InputLabel>
+                                <Select
+                                    label="Difficulty"
+                                    id="difficulty-select"
+                                    value={difficulty}
+                                    onChange={handleDifficultyChange}
+                                    disabled={isSituationUsed}
+                                >
+                                    {difficultyLevels.map(level => (
+                                        <MenuItem key={level} value={level}>{level}</MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                        </Box>
+
+                        <Box style={{ marginBottom: '20px' }}>
+                            <TextField
+                                label="AI Character Name"
+                                value={editableAiCharName}
+                                onChange={(e) => setEditableAiCharName(e.target.value)}
+                                style={{ margin: '10px', minWidth: 120 }}
+                                disabled={isSituationUsed}
+                            />
+                            <TextField
+                                label="User Character Name"
+                                value={editableUserCharName}
+                                onChange={(e) => setEditableUserCharName(e.target.value)}
+                                style={{ margin: '10px', minWidth: 120 }}
+                                disabled={isSituationUsed}
+                            />
+                        </Box>
+                        
+
+                       
+                        
+
+                        
                         <Button variant="contained" color="primary" onClick={toggleAutoplay}>
                                 Turn autoplay {autoplay ? 'off' : 'on'}
                         </Button>
-                        <FormControl variant="outlined" style={{ minWidth: 120, margin: '10px' }}>
-                            <InputLabel htmlFor="language-select">Language</InputLabel>
-                            <Select
-                                label="Language"
-                                id="language-select"
-                                value={language}
-                                onChange={handleLanguageChange}
-                                disabled={isSituationUsed}
-                            >
-                                {languages.map(lang => (
-                                    <MenuItem key={lang} value={lang}>{lang}</MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                        <FormControl variant="outlined" style={{ minWidth: 120, margin: '10px' }}>
-                            <InputLabel htmlFor="voice-select">Voice</InputLabel>
-                            <Select
-                                label="Voice"
-                                id="voice-select"
-                                value={voice}
-                                onChange={handleVoiceChange}
-                                disabled={isSituationUsed}
-                            >
-                                {voices.map(voice => (
-                                    <MenuItem key={voice} value={voice}>{voice}</MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                        <FormControl variant="outlined" style={{ minWidth: 120, margin: '10px' }}>
-                            <InputLabel htmlFor="difficulty-select">Difficulty</InputLabel>
-                            <Select
-                                label="Difficulty"
-                                id="difficulty-select"
-                                value={difficulty}
-                                onChange={handleDifficultyChange}
-                                disabled={isSituationUsed}
-                            >
-                                {difficultyLevels.map(level => (
-                                    <MenuItem key={level} value={level}>{level}</MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                        <TextField
-                            label="AI Character Name"
-                            value={editableAiCharName}
-                            onChange={(e) => setEditableAiCharName(e.target.value)}
-                            style={{ margin: '10px', minWidth: 120 }}
-                            disabled={isSituationUsed}
-                        />
-                        <TextField
-                            label="User Character Name"
-                            value={editableUserCharName}
-                            onChange={(e) => setEditableUserCharName(e.target.value)}
-                            style={{ margin: '10px', minWidth: 120 }}
-                            disabled={isSituationUsed}
-                        />
+                        
+                        
+                        
                         <Button 
                             variant="contained" 
                             color="primary" 

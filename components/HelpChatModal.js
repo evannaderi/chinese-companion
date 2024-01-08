@@ -15,6 +15,11 @@ const HelpChatModal = ({ isOpen, onRequestClose, language, queryText, isSituatio
     const scrollRef = useRef(null);
     const [isFirstResponse, setIsFirstReponse] = useState(true);
 
+    const isWaitingForResponse = () => {
+        const lastMessage = conversationLog[conversationLog.length - 1];
+        return lastMessage && lastMessage.role === 'user' && conversationLog.length % 2 === 1;
+    };
+
     let systemPrompt = '';
     if (helpType === 'translation') {
         systemPrompt = `You are a language learning assistant. Keep responses brief. On the first prompt you explain in this format: 1. phrase: short meaning \n 2. phrase: short meaning \n 3. phrase: short meaning ...`;
@@ -95,6 +100,7 @@ const HelpChatModal = ({ isOpen, onRequestClose, language, queryText, isSituatio
                         {replaceNewlinesWithBreaks(message.content)}
                     </div>
                 ))}
+                {isWaitingForResponse() && <div className={modalStyles.loader}></div>}
             </div>
             <ChatInputArea onSendMessage={handleSubmit} userInput={userInput} setUserInput={setUserInput} isSituationUsed={isSituationUsed} />
             <Button onClick={onRequestClose}>Close</Button>

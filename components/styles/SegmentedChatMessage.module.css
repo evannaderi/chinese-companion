@@ -8,6 +8,11 @@
     display: inline;
 }
 
+.segmentedButton:hover {
+  background-color: #e6e6e6; /* Light gray background on hover */
+  color: #333333; /* Darker text color on hover */
+}
+
 .userMessage {
   background-color: #004777; /* User message background color */
   color: white; /* Text color */
