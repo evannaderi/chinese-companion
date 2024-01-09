@@ -439,6 +439,30 @@ const customTextFieldStyle = {
             }
         };
 
+        const handleSaveWords = (wordsArray) => {
+            // Filter out any words that are already saved
+            const newWords = wordsArray.filter(newWord => 
+                !savedWords.some(savedWord => savedWord.word === newWord.word)
+            );
+        
+            if (newWords.length === 0) {
+                console.log("No new words to add.");
+                return;
+            }
+        
+            console.log("Adding new words: ", newWords);
+        
+            // Combine the existing words with the new words
+            const updatedSavedWords = [...savedWords, ...newWords];
+        
+            // Update the state and local storage
+            setSavedWords(updatedSavedWords);
+            localStorage.setItem('savedWords', JSON.stringify(updatedSavedWords));
+        
+            // Update any other relevant state, e.g., count of words learnt today
+            addWordLearntToday(newWords.length);
+        };
+
         const handleDeleteWord = (wordToDelete) => {
             const updatedWords = savedWords.filter(word => word.word !== wordToDelete);
             setSavedWords(updatedWords);
@@ -447,11 +471,12 @@ const customTextFieldStyle = {
 
         const handleUpdateWord = (originalWord, newWord, newMeaning, newLanguage, newTags) => {
             const updatedWords = savedWords.map(word => 
-                word.word === originalWord ? { ...word, word: newWord, eaning: newMeaning, Language: newLanguage, tags: newTags } : word
+                word.word === originalWord ? { ...word, word: newWord, meaning: newMeaning, Language: newLanguage, tags: newTags } : word
             );
             setSavedWords(updatedWords);
             localStorage.setItem('savedWords', JSON.stringify(updatedWords));
         };
+
         const handleLanguageChange = (event) => {
             setLanguage(event.target.value);
         };
@@ -588,6 +613,7 @@ const customTextFieldStyle = {
                     onDeleteWord={handleDeleteWord}
                     onUpdateWord={handleUpdateWord}
                     onAddWord={handleSaveWord}
+                    onAddWords={handleSaveWords}
                     language={language}
                 />
                 <TranslatorModal isOpen={isTranslatorOpen} onRequestClose={closeTranslator} sourceLanguage={"English"} targetLanguage={language} />

@@ -5,6 +5,7 @@ import { List, ListItem, ListItemText, TextField, IconButton, Button, Dialog, Di
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
+import { getGeminiCompletion } from '../services/geminiService';
 
 const SavedWordsDisplay = ({ savedWords, onDeleteWord, onUpdateWord, onAddWord, language }) => {
     const [newWord, setNewWord] = useState('');
@@ -17,7 +18,16 @@ const SavedWordsDisplay = ({ savedWords, onDeleteWord, onUpdateWord, onAddWord, 
     const languages = ['English', 'Spanish', 'French', 'German', 'Italian', 'Portuguese', 'Chinese'];
     
 
-    
+    const handleGenerateMeaning = async () => {
+        const prompt = `
+            For this word in ${language}: ${wordToEdit.word}, give me a concise explanation of the
+            word's possible meanings in English seperated by semicolins ;":
+        `;
+        console.log("Gemin prompt: " + prompt);
+        const generatedMeaning = await getGeminiCompletion(prompt);
+        console.log("Generated meaning: " + generatedMeaning);
+        setWordToEdit({ ...wordToEdit, meaning: generatedMeaning })
+    }
     
     const handleAddWord = () => {
         if (newWord && newMeaning) {
@@ -54,6 +64,7 @@ const SavedWordsDisplay = ({ savedWords, onDeleteWord, onUpdateWord, onAddWord, 
 
     const handleEditWord = () => {
         onUpdateWord(wordToEdit.originalWord, wordToEdit.word, wordToEdit.meaning);
+        console.log("Just updated word: " + wordToEdit.word + " and meaning: " + wordToEdit.meaning);
         setEditDialogOpen(false);
     };
 
@@ -88,6 +99,7 @@ const SavedWordsDisplay = ({ savedWords, onDeleteWord, onUpdateWord, onAddWord, 
                     />
                 </DialogContent>
                 <DialogActions>
+                    <Button onClick={handleGenerateMeaning}>Generate</Button>
                     <Button onClick={() => setEditDialogOpen(false)}>Cancel</Button>
                     <Button onClick={handleEditWord}>Save</Button>
                 </DialogActions>
@@ -110,6 +122,10 @@ const SavedWordsDisplay = ({ savedWords, onDeleteWord, onUpdateWord, onAddWord, 
                     <MenuItem key={index} value={language}>{language}</MenuItem>
                 ))}
             </Select>
+            <Typography variant="subtitle1" style={{ marginBottom: '10px' }}>
+                Words saved: {savedWords.length}
+            </Typography>
+            
             {!showAddWordFields && (
                 <Button variant="outlined" startIcon={<AddIcon />} onClick={() => setShowAddWordFields(true)}>
                     Add New Word
