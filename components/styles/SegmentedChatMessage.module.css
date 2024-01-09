@@ -47,3 +47,15 @@
   color: #a30000;
   margin-top: 10px;
 }
+
+.feedbackText {
+  color: #a30000;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.altFeedbackText {
+  color:#00a310;
+  margin-top: 10px;
+  font-weight: bold;
+}

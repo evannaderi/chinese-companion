@@ -14,6 +14,8 @@ import { getRomanizedText } from '../services/googleTranslateService';
 import { getPinyin } from '../services/pinyinService';
 import TranslateIcon from '@mui/icons-material/Translate';
 import { convertPinyinToneNumbers } from '../services/pinyinService';
+import { getGeminiCompletion } from '../services/geminiService';
+import { handleUserFeedback } from '../utils/spacedRepetition';
 
 const regex = /\[([^\]]+)\]/;
 
@@ -22,6 +24,7 @@ const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceL
     const [audioLoaded, setAudioLoaded] = React.useState(false);
     const [playbackSpeed, setPlaybackSpeed] = React.useState(1);
     const [translatedText, setTranslatedText] = useState("");
+    const [feedbackText, setFeedbackText] = useState("");
     const audioRef = React.useRef(null);
     const messageBoxClass = message.role === 'user' ? styles.userMessage : styles.assistantMessage;
 
@@ -103,6 +106,12 @@ const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceL
         openHelpChat(messageText, "translation");
     };
 
+    const onClickFeedback = async () => {
+        console.log("sendingq feedback of: ", message.content);
+        const geminiCompletion = await getGeminiCompletion(`Give me feedback in one sentence of the strictly grammatical and spelling correctness of this text in the language ${sourceLanguage}: However, write your response in English please. Please do NOT wory about small mistakes like missing puncutation or accents. If the text is good, only reply with the message "Good" and nothing else. Otherwise, say it is not correct and give feedback on what the text should be. The text is: ` + message.content);
+        setFeedbackText(geminiCompletion); p
+    };
+
     const handleTranslateClick = async () => {
         const translation = await getGoogleTranslation(message.content.join(' '), sourceLanguage, "English");
         setTranslatedText(translation);
@@ -113,6 +122,8 @@ const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceL
         if (autoplay) {
             handlePlay();
         }
+        if (message.role === 'user')
+            onClickFeedback();
     }, []);
 
     return (
@@ -132,6 +143,19 @@ const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceL
                         {translatedText}
                     </div>
                 )}
+                {feedbackText && (
+                    feedbackText === "Good" ? (
+                        <div className={styles.altFeedbackText}>
+                            {feedbackText}
+                        </div>
+                    ) : (
+                        <div className={styles.feedbackText}>
+                            {feedbackText}
+                        </div>
+                    )
+                    
+                )}
+
             </div>
             {message.role === 'assistant' && (
                 <div className={styles.controlRow}>
@@ -163,6 +187,13 @@ const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceL
                     </Tooltip>
                     
                 </div>
+            )}
+            {message.role === 'user' && (
+                <Tooltip title="Get feedback on correctness of your message">
+                    <IconButton onClick={onClickFeedback}>
+                        <HelpOutlineIcon />
+                    </IconButton>
+                </Tooltip>
             )}
             
         </div>
