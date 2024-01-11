@@ -89,14 +89,14 @@ const customTextFieldStyle = {
         const [aiCharName, setAiCharName] = useState("Lihua");
         const [userCharName, setUserCharName] = useState("Frenkie");
         const difficultyLevels = ['extremely beginner', 'beginner', 'low medium', 'medium', 'high medium', 'advanced', 'extremely advanced'];
-        const languages = ['English', 'Spanish', 'French', 'German', 'Italian', 'Portuguese', 'Chinese'];
+        const languages = ['Spanish', 'French', 'German', 'Italian', 'Portuguese', 'Chinese'];
         const voices = ['alloy', 'echo', 'fable', 'nova', 'onyx', 'shimmer'];
         const systemPre = `You are the character ${aiCharName} in this situation and the er is ${userCharName}. Only speak in ${language} at a ${difficulty} difficulty, using ${difficulty} sentences and words. Keep your responses to 1-2 sentences: `;
         const [systemPrompt, setSystemPrompt] = useState('');
-        const [completionModel, setCompletionModel] = useState('gpt-4-1106-preview');
-        const [helpChatModel, setHelpChatModel] = useState('gpt-4-1106-preview');
-        const [translationModel, setTranslationModel] = useState('gpt-4-1106-preview');
-        const availableModels = ["gpt-3.5-turbo", "gpt-4-1106-preview"];
+        const [completionModel, setCompletionModel] = useState('gpt-3.5-turbo');
+        const [helpChatModel, setHelpChatModel] = useState('gpt-3.5-turbo');
+        const [translationModel, setTranslationModel] = useState('gpt-3.5-turbo');
+        const availableModels = ["gpt-3.5-turbo"/*"gpt-4-1106-preview"*/];
         const [streak, setStreak] = useState(0);
         const [lastCompletedDate, setLastCompletedDate] = useState(null);
         const [consecutiveUserMessages, setConsecutiveUserMessages] = useState(0);
@@ -569,6 +569,29 @@ const customTextFieldStyle = {
                         />
                     </Tooltip>
                     <div className={styles.horizontalSettings}>
+                        <FormControl variant="outlined" style={{ minWidth: 120, margin: '10px' }}>
+                                <InputLabel 
+                                    htmlFor="language-select"
+                                    
+                                >
+                                    Language
+                                </InputLabel>
+                                <Select
+                                    label="Language"
+                                    id="language-select"
+                                    value={language}
+                                    onChange={handleLanguageChange}
+                                    disabled={isSituationUsed}
+                                    style={{ 
+                                        height: '40px', // Adjust height as needed
+                                        fontSize: '12px' // Smaller font size
+                                    }}
+                                >
+                                    {languages.map(lang => (
+                                        <MenuItem key={lang} value={lang}>{lang}</MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
                         <div className={styles.wordsLearntToday}>
                             <Tooltip title={`Words learnt today: ${wordsLearntToday}`}>
                                 <Badge badgeContent={wordsLearntToday} color="secondary">
@@ -638,20 +661,7 @@ const customTextFieldStyle = {
                         <Divider style={{ marginBottom: '20px' }} />
 
                         <Box style={{ marginBottom: '20px' }}>
-                            <FormControl variant="outlined" style={{ minWidth: 120, margin: '10px' }}>
-                                <InputLabel htmlFor="language-select">Language</InputLabel>
-                                <Select
-                                    label="Language"
-                                    id="language-select"
-                                    value={language}
-                                    onChange={handleLanguageChange}
-                                    disabled={isSituationUsed}
-                                >
-                                    {languages.map(lang => (
-                                        <MenuItem key={lang} value={lang}>{lang}</MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
+                            
                             <FormControl variant="outlined" sx={customSelectStyle}>
                                 <InputLabel id="completion-model-label">Completion Model</InputLabel>
         

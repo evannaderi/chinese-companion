@@ -6,7 +6,6 @@ import styles from "./styles/Cards.module.css";
 import getDefaultSituations from "../utils/defaultSituations";
 
 const model = "gpt-4-1106-preview"; // more advanced model
-
 const SituationCard = ({ content, setSituation, useSituation, customVocab, setCustomVocab, aiCharName, userCharName, model }) => {
     const [isSituationUsed, setIsSituationUsed] = useState(false);
     const [selectedDefaultSituation, setSelectedDefaultSituation] = useState("");
@@ -60,7 +59,7 @@ const SituationCard = ({ content, setSituation, useSituation, customVocab, setCu
                 variant="outlined"
                 margin="normal"
                 disabled={isSituationUsed}
-                placeholder={`Or enter a custom situation here... (with your character names ${aiCharName} (AI) and ${userCharName} (you))`}
+                placeholder={`Or enter a custom situation here... (with your character names ${aiCharName} (AI) and ${userCharName} (you)). Change your character names in the settings!`}
             />
             <TextField
                 fullWidth
