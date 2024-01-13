@@ -1,7 +1,6 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
 import styles from './styles/SegmentedChatMessage.module.css';
-import Button from '@mui/material/Button';
 import { IconButton, Slider, Tooltip } from '@mui/material';
 import { getSpanishTranslation } from '../services/openaiService';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
@@ -16,6 +15,14 @@ import TranslateIcon from '@mui/icons-material/Translate';
 import { convertPinyinToneNumbers } from '../services/pinyinService';
 import { getGeminiCompletion } from '../services/geminiService';
 import { handleUserFeedback } from '../utils/spacedRepetition';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle'; // Import for the green checkmark
+import ErrorIcon from '@mui/icons-material/Error'; // Import for the red exclamation mark
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
 const regex = /\[([^\]]+)\]/;
 
@@ -27,6 +34,8 @@ const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceL
     const [feedbackText, setFeedbackText] = useState("");
     const audioRef = React.useRef(null);
     const messageBoxClass = message.role === 'user' ? styles.userMessage : styles.assistantMessage;
+    const [isFeedbackGood, setIsFeedbackGood] = useState(null); // New state to track feedback status
+    const [showFeedback, setShowFeedback] = useState(false);
 
     const fetchAndSetAudio = async () => {
         const messageText = Array.isArray(message.content) ? message.content.join(' ') : message;
@@ -108,13 +117,34 @@ const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceL
 
     const onClickFeedback = async () => {
         console.log("sendingq feedback of: ", message.content);
-        const geminiCompletion = await getGeminiCompletion(`Give me feedback in one sentence of the strictly grammatical and spelling correctness of this text in the language ${sourceLanguage}: However, write your response in English please. Please do NOT wory about small mistakes like missing puncutation or accents. If the text is good, only reply with the message "Good" and nothing else. Otherwise, say it is not correct and give feedback on what the text should be. The text is: ` + message.content);
-        setFeedbackText(geminiCompletion); p
+        const geminiCompletion = await getGeminiCompletion(`
+            ###Instruction###
+            Evaluate the grammatical and spelling correctness of the following text in ${sourceLanguage}. Provide your feedback in English. Focus on major grammatical and spelling errors; ignore minor issues like missing punctuation or accents. If the text has no significant errors, respond with "Good." If there are errors, state that the text is not correct and provide the correct version.
+            ###Text###
+            ` + message.content);
+            if (geminiCompletion.substring(0, 4) === "Good") {
+            setIsFeedbackGood(true);
+        } else {
+            setIsFeedbackGood(false);
+            setFeedbackText(geminiCompletion);
+        }
     };
 
     const handleTranslateClick = async () => {
         const translation = await getGoogleTranslation(message.content.join(' '), sourceLanguage, "English");
         setTranslatedText(translation);
+    };
+
+    const handleDialogOpen = () => {
+        setOpenDialog(true);
+    };
+
+    const handleDialogClose = () => {
+        setOpenDialog(false);
+    };
+
+    const toggleFeedbackVisibility = () => {
+        setShowFeedback(!showFeedback);
     };
 
     useEffect(() => {
@@ -136,25 +166,16 @@ const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceL
                         </button>
                     ))
                     :
-                    <p>{message.content}</p>
+                    <div style={{ marginLeft: 'auto', textAlign: 'right' }}>
+                        <p>{message.content}</p>
+                    </div>
                 }
                 {translatedText && (
                     <div className={styles.translatedText}>
                         {translatedText}
                     </div>
                 )}
-                {feedbackText && (
-                    feedbackText === "Good" ? (
-                        <div className={styles.altFeedbackText}>
-                            {feedbackText}
-                        </div>
-                    ) : (
-                        <div className={styles.feedbackText}>
-                            {feedbackText}
-                        </div>
-                    )
-                    
-                )}
+                
 
             </div>
             {message.role === 'assistant' && (
@@ -188,14 +209,43 @@ const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceL
                     
                 </div>
             )}
-            {message.role === 'user' && (
-                <Tooltip title="Get feedback on correctness of your message">
-                    <IconButton onClick={onClickFeedback}>
-                        <HelpOutlineIcon />
-                    </IconButton>
-                </Tooltip>
+            {message.role === 'user' && isFeedbackGood !== null && (
+                <div style={{ display: 'flex' }}>
+                    {showFeedback && !isFeedbackGood && (
+                        <div className={styles.feedbackText}>
+                            {feedbackText}
+                        </div>
+                    )}
+                    <div style={{ marginLeft: 'auto' }}>
+                        {isFeedbackGood ? (
+                            <CheckCircleIcon style={{ color: 'green' }} />
+                        ) : (
+                            <Tooltip title="See feedback">
+                                <IconButton onClick={toggleFeedbackVisibility}>
+                                    <ErrorIcon style={{ color: 'red' }} />
+                                </IconButton>
+                            </Tooltip>
+                        )}
+                    </div>
+                </div>
             )}
+
             
+
+            {/* <Dialog open={openDialog} onClose={handleDialogClose}>
+                <DialogTitle>{"Feedback"}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        {feedbackText}
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleDialogClose} color="primary">
+                        Close
+                    </Button>
+                </DialogActions>
+            </Dialog>
+             */}
         </div>
     );
 };
