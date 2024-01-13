@@ -118,10 +118,13 @@ const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceL
     const onClickFeedback = async () => {
         console.log("sendingq feedback of: ", message.content);
         const geminiCompletion = await getGeminiCompletion(`
-            ###Instruction###
-            Evaluate the grammatical and spelling correctness of the following text in ${sourceLanguage}. Provide your feedback in English. Focus on major grammatical and spelling errors; ignore minor issues like missing punctuation or accents. If the text has no significant errors, respond with "Good." If there are errors, state that the text is not correct and provide the correct version.
-            ###Text###
-            ` + message.content);
+        ###Instruction###
+        Evaluate the grammatical and spelling accuracy of the following text in ${sourceLanguage}, responding in English. Focus on identifying significant grammatical and spelling errors that might alter the meaning or readability of the text. Please specifically overlook minor details like punctuation, accent marks, or capitalization, unless they critically change the sentence's meaning. If the text is overall correct with clear meaning, respond with "Good." For major errors, approach with a friendly tone, perhaps saying, "It seems there might be a slight mix-up with..." and then suggest an alternative version for these significant errors only.
+        ###Text###
+        ` + message.content);
+
+
+
             if (geminiCompletion.substring(0, 4) === "Good") {
             setIsFeedbackGood(true);
         } else {
