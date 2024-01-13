@@ -34,10 +34,14 @@
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)',
-        width: 600,
+        width: 400, // Adjusted for better fit
         bgcolor: 'background.paper',
         boxShadow: 24,
         p: 4,
+        borderRadius: '10px', // Rounded corners
+        display: 'flex',
+        flexDirection: 'column', // Organize content vertically
+        gap: '20px', // Space between rows
     };
 
     // Custom styles for the modal and its elements
@@ -657,7 +661,7 @@ const customTextFieldStyle = {
                     aria-describedby="settings-modal-description"
                 >
                     <Box sx={style}>
-                        <h2 id="settings-modal-title">Settings</h2>
+                        <h2 id="settings-modal-title" style={{fontFamily: 'Arial', textAlign: 'center'}}>Settings</h2>
                         <Divider style={{ marginBottom: '20px' }} />
 
                         <Box style={{ marginBottom: '20px' }}>
