@@ -79,6 +79,7 @@ const customTextFieldStyle = {
         const [segmentedConversation, setSegmentedConversation] = useState([]);
         const [cardTitle, setCardTitle] = useState('');
         const [cardContent, setCardContent] = useState('');
+        const [cardDef, setCardDef] = useState('');
         const [situation, setSituation] = useState('');
         const [isTranslatorOpen, setIsTranslatorOpen] = useState(false);
         const [isHelpChatOpen, setIsHelpChatOpen] = useState(false);
@@ -154,9 +155,10 @@ const customTextFieldStyle = {
             setDifficulty(event.target.value);
         };
 
-        const updateCard = (title, content) => {
+        const updateCard = (title, content, betterDef) => {
             setCardTitle(title);
             setCardContent(content);
+            setCardDef(betterDef);
         };
 
         // // When situation changes
@@ -631,7 +633,7 @@ const customTextFieldStyle = {
                 )}
                 <SystemMessages />
                 {   cardTitle != '' &&
-                    <TranslationCard title={cardTitle} content={cardContent} onClickWord={updateCard} handleSaveWord={handleSaveWord} language={language} addWordLearntToday={addWordLearntToday} />
+                    <TranslationCard title={cardTitle} content={cardContent} cardDef={cardDef} onClickWord={updateCard} handleSaveWord={handleSaveWord} language={language} addWordLearntToday={addWordLearntToday} />
                 }
                 <SavedWordsModal
                     isOpen={isSavedWordsModalOpen}

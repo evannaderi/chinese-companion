@@ -99,7 +99,11 @@ const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceL
         // }
 
 
-        onClickWord(segment, translation);
+        onClickWord(segment, translation, "\nContextual definition: loading...");
+
+        console.log("About to get contextual definition with segment: ", segment, " and message content: ", message.content.join(' '));
+        let contextualDefinition = await getGeminiCompletion(`Tell me the meaning of "${segment}" in this context: ${message.content.join(' ')}. Specifically, start with "In this context, the word ${segment} means" and then give a definition.`);
+        onClickWord(segment, translation, "\nContextual definition: " + contextualDefinition);
     };
 
     const handleSpeedChange = (event) => {

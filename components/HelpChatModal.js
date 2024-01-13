@@ -58,7 +58,7 @@ const HelpChatModal = ({ isOpen, onRequestClose, language, queryText, isSituatio
             if (lastMessage.role === 'user') {
                 const openAIResponse = await getCustomCompletion(systemPrompt, conversationLog, model);
                 if (isFirstResponse && helpType === 'translation') {
-                    const modifiedResponse = openAIResponse + '\n\nEnter a number (1, 2, ...) to get a numbered list of how each individual word adds meaning to this phrase in the form (1. word: significance).'
+                    const modifiedResponse = openAIResponse + '\n\nEnter a number (1, 2, ...) to get a numbered list of how each individual word adds meaning to this phrase in the form (1. word: significance). Or, ask any other question you may have.'
                     setConversationLog(prev => [...prev, { role: 'assistant', content: modifiedResponse }]);
                     setIsFirstReponse(false)
                 } else {
