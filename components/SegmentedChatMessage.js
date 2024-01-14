@@ -208,7 +208,7 @@ const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceL
                             <TranslateIcon />
                         </IconButton>
                     </Tooltip>
-                    <Tooltip title="Get AI Help">
+                    <Tooltip title="Get in-depth AI Help">
                         <IconButton onClick={onClickHelp}>
                             <HelpOutlineIcon />
                         </IconButton>

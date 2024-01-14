@@ -1,18 +1,32 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect, use } from 'react';
 import { TextField, Button, IconButton, Tooltip } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import MicIcon from '@mui/icons-material/Mic';
 import MicOffIcon from '@mui/icons-material/MicOff';
 import FeedbackIcon from '@mui/icons-material/Feedback'; // Importing Feedback icon
+import QuestionMarkIcon from '@mui/icons-material/HelpOutline';
+import TranslateIcon from '@mui/icons-material/Translate';
 import { getTranscription } from '../services/openaiService';
 import styles from './styles/ChatInputArea.module.css';
+import { Style } from '@mui/icons-material';
+import { getGeminiCompletion } from '../services/geminiService';
 const transcriptionModel = "whisper-1";
 
-const ChatInputArea = ({ onSendMessage, userInput, setUserInput, isSituationUsed, openHelpChat }) => {
+const ChatInputArea = ({ onSendMessage, userInput, setUserInput, isSituationUsed, openHelpChat, language }) => {
     const [input, setInput] = useState('');
     const [recording, setRecording] = useState(false);
+    const [isAdditionalInputVisible, setIsAdditionalInputVisible] = useState(false);
+    const [additionalInput, setAdditionalInput] = useState(''); // This is the input for the additional input (e.g., translation)
     const mediaRecorderRef = useRef(null);
     const audioChunksRef = useRef([]);
+
+    useEffect(() => {
+        setAdditionalInput("");
+    }, [isAdditionalInputVisible]);
+
+    useEffect(() => {
+        setIsAdditionalInputVisible(false);
+    }, [userInput]);
 
     const handleSend = () => {
         if (userInput.trim() !== '') {
@@ -25,6 +39,19 @@ const ChatInputArea = ({ onSendMessage, userInput, setUserInput, isSituationUsed
             e.preventDefault(); // Prevent the default action to avoid line break in TextField
             handleSend();
         }
+    };
+
+    const handleAdditionalInputKeyPress = (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault(); // Prevent the default action to avoid line break in TextField
+            handleGetTranslation();
+        }
+    };
+
+    const handleGetTranslation = async () => {
+        const translation = await getGeminiCompletion(`Translate the following text from English to ${language}. Please do not enter any other text other than the translation.: ${additionalInput}`);
+        setUserInput(prevUserInput => prevUserInput + ' ' + translation);
+        console.log("Just translated the text to: ", translation);
     };
 
     const startRecording = async () => {
@@ -130,46 +157,86 @@ const ChatInputArea = ({ onSendMessage, userInput, setUserInput, isSituationUsed
         }
     };
 
+    const toggleAdditionalInput = () => {
+        setIsAdditionalInputVisible(prev => !prev);
+    };
+
     return (
-        <div className={styles.chatInputArea}>
-            <TextField
-                fullWidth
-                value={userInput}
-                onChange={(e) => setUserInput(e.target.value)}
-                placeholder="Type your message..."
-                variant="outlined"
-                margin="normal"
-                onKeyPress={handleKeyPress}
-            />
-            <Tooltip title="Get feedback on correctness of your message">
-                <IconButton 
-                    onClick={handleGetFeedback}
-                    style={{ margin: '5px' }}
-                    disabled={!userInput.trim()} // Disable if there's no input
-                >
-                    <FeedbackIcon />
-                </IconButton>
-            </Tooltip>
-            <Tooltip title="Send Message">
-                <IconButton 
-                    onClick={handleSend}
-                    style={{ margin: '5px' }}
-                    disabled={!userInput.trim() || !isSituationUsed } // Disable if there's no input
-                >
-                    <SendIcon />
-                </IconButton>
-            </Tooltip>
-            <Tooltip title={recording ? 'Stop Recording' : 'Start Recording'}>
-                <IconButton 
-                    onClick={handleRecordButtonClick}
-                    style={{ margin: '5px' }}
-                    color={recording ? "secondary" : "primary"}
-                >
-                    {recording ? <MicOffIcon /> : <MicIcon />}
-                </IconButton>
-            </Tooltip>
-            
-        </div>
+        <>
+            <div className={styles.chatInputArea}>
+                <TextField
+                    fullWidth
+                    value={userInput}
+                    onChange={(e) => setUserInput(e.target.value)}
+                    placeholder="Type your message..."
+                    variant="outlined"
+                    margin="normal"
+                    onKeyPress={handleKeyPress}
+                />
+                <Tooltip title="Get AI help for feedback on your message or for any questions you have!">
+                    <IconButton 
+                        onClick={handleGetFeedback}
+                        style={{ margin: '5px' }}
+                        disabled={!userInput.trim()} // Disable if there's no input
+                    >
+                        <FeedbackIcon />
+                    </IconButton>
+                </Tooltip>
+                <Tooltip title="Send Message">
+                    <IconButton 
+                        onClick={handleSend}
+                        style={{ margin: '5px' }}
+                        disabled={!userInput.trim() || !isSituationUsed } // Disable if there's no input
+                    >
+                        <SendIcon />
+                    </IconButton>
+                </Tooltip>
+                <Tooltip title={recording ? 'Stop Recording' : 'Start recording your voice!'}>
+                    <IconButton 
+                        onClick={handleRecordButtonClick}
+                        style={{ margin: '5px' }}
+                        color={recording ? "secondary" : "primary"}
+                    >
+                        {recording ? <MicOffIcon /> : <MicIcon />}
+                    </IconButton>
+                </Tooltip>
+                <Tooltip title="Don't know that to say? Click here!">
+                    <IconButton 
+                        onClick={toggleAdditionalInput}
+                        style={{ margin: '5px' }}
+                    >
+                        <TranslateIcon />
+                    </IconButton>
+                </Tooltip>
+                
+            </div>
+
+            <div className={styles.chatInputArea}>
+                {isAdditionalInputVisible && (
+                    <TextField
+                        fullWidth
+                        value={additionalInput}
+                        onChange={(e) => setAdditionalInput(e.target.value)}
+                        placeholder="Type your message in English to translate it... The translation will show up in your message!"
+                        variant="outlined"
+                        margin="normal"
+                        onKeyPress={handleAdditionalInputKeyPress}
+                    />
+                )}
+                
+                {isAdditionalInputVisible && (
+                <Tooltip title={`Translate English text into ${language}`}>
+                    <IconButton 
+                        onClick={handleGetTranslation}
+                        style={{ margin: '5px' }}
+                        disabled={!additionalInput.trim()} // Disable if there's no input
+                    >
+                        <SendIcon />
+                    </IconButton>
+                </Tooltip>
+                )}
+            </div>
+        </>
     );
 };
 

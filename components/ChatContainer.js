@@ -575,6 +575,7 @@ const customTextFieldStyle = {
                         />
                     </Tooltip>
                     <div className={styles.horizontalSettings}>
+                        
                         <FormControl variant="outlined" style={{ minWidth: 120, margin: '10px' }}>
                                 <InputLabel 
                                     htmlFor="language-select"
@@ -597,6 +598,24 @@ const customTextFieldStyle = {
                                         <MenuItem key={lang} value={lang}>{lang}</MenuItem>
                                     ))}
                                 </Select>
+                            </FormControl>
+                            <FormControl variant="outlined" style={{ minWidth: 120, margin: '10px' }}>
+                                        <InputLabel htmlFor="difficulty-select">Difficulty</InputLabel>
+                                        <Select
+                                            label="Difficulty"
+                                            id="difficulty-select"
+                                            value={difficulty}
+                                            onChange={handleDifficultyChange}
+                                            disabled={isSituationUsed}
+                                            style={{ 
+                                                height: '40px', // Adjust height as needed
+                                                fontSize: '12px' // Smaller font size
+                                            }}
+                                        >
+                                            {difficultyLevels.map(level => (
+                                                <MenuItem key={level} value={level}>{level}</MenuItem>
+                                            ))}
+                                        </Select>
                             </FormControl>
                         <div className={styles.wordsLearntToday}>
                             <Tooltip title={`Words learnt today: ${wordsLearntToday}`}>
@@ -623,6 +642,7 @@ const customTextFieldStyle = {
                     setUserInput={setUserInput} 
                     isSituationUsed={isSituationUsed} 
                     openHelpChat={openHelpChat}
+                    language={language}
                 />
                 {isSrsModeActive && (
                     <SrsCard 
@@ -724,20 +744,6 @@ const customTextFieldStyle = {
                                 >
                                     {voices.map(voice => (
                                         <MenuItem key={voice} value={voice}>{voice}</MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-                            <FormControl variant="outlined" style={{ minWidth: 120, margin: '10px' }}>
-                                <InputLabel htmlFor="difficulty-select">Difficulty</InputLabel>
-                                <Select
-                                    label="Difficulty"
-                                    id="difficulty-select"
-                                    value={difficulty}
-                                    onChange={handleDifficultyChange}
-                                    disabled={isSituationUsed}
-                                >
-                                    {difficultyLevels.map(level => (
-                                        <MenuItem key={level} value={level}>{level}</MenuItem>
                                     ))}
                                 </Select>
                             </FormControl>

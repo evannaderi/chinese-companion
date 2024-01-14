@@ -3,9 +3,16 @@ import MessageDisplayArea from './MessageDisplayArea';
 import ChatInputArea from './ChatInputArea';
 import { getCustomCompletion } from '../services/openaiService';
 import styles from './styles/ChatContainer.module.css';
+import inputStyles from './styles/ChatInputArea.module.css';
 import modalStyles from './styles/HelpChatModal.module.css'; 
 import Modal from 'react-modal';
 import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Tooltip from '@mui/material/Tooltip';
+import { IconButton } from '@mui/material';
+import SendIcon from '@mui/icons-material/Send';
+import LightbulbIcon from '@mui/icons-material/Lightbulb';
+import { set } from 'mongoose';
 
 const model="gpt-3.5-turbo"
 
@@ -14,6 +21,13 @@ const HelpChatModal = ({ isOpen, onRequestClose, language, queryText, isSituatio
     const [conversationLog, setConversationLog] = useState([]);
     const scrollRef = useRef(null);
     const [isFirstResponse, setIsFirstReponse] = useState(true);
+
+    const handleKeyPress = (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault(); // Prevent the default action to avoid line break in TextField
+            handleSubmit();
+        }
+    };
 
     const isWaitingForResponse = () => {
         const lastMessage = conversationLog[conversationLog.length - 1];
@@ -42,10 +56,15 @@ const HelpChatModal = ({ isOpen, onRequestClose, language, queryText, isSituatio
         }
     }, [queryText]);
 
-    const handleSubmit = async (input) => {
+    const handleSubmit = async () => {
         // Update the conversation log with user input
-        setConversationLog(prev => [...prev, { role: 'user', content: input }]);
+        setConversationLog(prev => [...prev, { role: 'user', content: userInput }]);
         // Clear the userInput state to clear the chat input area
+        setUserInput('');
+    };
+
+    const handleLightbulbSubmit = async () => {
+        setConversationLog(prev => [...prev, { role: 'user', content: "Give me a detailed explanation of what this means, including any grammatical structures." }]);
         setUserInput('');
     };
 
@@ -102,7 +121,36 @@ const HelpChatModal = ({ isOpen, onRequestClose, language, queryText, isSituatio
                 ))}
                 {isWaitingForResponse() && <div className={modalStyles.loader}></div>}
             </div>
-            <ChatInputArea onSendMessage={handleSubmit} userInput={userInput} setUserInput={setUserInput} isSituationUsed={isSituationUsed} />
+            <div className={inputStyles.chatInputArea}>
+                    <TextField
+                        fullWidth
+                        value={userInput}
+                        onChange={(e) => setUserInput(e.target.value)}
+                        placeholder="Type any question you may have..."
+                        variant="outlined"
+                        margin="normal"
+                        onKeyPress={handleKeyPress}
+                    />
+                    <Tooltip title={`Explain what this means in further detail!`}>
+                        <IconButton 
+                            onClick={handleLightbulbSubmit}
+                            style={{ margin: '5px' }}
+                            
+                        >
+                            <LightbulbIcon />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title={`Translate English text into ${language}`}>
+                        <IconButton 
+                            onClick={handleSubmit}
+                            style={{ margin: '5px' }}
+                            disabled={!userInput.trim()} // Disable if there's no input
+                        >
+                            <SendIcon />
+                        </IconButton>
+                    </Tooltip>
+                    
+            </div>
             <Button onClick={onRequestClose}>Close</Button>
         </Modal>
     );

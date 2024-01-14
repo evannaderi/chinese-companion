@@ -40,7 +40,12 @@ const TranslationCard = ({ title, content, cardDef, handleSaveWord, language }) 
     };
 
     const handleGetExampleSentences = async () => {
-        const geminiResponse = await getGeminiCompletion(`Give me a list of 3 example sentences for the word "${title}" in ${language}. For each sentence, give a translation in English. Keep in mind that the specific word here means: ${cardDef}`);
+        let geminiResponse = '';
+        if (language == "Chinese") {
+            geminiResponse = await getGeminiCompletion(`Give me a list of 3 example sentences for the word "${title}" in ${language}. Show pinyin. For each sentence, give a translation in English. Keep in mind that the specific word here means: ${cardDef}`);
+        } else {
+            geminiResponse = await getGeminiCompletion(`Give me a list of 3 example sentences for the word "${title}" in ${language}. For each sentence, give a translation in English. Keep in mind that the specific word here means: ${cardDef}`);
+        }
         setExampleSentences(geminiResponse.split('\n'));
     }
 
