@@ -12,7 +12,6 @@ import Tooltip from '@mui/material/Tooltip';
 import { IconButton } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import LightbulbIcon from '@mui/icons-material/Lightbulb';
-import { set } from 'mongoose';
 
 const model="gpt-3.5-turbo"
 
