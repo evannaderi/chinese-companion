@@ -618,7 +618,7 @@ const customTextFieldStyle = {
                                         </Select>
                             </FormControl>
                         <div className={styles.wordsLearntToday}>
-                            <Tooltip title={`Words learnt today: ${wordsLearntToday}`}>
+                            <Tooltip title={`Words saved today: ${wordsLearntToday}`}>
                                 <Badge badgeContent={wordsLearntToday} color="secondary">
                                     <BookIcon /> {/* Replace with your preferred icon */}
                                 </Badge>
