@@ -166,6 +166,9 @@ const ChatInputArea = ({ onSendMessage, userInput, setUserInput, isSituationUsed
             <div className={styles.chatInputArea}>
                 <TextField
                     fullWidth
+                    multiline
+                    rows={2}
+                    rowsMax={4}
                     value={userInput}
                     onChange={(e) => setUserInput(e.target.value)}
                     placeholder="Type your message..."
