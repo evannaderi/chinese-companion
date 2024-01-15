@@ -23,10 +23,11 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import { getGoogleTTS } from '../services/googleTtsService';
 
 const regex = /\[([^\]]+)\]/;
 
-const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceLanguage, autoplay, voice }) => {
+const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceLanguage, autoplay, voice, handleSaveWord }) => {
     const [isPlaying, setIsPlaying] = React.useState(false);
     const [audioLoaded, setAudioLoaded] = React.useState(false);
     const [playbackSpeed, setPlaybackSpeed] = React.useState(1);
@@ -36,6 +37,10 @@ const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceL
     const messageBoxClass = message.role === 'user' ? styles.userMessage : styles.assistantMessage;
     const [isFeedbackGood, setIsFeedbackGood] = useState(null); // New state to track feedback status
     const [showFeedback, setShowFeedback] = useState(false);
+    const [tooltipOpen, setTooltipOpen] = useState(false);
+    const [tooltipContent, setTooltipContent] = useState(null);
+    const [tooltipPosition, setTooltipPosition] = useState({ top: 0, left: 0 });
+    const [clickedWord, setClickedWord] = useState('dummy word');
 
     const fetchAndSetAudio = async () => {
         const messageText = Array.isArray(message.content) ? message.content.join(' ') : message;
@@ -68,18 +73,117 @@ const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceL
         audioRef.current.pause();
     };
 
-    const handleSegmentClick = async (segment) => {
-        // Handle the click event, such as displaying more information or triggering an action
-        console.log("Clicked segment:", segment);
+    const closeTooltip = () => {
+        setTooltipOpen(false);
+    };
+
+    // const handleSegmentClick = async (segment) => {
+    //     // Handle the click event, such as displaying more information or triggering an action
+    //     console.log("Clicked segment:", segment);
         
+    //     let translation = await getGoogleTranslation(segment, sourceLanguage, "English");
+        
+
+    //     // if (sourceLanguage === "Chinese") {
+    //     //     const pinyinText = pinyin(segment, { style: pinyin.STYLE_NORMAL }).join(' ');
+    //     //     translation += ` (${pinyinText})`;
+    //     // }
+
+    //     if (sourceLanguage === "Chinese") {
+    //         const text = await getPinyin(segment);
+    //         const match = text.match(regex);
+
+    //         if (match) {
+    //             const pinyin = convertPinyinToneNumbers(match[1]); // 'qu4'
+    //             console.log(pinyin);
+    //             translation += ` (${pinyin})`;
+    //         }
+            
+    //     }
+
+    //     // if (sourceLanguage === "Chinese") {
+    //     //     const text = await getRomanizedText(segment, sourceLanguage);
+    //     //     translation += ` (${text})`;
+            
+    //     // }
+
+
+    //     onClickWord(segment, translation, "\nContextual definition: loading...");
+    //     const rect = event.currentTarget.getBoundingClientRect();
+    //     const position = { 
+    //         top: rect.top - rect.height, // Position above the word
+    //         left: rect.left + (rect.width / 2) // Centered above the word
+    //     };
+    //     setTooltipContent(translation);
+    //     setTooltipPosition(position);
+    //     setTooltipOpen(true);
+
+    //     console.log("About to get contextual definition with segment: ", segment, " and message content: ", message.content.join(' '));
+    //     let contextualDefinition = await getGeminiCompletion(`Tell me the meaning of "${segment}" in this context: ${message.content.join(' ')}. Specifically, start with "In this context, the word ${segment} means" and then give a definition.`);
+    //     onClickWord(segment, translation, "\nContextual definition: " + contextualDefinition);
+    // };
+
+    const handleTooltipButtonClick = () => {
+        console.log("Tooltip button clicked with word: ", clickedWord);
+        // Add any specific logic for the button click here
+    };
+
+    const onSaveWord = async (segment) => {
+        const definition = await getGeminiCompletion(`Give me a good definition for the word "${segment}" in ${sourceLanguage}. Write your definition in English only. Do not write your definition in any other language other than English. Do not include any other text.`);
+        handleSaveWord(segment,
+                        definition,
+                        sourceLanguage,
+                        [],
+                        1,
+                        0,
+                        2.5,
+                        new Date()
+                    );
+        console.log("Just saved word: ", segment, " with definition: ", definition);
+        alert("Saved word: " + segment + " with definition: " + definition);
+    }
+
+    const handlePlayText = async (segment) => {
+        try {
+            console.log("source language is: ", sourceLanguage);
+            const googleResponse = await getGoogleTTS({ text: segment, language: sourceLanguage });
+            const audioBlob = new Blob([new Uint8Array(Buffer.from(googleResponse.audioData, 'base64'))], { type: 'audio/mpeg' });
+            const audioUrl = URL.createObjectURL(audioBlob);
+            audioRef.current.src = audioUrl;
+            console.log("The audio src is: ", audioRef.current.src);
+            audioRef.current.play();
+        } catch (error) {
+            console.error("Error playing text:", error.message);
+        }
+    };
+
+    const onGetExampleSentences = async (segment) => {
+        const geminiResponse = await getGeminiCompletion(`Give me a list of 3 example sentences for the word "${segment}" in ${sourceLanguage}. For each sentence, give a translation in English. Keep in mind that the specific word here means: ${segment}`);
+        const exampleSentences = geminiResponse.split('\n');
+        console.log("Example sentences are: ", exampleSentences);
+        alert("Example sentences are: " + exampleSentences);
+    };
+
+
+    const handleSegmentClick = async (event, segment) => {
+        setClickedWord(segment);
+        
+        // Calculate position for the tooltip
+        const rect = event.currentTarget.getBoundingClientRect();
+        let position = { 
+            top: rect.top - rect.height, // Position above the word
+            left: rect.left + (rect.width / 2) // Centered above the word
+        };
+
+        // Dynamically change position to the right if left is less than 100
+        if (position.left < 100) {
+            console.log("Changing position to the right from ", position.left, " to ", rect.left + rect.width, " for segment: ", segment, " and message content: ", message.content.join(' '));
+            position.left = rect.left + 100; // Position to the right of the word
+            console.log("New position is: ", position);
+        }
+
+        // Set content and position for the tooltip
         let translation = await getGoogleTranslation(segment, sourceLanguage, "English");
-        
-
-        // if (sourceLanguage === "Chinese") {
-        //     const pinyinText = pinyin(segment, { style: pinyin.STYLE_NORMAL }).join(' ');
-        //     translation += ` (${pinyinText})`;
-        // }
-
         if (sourceLanguage === "Chinese") {
             const text = await getPinyin(segment);
             const match = text.match(regex);
@@ -89,21 +193,40 @@ const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceL
                 console.log(pinyin);
                 translation += ` (${pinyin})`;
             }
-            
         }
 
-        // if (sourceLanguage === "Chinese") {
-        //     const text = await getRomanizedText(segment, sourceLanguage);
-        //     translation += ` (${text})`;
-            
-        // }
+        let contextualDefinition = "loading..."
 
+        setTooltipContent(
+            <div>
+                <div><b>Translation:</b> {translation}</div>
+                <br />
+                <div><b>Contextual meaning:</b> {contextualDefinition}</div>
+                <br />
+                <Button onClick={() => onSaveWord(segment)}>Save Word</Button>
+                <Button onClick={() => handlePlayText(segment)}>Play Sound</Button>
+                <Button onClick={() => onGetExampleSentences(segment)}>Get Example Sentences</Button>
+            </div>
+        );
+        setTooltipPosition(position);
+        setTooltipOpen(true);
 
-        onClickWord(segment, translation, "\nContextual definition: loading...");
+        contextualDefinition = await getGeminiCompletion(`Tell me the meaning of "${segment}" in this context: ${message.content.join(' ')}. Specifically, start with "In this context, the word ${segment} means" and then give a definition.`);
+        setTooltipContent(
+            <div>
+                <div><b>Translation:</b> {translation}</div>
+                <br />
+                <div><b>Contextual meaning:</b> {contextualDefinition}</div>
+                <br />
+                <Button onClick={() => onSaveWord(segment)}>Save Word</Button>
+                <Button onClick={() => handlePlayText(segment)}>Play Sound</Button>
+                <Button onClick={() => onGetExampleSentences(segment)}>Get Example Sentences</Button>
+            </div>
+        );
+    };
 
-        console.log("About to get contextual definition with segment: ", segment, " and message content: ", message.content.join(' '));
-        let contextualDefinition = await getGeminiCompletion(`Tell me the meaning of "${segment}" in this context: ${message.content.join(' ')}. Specifically, start with "In this context, the word ${segment} means" and then give a definition.`);
-        onClickWord(segment, translation, "\nContextual definition: " + contextualDefinition);
+    const handleCloseModal = () => {
+        setModalOpen(false);
     };
 
     const handleSpeedChange = (event) => {
@@ -161,14 +284,43 @@ const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceL
         }
         if (message.role === 'user')
             onClickFeedback();
+        
+        const handleDelegatedButtonClick = (event) => {
+            if (event.target && event.target.matches(".tooltipButton")) {
+                handleTooltipButtonClick();
+            }
+        }
+        document.addEventListener('click', handleDelegatedButtonClick);
+
+        return () => {
+            document.removeEventListener('click', handleDelegatedButtonClick);
+        };
     }, []);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (tooltipOpen && !event.target.closest(`.${styles.customTooltip}`)) {
+                closeTooltip();
+            }
+        };
+    
+        // Add event listener
+        document.addEventListener('mousedown', handleClickOutside);
+    
+        return () => {
+            // Remove event listener on cleanup
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [tooltipOpen]);
+
+    useEffect(() => {console.log("set clicked word to: ", clickedWord);}, [clickedWord]);
 
     return (
         <div className={messageBoxClass}>
             <div className="message-content">
                 {message.role === 'assistant' && Array.isArray(message.content) ?
                     message.content.map((segment, index) => (
-                        <button key={index} onClick={() => handleSegmentClick(segment)} className={styles.segmentedButton}>
+                        <button key={index} onClick={(e) => handleSegmentClick(e, segment)} className={styles.segmentedButton}>
                             {segment}
                         </button>
                     ))
@@ -253,7 +405,15 @@ const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceL
                 </DialogActions>
             </Dialog>
              */}
-        </div>
+             {tooltipOpen && (
+                <div 
+                    className={styles.customTooltip} 
+                    style={{ top: `${tooltipPosition.top}px`, left: `${tooltipPosition.left}px` }}
+                >
+                    {tooltipContent}
+                </div>
+            )}
+            </div>
     );
 };
 

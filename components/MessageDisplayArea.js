@@ -4,7 +4,7 @@ import SituationCard from "./SituationCard";
 import styles from './styles/MessageDisplayArea.module.css';
 import { useEffect, useRef, useState } from "react";
 
-const MessageDisplayArea = ({ messages, segmentedMessages, onClickWord, situation, setSituation, useSituation, showSituation, openHelpChat, customVocab, setCustomVocab, sourceLanguage, aiCharName, userCharName, autoplay, voice, model, isLoading }) => {
+const MessageDisplayArea = ({ messages, segmentedMessages, onClickWord, situation, setSituation, useSituation, showSituation, openHelpChat, customVocab, setCustomVocab, sourceLanguage, aiCharName, userCharName, autoplay, voice, model, handleSaveWord, isLoading }) => {
     const scrollRef = useRef(null);
     ;
 
@@ -28,7 +28,7 @@ const MessageDisplayArea = ({ messages, segmentedMessages, onClickWord, situatio
             )}
             {messages.map((message, index) => {
                 if (index < segmentedMessages.length) {
-                    return <SegmentedChatMessage key={index} message={segmentedMessages[index]} onClickWord={onClickWord} idx={index} openHelpChat={openHelpChat} sourceLanguage={sourceLanguage} autoplay={autoplay} voice={voice} />;
+                    return <SegmentedChatMessage key={index} message={segmentedMessages[index]} onClickWord={onClickWord} idx={index} openHelpChat={openHelpChat} sourceLanguage={sourceLanguage} autoplay={autoplay} voice={voice} handleSaveWord={handleSaveWord} />;
                 } else {
                     return <div className={styles.loader} key={index}></div>;
                 }

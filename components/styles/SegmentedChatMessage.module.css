@@ -59,3 +59,32 @@
   margin-top: 10px;
   font-weight: bold;
 }
+
+.modalContainer {
+  position: absolute;
+  z-index: 100; /* Ensures the modal appears above other elements */
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  max-width: 300px; /* Adjust as needed */
+}
+
+.modalContent {
+  font-size: 14px;
+  color: #333;
+}
+
+.customTooltip {
+  position: fixed; /* Position relative to the viewport */
+  background-color: white;
+  padding: 8px;
+  border-radius: 4px;
+  box-shadow: 0px 2px 10px rgba(0,0,0,0.2);
+  transform: translate(-50%, -100%); /* Center and position above */
+  max-width: 200px; /* Set a maximum width */
+  overflow: hidden; /* Prevent content from spilling out */
+  text-overflow: ellipsis; /* Add ellipsis if text is too long */
+  word-wrap: break-word;
+  /* Additional styling as needed */
+}
