@@ -10,18 +10,24 @@ import { getTranscription } from '../services/openaiService';
 import styles from './styles/ChatInputArea.module.css';
 import { Style } from '@mui/icons-material';
 import { getGeminiCompletion } from '../services/geminiService';
-const transcriptionModel = "whisper-1";
+import { getGoogleTranslation } from '../services/googleTranslateService';
+import SegmentedChatMessage from './SegmentedChatMessage';
+import { spaceSegment } from '../services/SegmentService';
+import { chineseSegment } from '../services/SegmentService';
 
-const ChatInputArea = ({ onSendMessage, userInput, setUserInput, isSituationUsed, openHelpChat, language }) => {
+const ChatInputArea = ({ onSendMessage, userInput, setUserInput, isSituationUsed, openHelpChat, language, onClickWord, voice, handleSaveWord }) => {
     const [input, setInput] = useState('');
     const [recording, setRecording] = useState(false);
     const [isAdditionalInputVisible, setIsAdditionalInputVisible] = useState(false);
+    const [translatedText, setTranslatedText] = useState([]); // This is the text that is translated from the additional input (e.g., translation)
     const [additionalInput, setAdditionalInput] = useState(''); // This is the input for the additional input (e.g., translation)
     const mediaRecorderRef = useRef(null);
     const audioChunksRef = useRef([]);
 
     useEffect(() => {
         setAdditionalInput("");
+        setTranslatedText([]);
+        window.scrollBy({ top: 500, left: 0, behavior: 'smooth' });
     }, [isAdditionalInputVisible]);
 
     useEffect(() => {
@@ -52,6 +58,26 @@ const ChatInputArea = ({ onSendMessage, userInput, setUserInput, isSituationUsed
         const translation = await getGeminiCompletion(`Translate the following text from English to ${language}. Please do not enter any other text other than the translation.: ${additionalInput}`);
         setUserInput(prevUserInput => prevUserInput + ' ' + translation);
         console.log("Just translated the text to: ", translation);
+    };
+
+    const handlePutTranslation = async () => {
+        console.log("Calling getGoogleTranslation with additionalInput: ", additionalInput, " and language: ", language);
+        let translation = '';
+
+        if (language === "Chinese") {
+            translation = await getGeminiCompletion("Translate the following text from English to Chinese. Please do not enter any other text other than the translation in Chinese characters.: " + additionalInput);
+            console.log("The translation is: ", translation);
+            let segmented = await chineseSegment(translation);
+            console.log("The segmented translation is: ", segmented);
+            
+            setTranslatedText(segmented);
+        } else {
+            translation = await getGoogleTranslation(additionalInput, "English", language);
+            setTranslatedText(spaceSegment(translation));
+        }
+        
+
+        
     };
 
     const startRecording = async () => {
@@ -159,6 +185,7 @@ const ChatInputArea = ({ onSendMessage, userInput, setUserInput, isSituationUsed
 
     const toggleAdditionalInput = () => {
         setIsAdditionalInputVisible(prev => !prev);
+        console.log("about to scroll")
     };
 
     return (
@@ -217,18 +244,36 @@ const ChatInputArea = ({ onSendMessage, userInput, setUserInput, isSituationUsed
             <div className={styles.chatInputArea}>
                 {isAdditionalInputVisible && (
                     <TextField
+                        className={isAdditionalInputVisible ? styles.strongHighlight : ''}
                         fullWidth
+                        multiline
+                        rows={2}
+                        rowsMax={4}
                         value={additionalInput}
                         onChange={(e) => setAdditionalInput(e.target.value)}
-                        placeholder="Type your message in English to translate it... The translation will show up in your message!"
+                        placeholder="Type your message in English to translate it... By clicking the send button, the translation will show up in your message! Alternatively, click the translate button to study the translation below."
                         variant="outlined"
                         margin="normal"
                         onKeyPress={handleAdditionalInputKeyPress}
                     />
                 )}
+
+                {isAdditionalInputVisible && (
+                                <Tooltip title={`Show translation below from ${language} to English`}>
+                                    <IconButton 
+                                        onClick={handlePutTranslation}
+                                        style={{ margin: '5px' }}
+                                        disabled={!additionalInput.trim()} // Disable if there's no input
+                                    >
+                                        <TranslateIcon />
+                                    </IconButton>
+                                </Tooltip>
+
+                                
+                )}
                 
                 {isAdditionalInputVisible && (
-                <Tooltip title={`Translate English text into ${language}`}>
+                <Tooltip title={`Translate English text into ${language}, and send to your text message`}>
                     <IconButton 
                         onClick={handleGetTranslation}
                         style={{ margin: '5px' }}
@@ -237,8 +282,23 @@ const ChatInputArea = ({ onSendMessage, userInput, setUserInput, isSituationUsed
                         <SendIcon />
                     </IconButton>
                 </Tooltip>
+
+                
                 )}
             </div>
+            {isAdditionalInputVisible && (
+                <SegmentedChatMessage 
+                    message={{content: translatedText, role: "assistant"}} 
+                    onClickWord={onClickWord} 
+                    idx={0} 
+                    openHelpChat={openHelpChat} 
+                    sourceLanguage={language} 
+                    autoplay={false} 
+                    voice={voice} 
+                    handleSaveWord={handleSaveWord} 
+                />
+            )}
+            
         </>
     );
 };

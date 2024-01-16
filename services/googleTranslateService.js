@@ -21,7 +21,7 @@ export const getGoogleTranslation = async(text, sourceLanguage, targetLanguage) 
     const targetLanguageCode = languageCodeMap[targetLanguage];
 
     if (!targetLanguageCode || !sourceLanguageCode) {
-        throw new Error(`Unsupported language: ${targetLanguageName} or ${sourceLanguageName}`);
+        throw new Error(`Unsupported language: ${targetLanguage} or ${sourceLanguage}`);
     }
 
     try {

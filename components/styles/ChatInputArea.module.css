@@ -5,3 +5,10 @@
     display: flex;
     flex-direction: row;
 }
+
+.strongHighlight {
+    border: 2px solid #4a90e2; /* Example blue border */
+    box-shadow: 0 0 8px #4a90e2; /* Soft glow effect */
+    margin: normal;
+    /* Add any other desired styles */
+}

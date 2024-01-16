@@ -28,6 +28,7 @@
     import ReviewIcon from '@mui/icons-material/RateReview';
     import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
     import HelpInstructionsModal from './HelpInstructionsModal';
+    import { chineseSegment } from '../services/SegmentService';
 
     const style = {
         position: 'absolute',
@@ -298,7 +299,8 @@ const customTextFieldStyle = {
                     console.log("lastMessage.content: ", lastMessage.content)
                     let segmentedResponse = [];
                     if (language === "Chinese") {
-                        segmentedResponse = await segmentTextJieba(lastMessage.content);
+                        //segmentedResponse = await segmentTextJieba(lastMessage.content);
+                        segmentedResponse = await chineseSegment(lastMessage.content);
                     }
                     else {
                         segmentedResponse = spaceSegment(lastMessage.content);
@@ -643,6 +645,9 @@ const customTextFieldStyle = {
                     isSituationUsed={isSituationUsed} 
                     openHelpChat={openHelpChat}
                     language={language}
+                    onClickWord={updateCard}
+                    voice={voice}
+                    handleSaveWord={handleSaveWord}
                 />
                 {isSrsModeActive && (
                     <SrsCard 
