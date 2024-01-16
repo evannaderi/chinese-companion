@@ -129,7 +129,12 @@ const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceL
     };
 
     const onSaveWord = async (segment) => {
-        const definition = await getGeminiCompletion(`Give me the definition for the word "${segment}" in ${sourceLanguage}. Write your definition in English only. Do not write your definition in any other language other than English. Do not include any other text.`);
+        let definition = "";
+        if (sourceLanguage == "Chinese") {
+            definition = await getGeminiCompletion(`Give me the definition for the word "${segment}" in ${sourceLanguage}. Write your definition in English only and write the pinyin. Do not include any other text.`);
+        } else {
+            definition = await getGeminiCompletion(`Give me the definition for the word "${segment}" in ${sourceLanguage}. Write your definition in English only. Do not write your definition in any language other than English. Do not include any other text.`);
+        }
         handleSaveWord(segment,
                         definition,
                         sourceLanguage,
@@ -210,8 +215,12 @@ const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceL
         );
         setTooltipPosition(position);
         setTooltipOpen(true);
-
-        contextualDefinition = await getGeminiCompletion(`Tell me the meaning of "${segment}" in this context: ${message.content.join(' ')}. Specifically, start with "In this context, the word ${segment} means" and then give a definition.`);
+        
+        if (sourceLanguage === "Chinese") {
+            contextualDefinition = await getGeminiCompletion(`Tell me the meaning of "${segment}" in this context: ${message.content.join(' ')}. Also, include the pinyin. Specifically, start with "In this context, the word ${segment} means" and then give a definition.`);
+        } else {
+            contextualDefinition = await getGeminiCompletion(`Tell me the meaning of "${segment}" in this context: ${message.content.join(' ')}. Specifically, start with "In this context, the word ${segment} means" and then give a definition.`);
+        }
         setTooltipContent(
             <div>
                 <div><b>Translation:</b> {translation}</div>
