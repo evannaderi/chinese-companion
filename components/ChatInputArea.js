@@ -230,7 +230,7 @@ const ChatInputArea = ({ onSendMessage, userInput, setUserInput, isSituationUsed
                         {recording ? <MicOffIcon /> : <MicIcon />}
                     </IconButton>
                 </Tooltip>
-                <Tooltip title="Don't know that to say? Click here!">
+                <Tooltip title="Don't know that to say? Click here to translate!">
                     <IconButton 
                         onClick={toggleAdditionalInput}
                         style={{ margin: '5px' }}
@@ -240,6 +240,8 @@ const ChatInputArea = ({ onSendMessage, userInput, setUserInput, isSituationUsed
                 </Tooltip>
                 
             </div>
+
+            <p style={{ fontSize: 'small' }}> If you need help saying something, click the AI help or the translate button on the right!</p>
 
             <div className={styles.chatInputArea}>
                 {isAdditionalInputVisible && (

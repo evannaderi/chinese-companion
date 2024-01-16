@@ -26,6 +26,7 @@ const MessageDisplayArea = ({ messages, segmentedMessages, onClickWord, situatio
             {showSituation && (
                 <SituationCard content={situation} setSituation={setSituation} useSituation={useSituation} customVocab={customVocab} setCustomVocab={setCustomVocab} aiCharName={aiCharName} userCharName={userCharName} model={model} />
             )}
+            <p> Click on a word if you don't know its meaning! </p>
             {messages.map((message, index) => {
                 if (index < segmentedMessages.length) {
                     return <SegmentedChatMessage key={index} message={segmentedMessages[index]} onClickWord={onClickWord} idx={index} openHelpChat={openHelpChat} sourceLanguage={sourceLanguage} autoplay={autoplay} voice={voice} handleSaveWord={handleSaveWord} />;

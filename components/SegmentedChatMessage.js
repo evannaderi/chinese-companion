@@ -129,7 +129,7 @@ const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceL
     };
 
     const onSaveWord = async (segment) => {
-        const definition = await getGeminiCompletion(`Give me a good definition for the word "${segment}" in ${sourceLanguage}. Write your definition in English only. Do not write your definition in any other language other than English. Do not include any other text.`);
+        const definition = await getGeminiCompletion(`Give me the definition for the word "${segment}" in ${sourceLanguage}. Write your definition in English only. Do not write your definition in any other language other than English. Do not include any other text.`);
         handleSaveWord(segment,
                         definition,
                         sourceLanguage,
@@ -387,6 +387,10 @@ const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceL
                         )}
                     </div>
                 </div>
+            )}
+
+            {idx==0 && message.role=="assistant" && (
+                <p style={{ fontSize: 'small' }}>Stuck? Click on the translate button or the AI help button on the right!</p>
             )}
 
             
