@@ -15,6 +15,8 @@ import SegmentedChatMessage from './SegmentedChatMessage';
 import { spaceSegment } from '../services/SegmentService';
 import { chineseSegment } from '../services/SegmentService';
 
+const transcriptionModel = "whisper-1";
+
 const ChatInputArea = ({ onSendMessage, userInput, setUserInput, isSituationUsed, openHelpChat, language, onClickWord, voice, handleSaveWord }) => {
     const [input, setInput] = useState('');
     const [recording, setRecording] = useState(false);
