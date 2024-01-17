@@ -1,0 +1,9 @@
+.microphoneButton {
+    position: absolute; /* Positioning it over everything else */
+    top: 50%; /* Center vertically */
+    left: 50%; /* Center horizontally */
+    transform: translate(-50%, -50%); /* Adjust position to truly center */
+    z-index: 1000; /* Ensure it's on top */
+    width: 500px; /* Size of the button */
+    height: 500px; /* Size of the button */
+}

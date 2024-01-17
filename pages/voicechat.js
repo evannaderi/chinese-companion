@@ -7,6 +7,7 @@ import { getGeminiCompletionMultiTurn } from '../services/geminiService';
 import { getTranscription } from '../services/openaiService';
 import { getTTS } from '../services/openaiService';
 import { Button } from '@mui/material';
+import styles from '../styles/voicechat.module.css';
 
 const transcriptionModel = "whisper-1";
 const voice = "alloy";
@@ -157,27 +158,69 @@ const ChatBot = () => {
         }
     }, []);
 
-    useEffect(() => {
-        const processLatestMessage = async () => {
-            if (request === '') return;
-            console.log("history: ", history);
-            const historyWithoutLastItem = history.slice(0, -1); // Remove the last item from the history array
-            console.log("historyWithoutLastItem: ", historyWithoutLastItem);
-            console.log("userInput: ", request);
-            const botResponse = await getGeminiCompletionMultiTurn(historyWithoutLastItem, request + "Keep your response short."); 
-            console.log("botResponse: ", botResponse);
-            setHistory(currentHistory => [...currentHistory, { role: 'model', parts: botResponse }]);
-            console.log("about to play: ", botResponse);
-            await handlePlay(botResponse);  
-            console.log("done playing");
+    // useEffect(() => {
+    //     console.log("request changed: ", request);
+    //     const processLatestMessage = async () => {
+    //         if (request === '') return;
+    //         console.log("history: ", history);
+    //         const historyWithoutLastItem = history.slice(0, -1); // Remove the last item from the history array
+    //         console.log("historyWithoutLastItem: ", historyWithoutLastItem);
+    //         console.log("userInput: ", request);
+    //         const newRequest = "Reminder: you are Lihua in a situation where you forget grandma's cookies and you are asking me (John) for help. Do not include your name just your message. Only speak English. Remember the natural flow of conversatoin) " + request;
+    //         let botResponse = "";
+    //         try {
+    //             botResponse = await getGeminiCompletionMultiTurn(historyWithoutLastItem, newRequest); 
+    //         } catch (error) {
+    //             alert("Error in gemini completion: ", error);
+    //         }
             
-        };
+    //         console.log("botResponse: ", botResponse);
+    //         setHistory(currentHistory => [...currentHistory, { role: 'model', parts: botResponse }]);
+    //         console.log("about to play: ", botResponse);
+    //         await handlePlay(botResponse);  
+    //         console.log("done playing");
+            
+    //     };
          
+    //     processLatestMessage();
+    // }, [request]);
+
+    useEffect(() => {console.log("history changed: ", history);
+        const processLatestMessage = async () => {
+            if (history.length === 0) return;
+            const lastMessage = history[history.length - 1];
+            if (lastMessage.parts === '') return;
+            if (lastMessage.role === 'user') {
+                console.log("history: ", history);
+                const historyWithoutLastItem = history.slice(0, -1);
+                console.log("historyWithoutLastItem: ", historyWithoutLastItem);
+                //const newRequest = "Reminder: you are Lihua in a situation where you forget grandma's cookies and you are asking me (John) for help. Do not include your name just your message. Only speak English. Remember the natural flow of conversatoin) " + request;
+                let botResponse = "";
+                try {
+                    console.log("lastMessage.parts: ", lastMessage.parts);
+                    botResponse = await getGeminiCompletionMultiTurn(historyWithoutLastItem, lastMessage.parts); 
+                    console.log("botResponse: ", botResponse);
+                } catch (error) {
+                    alert("Error in gemini completion: ", error);
+                }
+
+                setHistory(currentHistory => [...currentHistory, { role: 'model', parts: botResponse }]);
+                console.log("about to play: ", botResponse);
+                await handlePlay(botResponse);  
+                console.log("done playing");
+            }
+        };
+
         processLatestMessage();
-    }, [request]);
+    }, [history]);
 
     useEffect(() => {
-        console.log("history changed: ", history);
+        //setHistory(currentHistory => [...currentHistory, { role: 'user', parts: "Only speak Spanish at a beginner level." }]);
+        
+    }, []);
+
+    useEffect(() => {
+        
         // const playLatestBotResponse = async () => {
         //     if (history.length > 0) {
         //         const lastMessage = history[history.length - 1];
@@ -232,10 +275,14 @@ const ChatBot = () => {
                     placeholder="Type your message here..."
                 />
                 <button type="submit">Send</button>
-                <IconButton onClick={handleRecordButtonClick}>
-                    {recording ? <MicOffIcon /> : <MicIcon />}
+                <IconButton 
+                    onClick={handleRecordButtonClick}
+                    className={styles.microphoneButton}
+                    style={{fontSize: '8rem'}}
+                >
+                    {recording ? <MicOffIcon style={{ fontSize: 200 }}/> : <MicIcon style={{ fontSize: 200 }}/>}
                 </IconButton>
-                <Button onClick={() => handlePlay("hi")}>Play Sound</Button>
+                
                 <audio ref={audioRef}/>
             </form>
         </div>
