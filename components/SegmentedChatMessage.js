@@ -43,18 +43,41 @@ const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceL
     const [clickedWord, setClickedWord] = useState('dummy word');
 
     const fetchAndSetAudio = async () => {
-        const messageText = Array.isArray(message.content) ? message.content.join(' ') : message;
-        console.log("About to get response from openAI");
-        const openAIResponse = await getTTS('tts-1', voice, messageText);
-        console.log("Got response from openAI");
+        if (voice == 'alloy' || voice == 'echo' || voice == 'fable' || voice == 'nova' || voice == 'onyx' || voice == 'shimmer') {
+            const messageText = Array.isArray(message.content) ? message.content.join(' ') : message;
+            console.log("About to get response from openAI");
+            const openAIResponse = await getTTS('tts-1', voice, messageText);
+            console.log("Got response from openAI");
 
-        if (openAIResponse && openAIResponse.audioData) {
-            const audioBlob = new Blob([new Uint8Array(Buffer.from(openAIResponse.audioData, 'base64'))], { type: 'audio/mpeg' });
+            if (openAIResponse && openAIResponse.audioData) {
+                const audioBlob = new Blob([new Uint8Array(Buffer.from(openAIResponse.audioData, 'base64'))], { type: 'audio/mpeg' });
+                const audioUrl = URL.createObjectURL(audioBlob);
+                audioRef.current.src = audioUrl;
+            }
+            setAudioLoaded(true);
+            console.log("Just loaded audio");
+        } else if (voice == 'google') {
+            const messageText = Array.isArray(message.content) ? message.content.join(' ') : message;
+            console.log("About to get response from google");
+            const googleResponse = await getGoogleTTS({ text: messageText, language: sourceLanguage });
+            console.log("Got response from google");
+            const audioBlob = new Blob([new Uint8Array(Buffer.from(googleResponse.audioData, 'base64'))], { type: 'audio/mpeg' });
             const audioUrl = URL.createObjectURL(audioBlob);
             audioRef.current.src = audioUrl;
+            setAudioLoaded(true);
+            console.log("Just loaded audio");
+        } else {
+            const messageText = Array.isArray(message.content) ? message.content.join(' ') : message;
+            console.log("About to get response from google");
+            const googleResponse = await getGoogleTTS({ text: messageText, language: sourceLanguage, voiceName: voice });
+            console.log("Got response from google");
+            const audioBlob = new Blob([new Uint8Array(Buffer.from(googleResponse.audioData, 'base64'))], { type: 'audio/mpeg' });
+            const audioUrl = URL.createObjectURL(audioBlob);
+            audioRef.current.src = audioUrl;
+            setAudioLoaded(true);
+            console.log("Just loaded audio");
         }
-        setAudioLoaded(true);
-        console.log("Just loaded audio");
+        
     };
 
     const handlePlay = async () => {
@@ -131,7 +154,7 @@ const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceL
     const onSaveWord = async (segment) => {
         let definition = "";
         if (sourceLanguage == "Chinese") {
-            definition = await getGeminiCompletion(`Give me the definition for the word "${segment}" in ${sourceLanguage}. Write your definition in English only and write the pinyin. Do not include any other text.`);
+            definition = await getGeminiCompletion(`Give me the definition and pinyin for the word "${segment}" in ${sourceLanguage}. Write your definition in English and write the pinyin. Do not include any other text. Please remember to include pinyin. Keep your response to 1-2 sentences, remembering to include pinyin.`);
         } else {
             definition = await getGeminiCompletion(`Give me the definition for the word "${segment}" in ${sourceLanguage}. Write your definition in English only. Do not write your definition in any language other than English. Do not include any other text.`);
         }
@@ -217,7 +240,7 @@ const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceL
         setTooltipOpen(true);
         
         if (sourceLanguage === "Chinese") {
-            contextualDefinition = await getGeminiCompletion(`Tell me the meaning of "${segment}" in this context: ${message.content.join(' ')}. Also, include the pinyin. Specifically, start with "In this context, the word ${segment} means" and then give a definition.`);
+            contextualDefinition = await getGeminiCompletion(`Tell me the meaning of "${segment}" in this context: ${message.content.join(' ')}. Also, include the pinyin. Specifically, start with "In this context, the word ${segment} with pinyin (____) means" and then give a definition.`);
         } else {
             contextualDefinition = await getGeminiCompletion(`Tell me the meaning of "${segment}" in this context: ${message.content.join(' ')}. Specifically, start with "In this context, the word ${segment} means" and then give a definition.`);
         }
