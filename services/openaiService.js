@@ -106,6 +106,31 @@ export const createSituation = async (word, model, aiCharName, userCharName) => 
     }
 }
 
+export const createTeachingSession = async (word, model, aiCharName, userCharName) => {
+    const apiURL = "/api/completion";
+    const systemMsg = "You are a teacher.";
+    
+    try {
+        const response = await axios.post(apiURL, {
+            messages: [{
+                role: "user",
+                content: systemPrompts.createTeachingSession(aiCharName, userCharName).prompt,
+            }],
+            systemMsg: systemMsg,
+            model: model
+        });
+
+        console.log("response: ", response.data.result);
+
+        return response.data.result;
+
+    } catch (error) {
+        console.log(error);
+        console.log("The error is: ", error.response.data);
+        throw new Error(`Request failed with status ${error.response.status}`);
+    }
+};
+
 export const getSpanishTranslation = async (word, model) => {
     const apiURL = "/api/completion";
     const translateMsg = systemPrompts.spanishTranslate(word).prompt;

@@ -3,8 +3,9 @@ import SegmentedChatMessage from "./SegmentedChatMessage";
 import SituationCard from "./SituationCard";
 import styles from './styles/MessageDisplayArea.module.css';
 import { useEffect, useRef, useState } from "react";
+import TeacherCard from "./TeacherCard";
 
-const MessageDisplayArea = ({ messages, segmentedMessages, onClickWord, situation, setSituation, useSituation, showSituation, openHelpChat, customVocab, setCustomVocab, sourceLanguage, aiCharName, userCharName, autoplay, voice, model, handleSaveWord, isLoading }) => {
+const MessageDisplayArea = ({ messages, segmentedMessages, onClickWord, situation, setSituation, useSituation, showSituation, showTeacherCard, openHelpChat, customVocab, setCustomVocab, sourceLanguage, aiCharName, userCharName, autoplay, voice, model, handleSaveWord, isLoading, language }) => {
     const scrollRef = useRef(null);
     ;
 
@@ -26,6 +27,10 @@ const MessageDisplayArea = ({ messages, segmentedMessages, onClickWord, situatio
             {showSituation && (
                 <SituationCard content={situation} setSituation={setSituation} useSituation={useSituation} customVocab={customVocab} setCustomVocab={setCustomVocab} aiCharName={aiCharName} userCharName={userCharName} model={model} />
             )}
+            {showTeacherCard && (
+                <TeacherCard content={situation} setTeachingSession={setSituation} useTeachingSession={useSituation} customVocab={customVocab} setCustomVocab={setCustomVocab} aiCharName={aiCharName} userCharName={userCharName} model={model} language={language} />
+            )}
+            
             <p> Click on a word if you don't know its meaning! </p>
             {messages.map((message, index) => {
                 if (index < segmentedMessages.length) {

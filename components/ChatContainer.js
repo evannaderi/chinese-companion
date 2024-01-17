@@ -29,6 +29,7 @@
     import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
     import HelpInstructionsModal from './HelpInstructionsModal';
     import { chineseSegment } from '../services/SegmentService';
+    import TeacherCard from './TeacherCard';
 
     const style = {
         position: 'absolute',
@@ -87,7 +88,7 @@ const customTextFieldStyle = {
         const [isSavedWordsModalOpen, setIsSavedWordsModalOpen] = useState(false);
         const [queryText, setQueryText] = useState('Hola amigo');
         const [language, setLanguage] = useState('Spanish'); // default language
-        const [voice, setVoice] = useState('google'); // default voice
+        const [voice, setVoice] = useState('alloy'); // default voice
         const [isSituationUsed, setIsSituationUsed] = useState(false);
         const [difficulty, setDifficulty] = useState('extremely beginner');
         const [savedWords, setSavedWords] = useState([]);
@@ -118,6 +119,8 @@ const customTextFieldStyle = {
         const [editableAiCharName, setEditableAiCharName] = useState(aiCharName);
         const [editableUserCharName, setEditableUserCharName] = useState(userCharName);
         const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
+        const [showSituation, setShowSituation] = useState(true);
+        const [showTeacherCard, setShowTeacherCard] = useState(false);
 
 
 
@@ -519,6 +522,11 @@ const customTextFieldStyle = {
             setIsSrsModeActive(!isSrsModeActive);
         };
 
+        const toggleMode = () => {
+            setShowTeacherCard(!showTeacherCard);
+            setShowSituation(!showSituation);
+        };
+
         return (
             <div className={styles.chatContainer}>
                 <div className={styles.header}>
@@ -573,6 +581,13 @@ const customTextFieldStyle = {
                         <FormControlLabel
                             control={<Switch checked={isSrsModeActive} onChange={toggleSrsMode} />}
                             label= "Spaced Repetition Conversation Mode"
+                            disabled={isSituationUsed}
+                        />
+                    </Tooltip>
+                    <Tooltip title="Teacher mode">
+                        <FormControlLabel
+                            control={<Switch checked={showTeacherCard} onChange={toggleMode} />}
+                            label= "Switch to Teacher Mode"
                             disabled={isSituationUsed}
                         />
                     </Tooltip>
@@ -637,7 +652,7 @@ const customTextFieldStyle = {
                     
                 </div>
                 
-                <MessageDisplayArea messages={conversationLog} segmentedMessages={segmentedConversation} onClickWord={updateCard} situation={situation} setSituation={setSituation} useSituation={useSituation} showSituation={true} openHelpChat={openHelpChat} customVocab={customVocab} setCustomVocab={setCustomVocab} sourceLanguage={language} aiCharName={aiCharName} userCharName={userCharName} autoplay={autoplay} voice={voice} model={completionModel} handleSaveWord={handleSaveWord} />
+                <MessageDisplayArea messages={conversationLog} segmentedMessages={segmentedConversation} onClickWord={updateCard} situation={situation} setSituation={setSituation} useSituation={useSituation} showSituation={showSituation} showTeacherCard={showTeacherCard} openHelpChat={openHelpChat} customVocab={customVocab} setCustomVocab={setCustomVocab} sourceLanguage={language} aiCharName={aiCharName} userCharName={userCharName} autoplay={autoplay} voice={voice} model={completionModel} handleSaveWord={handleSaveWord} language={language} />
                 <ChatInputArea 
                     onSendMessage={handleSubmit} 
                     userInput={userInput} 
@@ -745,7 +760,7 @@ const customTextFieldStyle = {
                                     id="voice-select"
                                     value={voice}
                                     onChange={handleVoiceChange}
-                                    disabled={isSituationUsed}
+                
                                 >
                                     {voices.map(voice => (
                                         <MenuItem key={voice} value={voice}>{voice}</MenuItem>
@@ -787,7 +802,7 @@ const customTextFieldStyle = {
                             color="primary" 
                             onClick={saveCharacterNames}
                             style={{ margin: '10px' }}
-                            disabled={isSituationUsed}
+                            
                         >
                             Save Changes
                         </Button>
