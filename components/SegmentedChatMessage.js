@@ -278,8 +278,20 @@ const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceL
         console.log("sendingq feedback of: ", message.content);
         const geminiCompletion = await getGeminiCompletion(`
         ###Instruction###
-        Evaluate the grammatical and spelling accuracy of the following text in ${sourceLanguage}, responding in English. Focus on identifying significant grammatical and spelling errors that might alter the meaning or readability of the text. Please specifically overlook minor details like punctuation, accent marks, or capitalization, unless they critically change the sentence's meaning. If the text is overall correct with clear meaning, respond with "Good." For major errors, approach with a friendly tone, perhaps saying, "It seems there might be a slight mix-up with..." and then suggest an alternative version for these significant errors only.
+        Evaluate the grammatical and spelling accuracy of the following text in ${sourceLanguage}, responding in English. Focus on identifying significant grammatical and spelling errors that might alter the meaning or readability of the text. Please specifically overlook minor details like punctuation, accent marks, or capitalization, unless they critically change the sentence's meaning. In your feedback, use gentle language, suggesting possible errors with phrases like, "There might be a slight mix-up with..." Provide concise feedback, addressing only significant errors.
+
+        Example of Correct Feedback in Various Languages:
+        - Spanish Original: "El gato comer mucho."
+        Feedback: "There might be a slight mix-up with the verb form. A more accurate phrase would be 'El gato come mucho.'"
+        - Chinese Original: "他昨天去图书馆。" (He go to library yesterday.)
+        Feedback: "There might be a slight mix-up with the verb tense. It should be '他昨天去了图书馆。' (He went to the library yesterday.)"
+        - French Original: "Nous mangeons du pain tous le jours."
+        Feedback: "There might be a slight mix-up with the article. It should be 'Nous mangeons du pain tous les jours.'"
+
+        For texts with no major errors and clear meaning, simply respond with "Good." Remember to adapt your feedback based on the grammatical rules of the ${sourceLanguage}.
+
         ###Text###
+        Now here is the original text in ${sourceLanguage}, remember to give concise feedback and ignore small errors:
         ` + message.content);
 
 
