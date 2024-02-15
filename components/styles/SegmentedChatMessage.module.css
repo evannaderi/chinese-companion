@@ -23,6 +23,7 @@
   align-self: flex-end; /* Align to the end (right) for user messages */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Add shadow for depth */
   border: 1px solid #003355; /* Slightly darker border for definition */
+  font-family: Arial, sans-serif;
 }
 
 .assistantMessage {
@@ -35,6 +36,7 @@
   align-self: flex-start;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   border: 1px solid #dddddd;
+  font-family: Arial, sans-serif;
 }
   
 .controlRow {

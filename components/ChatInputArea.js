@@ -43,7 +43,7 @@ const ChatInputArea = ({ onSendMessage, userInput, setUserInput, isSituationUsed
     };
 
     const handleKeyPress = (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
+        if (e.key === 'Enter' && !e.shiftKey && isSituationUsed) {
             e.preventDefault(); // Prevent the default action to avoid line break in TextField
             handleSend();
         }

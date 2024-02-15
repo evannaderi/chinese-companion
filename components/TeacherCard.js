@@ -72,7 +72,7 @@ const TeacherCard = ({ content, setTeachingSession, useTeachingSession, customVo
                 variant="contained"
                 onClick={makeTeachingSession}
                 disabled={isTeachingSessionUsed}
-                style={{ margin: '5px', backgroundColor: 'darkred', color: 'white' }}
+                style={{ margin: '5px', backgroundColor: 'transparent', color: 'black' }}
             >
                 Get Random Topic
             </Button>
@@ -81,7 +81,7 @@ const TeacherCard = ({ content, setTeachingSession, useTeachingSession, customVo
                 color="secondary"
                 onClick={handleUseTeachingSession}
                 disabled={isTeachingSessionUsed}
-                style={{ margin: '5px', backgroundColor: 'transparent', color: 'black' }}
+                style={{ margin: '5px', backgroundColor: 'darkred', color: 'white' }}
             >
                 Start Teaching Session
             </Button>

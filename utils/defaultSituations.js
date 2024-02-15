@@ -1,3 +1,5 @@
+// utils/defaultSituations.js
+
 const getDefaultSituations = (aiCharName, userCharName) => {
     const defaultSituations = [
         {

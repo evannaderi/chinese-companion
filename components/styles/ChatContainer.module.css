@@ -1,7 +1,7 @@
 .chatContainer {
     display: flex;
     flex-direction: column;
-    background-color: white;
+    background-color: rgb(242, 240, 240);
     border-radius: 10px;
     overflow: hidden;
     font-family: 'Arial', sans-serif;
@@ -12,7 +12,7 @@
     flex-grow: 1;
     overflow-y: auto;
     padding: 10px;
-    background-color: #f0f0f0;
+    background-color: rgb(107, 103, 103);
     display: flex;
     flex-direction: column;
     max-height: 600px;

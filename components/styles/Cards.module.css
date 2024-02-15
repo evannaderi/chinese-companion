@@ -1,14 +1,16 @@
 .translationCard,
 .situationCard {
-    background-color: #00afb5; /* Verdigris for secondary color */
+    background-color: rgba(0, 175, 181, 0.2); /* Verdigris for secondary color */
     color: white;
     padding: 10px;
     margin: 10px 0;
+    border-radius: 15px;
 }
 
 .teacherCard {
-    background-color: #f59696; /* Verdigris for secondary color */
+    background-color: #f7c9c9; /* Verdigris for secondary color */
     color: white;
     padding: 10px;
     margin: 10px 0;
+    border-radius: 15px;
 }
