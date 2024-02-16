@@ -1,5 +1,5 @@
 const { OpenAI } = require('openai');
-const reinforcementWords = require('../index.js')
+const reinforcementWords = require('../_app.js')
 
 // const configuration = new Configuration({
 //   apiKey: process.env.OPENAI_API_KEY,
