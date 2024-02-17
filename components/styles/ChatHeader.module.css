@@ -6,4 +6,5 @@
     font-size: 1.2em;
     font-weight: bold;
     font-family: 'Roboto', sans-serif;
+    display: flex;
 }

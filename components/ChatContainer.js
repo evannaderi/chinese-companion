@@ -533,8 +533,8 @@ const customTextFieldStyle = {
                     <ChatHeader className={styles.chatHeader}/>
                     <div>
                     <Tooltip title="Help">
-                        <IconButton onClick={openHelpModal} style={{ color: '#FFFFFF' }}>
-                            <HelpOutlineIcon /> {/* Import HelpOutlineIcon from @mui/icons-material */}
+                        <IconButton onClick={openHelpModal} style={{ color: '#FFFFFF', }}>
+                            <HelpOutlineIcon style={{fontSize: 40}} /> {/* Import HelpOutlineIcon from @mui/icons-material */}
                         </IconButton>
                     </Tooltip>
                         <Tooltip title="Open Translator">
@@ -542,7 +542,7 @@ const customTextFieldStyle = {
                                 style={{ color: '#FFFFFF' }} 
                                 onClick={openTranslator}
                             >
-                                <TranslateIcon />
+                                <TranslateIcon style={{fontSize: 40}} />
                             </IconButton>
                         </Tooltip>
                         <Tooltip title="Manage Saved Words">
@@ -550,7 +550,7 @@ const customTextFieldStyle = {
                                 style={{ color: '#FFFFFF' }}  
                                 onClick={openSavedWordsModal}
                             >
-                                <SaveIcon />
+                                <SaveIcon style={{fontSize: 40}} />
                             </IconButton>
                         </Tooltip>
                         <Tooltip title="Manually Review Words">
@@ -558,7 +558,7 @@ const customTextFieldStyle = {
                                 style={{ color: '#FFFFFF' }} 
                                 onClick={openReviewWordsModal}
                             >
-                                <ReviewIcon />
+                                <ReviewIcon style={{fontSize: 40}} />
                             </IconButton>
                         </Tooltip>
                         <Tooltip title="Open Settings">
@@ -566,7 +566,7 @@ const customTextFieldStyle = {
                                 style={{ color: '#FFFFFF' }} 
                                 onClick={openSettingsModal}
                             >
-                                <SettingsIcon />
+                                <SettingsIcon style={{fontSize: 40}} />
                             </IconButton>
                         </Tooltip>
                     </div>
