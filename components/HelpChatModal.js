@@ -111,7 +111,7 @@ const HelpChatModal = ({ isOpen, onRequestClose, language, queryText, isSituatio
     }
 
     return (
-        <Modal isOpen={isOpen} onRequestClose={onRequestClose}>
+        <Modal isOpen={isOpen} onRequestClose={onRequestClose} sx={{ background: 'red' }}>
             <div className={modalStyles.simpleMessageDisplayArea} ref={scrollRef}>
                 {conversationLog.map((message, index) => (
                     <div key={index} className={message.role === 'user' ? modalStyles.userMessage : modalStyles.assistantMessage}>
@@ -121,34 +121,32 @@ const HelpChatModal = ({ isOpen, onRequestClose, language, queryText, isSituatio
                 {isWaitingForResponse() && <div className={modalStyles.loader}></div>}
             </div>
             <div className={inputStyles.chatInputArea}>
-                    <TextField
-                        fullWidth
-                        value={userInput}
-                        onChange={(e) => setUserInput(e.target.value)}
-                        placeholder="Type any question you may have..."
-                        variant="outlined"
-                        margin="normal"
-                        onKeyPress={handleKeyPress}
-                    />
-                    <Tooltip title={`Explain what this means in further detail!`}>
-                        <IconButton 
-                            onClick={handleLightbulbSubmit}
-                            style={{ margin: '5px' }}
-                            
-                        >
-                            <LightbulbIcon />
-                        </IconButton>
-                    </Tooltip>
-                    <Tooltip title={`Translate English text into ${language}`}>
-                        <IconButton 
-                            onClick={handleSubmit}
-                            style={{ margin: '5px' }}
-                            disabled={!userInput.trim()} // Disable if there's no input
-                        >
-                            <SendIcon />
-                        </IconButton>
-                    </Tooltip>
-                    
+                <TextField
+                    fullWidth
+                    value={userInput}
+                    onChange={(e) => setUserInput(e.target.value)}
+                    placeholder="Type any question you may have..."
+                    variant="outlined"
+                    margin="normal"
+                    onKeyPress={handleKeyPress}
+                />
+                <Tooltip title={`Explain what this means in further detail!`}>
+                    <IconButton 
+                        onClick={handleLightbulbSubmit}
+                        style={{ margin: '5px' }}
+                    >
+                        <LightbulbIcon />
+                    </IconButton>
+                </Tooltip>
+                <Tooltip title={`Translate English text into ${language}`}>
+                    <IconButton 
+                        onClick={handleSubmit}
+                        style={{ margin: '5px' }}
+                        disabled={!userInput.trim()} // Disable if there's no input
+                    >
+                        <SendIcon />
+                    </IconButton>
+                </Tooltip>
             </div>
             <Button onClick={onRequestClose}>Close</Button>
         </Modal>

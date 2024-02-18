@@ -70,7 +70,7 @@ const customTextFieldStyle = {
     minWidth: 150,
 };
 
-    const model = "gpt-4-1106-preview";
+    const model = "gpt-4-turbo";
     const firstMsgContent = "Say something just one thing to start the conversation. Do not surround your text with quotation marks or a name or anything. Do not ask for any more information on the situation, you should know everything.";
     const difficulty = "extremely beginner";
     const voice = "alloy";
@@ -103,7 +103,7 @@ const customTextFieldStyle = {
         const [completionModel, setCompletionModel] = useState('gpt-3.5-turbo');
         const [helpChatModel, setHelpChatModel] = useState('gpt-3.5-turbo');
         const [translationModel, setTranslationModel] = useState('gpt-3.5-turbo');
-        const availableModels = ["gpt-3.5-turbo", "gpt-3.5-turbo-1106", "gpt-3.5-turbo-16k", "gpt-4-1106-preview", "gpt-4", "gpt-4-0613", "gpt-4-32k"];
+        const availableModels = ["gpt-3.5-turbo", "gpt-4", "gpt-4-turbo"];
         const [streak, setStreak] = useState(0);
         const [lastCompletedDate, setLastCompletedDate] = useState(null);
         const [consecutiveUserMessages, setConsecutiveUserMessages] = useState(0);
@@ -527,6 +527,8 @@ const customTextFieldStyle = {
             setShowSituation(!showSituation);
         };
 
+        const buttonSize = 38;
+
         return (
             <div className={styles.chatContainer}>
                 <div className={styles.header}>
@@ -534,7 +536,7 @@ const customTextFieldStyle = {
                     <div>
                     <Tooltip title="Help">
                         <IconButton onClick={openHelpModal} style={{ color: '#FFFFFF', }}>
-                            <HelpOutlineIcon style={{fontSize: 40}} /> {/* Import HelpOutlineIcon from @mui/icons-material */}
+                            <HelpOutlineIcon style={{fontSize: buttonSize}} /> {/* Import HelpOutlineIcon from @mui/icons-material */}
                         </IconButton>
                     </Tooltip>
                         <Tooltip title="Open Translator">
@@ -542,7 +544,7 @@ const customTextFieldStyle = {
                                 style={{ color: '#FFFFFF' }} 
                                 onClick={openTranslator}
                             >
-                                <TranslateIcon style={{fontSize: 40}} />
+                                <TranslateIcon style={{fontSize: buttonSize}} />
                             </IconButton>
                         </Tooltip>
                         <Tooltip title="Manage Saved Words">
@@ -550,7 +552,7 @@ const customTextFieldStyle = {
                                 style={{ color: '#FFFFFF' }}  
                                 onClick={openSavedWordsModal}
                             >
-                                <SaveIcon style={{fontSize: 40}} />
+                                <SaveIcon style={{fontSize: buttonSize}} />
                             </IconButton>
                         </Tooltip>
                         <Tooltip title="Manually Review Words">
@@ -558,7 +560,7 @@ const customTextFieldStyle = {
                                 style={{ color: '#FFFFFF' }} 
                                 onClick={openReviewWordsModal}
                             >
-                                <ReviewIcon style={{fontSize: 40}} />
+                                <ReviewIcon style={{fontSize: buttonSize}} />
                             </IconButton>
                         </Tooltip>
                         <Tooltip title="Open Settings">
@@ -566,7 +568,7 @@ const customTextFieldStyle = {
                                 style={{ color: '#FFFFFF' }} 
                                 onClick={openSettingsModal}
                             >
-                                <SettingsIcon style={{fontSize: 40}} />
+                                <SettingsIcon style={{fontSize: buttonSize}} />
                             </IconButton>
                         </Tooltip>
                     </div>
@@ -582,6 +584,7 @@ const customTextFieldStyle = {
                             control={<Switch checked={isSrsModeActive} onChange={toggleSrsMode} />}
                             label= "Spaced Repetition Conversation Mode"
                             disabled={isSituationUsed}
+                            style={{ marginLeft: '10px' }} // Add left margin here
                         />
                     </Tooltip>
                     <Tooltip title="Teacher mode">
