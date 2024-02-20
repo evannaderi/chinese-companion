@@ -656,17 +656,19 @@ const customTextFieldStyle = {
                 </div>
                 
                 <MessageDisplayArea messages={conversationLog} segmentedMessages={segmentedConversation} onClickWord={updateCard} situation={situation} setSituation={setSituation} useSituation={useSituation} showSituation={showSituation} showTeacherCard={showTeacherCard} openHelpChat={openHelpChat} customVocab={customVocab} setCustomVocab={setCustomVocab} sourceLanguage={language} aiCharName={aiCharName} userCharName={userCharName} autoplay={autoplay} voice={voice} model={completionModel} handleSaveWord={handleSaveWord} language={language} />
-                <ChatInputArea 
-                    onSendMessage={handleSubmit} 
-                    userInput={userInput} 
-                    setUserInput={setUserInput} 
-                    isSituationUsed={isSituationUsed} 
-                    openHelpChat={openHelpChat}
-                    language={language}
-                    onClickWord={updateCard}
-                    voice={voice}
-                    handleSaveWord={handleSaveWord}
-                />
+                {isSituationUsed && ( 
+                    <ChatInputArea 
+                        onSendMessage={handleSubmit} 
+                        userInput={userInput} 
+                        setUserInput={setUserInput} 
+                        isSituationUsed={isSituationUsed} 
+                        openHelpChat={openHelpChat}
+                        language={language}
+                        onClickWord={updateCard}
+                        voice={voice}
+                        handleSaveWord={handleSaveWord}
+                    />
+                )}
                 {isSrsModeActive && (
                     <SrsCard 
                         currentReviewWord={currentReviewWord} 
