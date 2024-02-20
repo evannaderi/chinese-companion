@@ -154,9 +154,9 @@ const SegmentedChatMessage = ({ message, onClickWord, idx, openHelpChat, sourceL
     const onSaveWord = async (segment) => {
         let definition = "";
         if (sourceLanguage == "Chinese") {
-            definition = await getGeminiCompletion(`Give me the definition and pinyin for the word "${segment}" in ${sourceLanguage}. Write your definition in English and write the pinyin. Do not include any other text. Please remember to include pinyin. Keep your response to 1-2 sentences, remembering to include pinyin.`);
+            definition = await getGeminiCompletion(`Give me the definition and pinyin for the word "${segment}" in ${sourceLanguage}. Write your definition in English and write the pinyin. Do not include any other text. Please remember to include pinyin. Keep in mind that the context of this word is: "${message.content.join(' ')}". Keep your response to 1-2 sentences, and remember you should ONLY say the definition of the WORD and NOTHING else.remembering to include pinyin.`);
         } else {
-            definition = await getGeminiCompletion(`Give me the definition for the word "${segment}" in ${sourceLanguage}. Write your definition in English only. Do not write your definition in any language other than English. Do not include any other text.`);
+            definition = await getGeminiCompletion(`Give me the definition for the word "${segment}" in ${sourceLanguage}. Write your definition in English only. Do not write your definition in any language other than English. Do not include any other text. Keep in mind that the context of this word is "${message.content.join(' ')}". Keep your response to 1-2 sentences, and remember you should ONLY say the definition of the WORD and NOTHING else.`);
         }
         handleSaveWord(segment,
                         definition,
