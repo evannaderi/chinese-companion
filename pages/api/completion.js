@@ -46,7 +46,7 @@ export default async function (req, res) {
           model: model, // specify the correct chat model here
           messages: conversation,
           temperature: 1,
-          max_tokens: 5000,
+          max_tokens: 4000,
         });
         console.log("completion: ", completion);
         
