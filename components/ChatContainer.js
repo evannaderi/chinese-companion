@@ -121,7 +121,7 @@ const customTextFieldStyle = {
         const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
         const [showSituation, setShowSituation] = useState(true);
         const [showTeacherCard, setShowTeacherCard] = useState(false);
-
+        const [isLoading, setIsLoading] = useState(false);
 
 
         const openSettingsModal = () => setIsSettingsModalOpen(true);
@@ -407,6 +407,7 @@ const customTextFieldStyle = {
             console.log("HERE HI")
             setSegmentedConversation(prev => [...prev, { role: 'user', content: input }]);
             setConversationLog(prev => [...prev, { role: 'user', content: input }]);
+            setIsLoading(true);
 
             if (isSrsModeActive) {
                 handleUserWordFeedback(isReviewWordKnown);
