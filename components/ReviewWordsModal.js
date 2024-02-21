@@ -1,13 +1,23 @@
 // ReviewWordsModal.js
-import React, { useEffect, useState } from 'react';
-import { Modal, Box, Button, Typography } from '@mui/material';
+// Path: src/components/ReviewWordsModal.js
+import React, { useState, useEffect } from 'react';
+import { Modal, Box, Typography, Button } from '@mui/material';
+import { styled } from '@mui/system';
+
+const ModalBox = styled(Box)(({ theme }) => ({
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(4),
+}));
 
 const ReviewWordsModal = ({ wordToReview, isOpen, onClose, onUserFeedback }) => {
     const [showMeaning, setShowMeaning] = useState(false);
-
-    const toggleShowMeaning = () => {
-        setShowMeaning(!showMeaning);
-    };
 
     useEffect(() => {
         if (isOpen) {
@@ -15,28 +25,42 @@ const ReviewWordsModal = ({ wordToReview, isOpen, onClose, onUserFeedback }) => 
         }
     }, [isOpen, wordToReview]);
 
+    const handleToggleShowMeaning = () => setShowMeaning(!showMeaning);
+
     return (
         <Modal open={isOpen} onClose={onClose}>
-            <Box style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, backgroundColor: 'white', padding: 20, boxShadow: 24 }}>
+            <ModalBox>
+                <Typography variant="h4" gutterBottom component="div" color="text.primary" textAlign="center">
+                    Word Exploration
+                </Typography>
                 {wordToReview ? (
                     <>
-                        <Typography variant="h5">Review Word</Typography>
-                        <Typography variant="h6">{wordToReview.word}</Typography>
+                        <Typography variant="h5" color="text.secondary" gutterBottom>
+                            {wordToReview.word}
+                        </Typography>
                         {showMeaning && (
-                            <Typography variant="subtitle1" style={{ marginTop: '10px' }}>
+                            <Typography variant="body1" color="text.secondary" sx={{ mt: 2 }}>
                                 Meaning: {wordToReview.meaning}
                             </Typography>
                         )}
-                        <Button variant="outlined" onClick={toggleShowMeaning}>{showMeaning ? 'Hide Meaning' : 'Show Meaning'}</Button>
-                        <Button variant="contained" color="primary" onClick={() => onUserFeedback(true)}>Knew</Button>
-                        <Button variant="contained" color="secondary" onClick={() => onUserFeedback(false)}>Didn't Know</Button>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
+                            <Button variant="outlined" onClick={handleToggleShowMeaning}>
+                                {showMeaning ? 'Conceal Meaning' : 'Reveal Meaning'}
+                            </Button>
+                            <Button variant="contained" color="success" onClick={() => onUserFeedback(true)}>
+                                I Knew This
+                            </Button>
+                            <Button variant="contained" color="error" onClick={() => onUserFeedback(false)}>
+                                Try That Again
+                            </Button>
+                        </Box>
                     </>
                 ) : (
-                    <Typography variant="h6" style={{ textAlign: 'center' }}>
-                        There are no review words left!
+                    <Typography variant="subtitle1" color="text.secondary" textAlign="center">
+                        Your journey of words awaits the next chapter.
                     </Typography>
                 )}
-            </Box>
+            </ModalBox>
         </Modal>
     );
 };
