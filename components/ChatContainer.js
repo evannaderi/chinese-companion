@@ -1,5 +1,5 @@
     import React, { useState, useEffect } from 'react';
-    import { Button, FormControlLabel, Switch, Tooltip, TextField } from '@mui/material';
+    import { Button, FormControlLabel, Switch, Tooltip, TextField, Typography } from '@mui/material';
     import { FormControl, InputLabel, Select, MenuItem, Box, Modal, IconButton, Divider } from '@mui/material';
     import { getMandarinCompletion } from '../services/openaiService';
     import { segmentTextJieba } from '../services/jiebaService';
@@ -95,8 +95,23 @@ const customTextFieldStyle = {
         const [customVocab, setCustomVocab] = useState("");
         const [aiCharName, setAiCharName] = useState("Lihua");
         const [userCharName, setUserCharName] = useState("Frenkie");
-        const difficultyLevels = ['extremely beginner', 'beginner', 'low medium', 'medium', 'high medium', 'advanced', 'extremely advanced'];
-        const languages = ['Spanish', 'French', 'German', 'Italian', 'Portuguese', 'Chinese'];
+        const difficultyLevels = [
+            { name: 'Extremely Beginner', emoji: '🌱' },
+            { name: 'Beginner', emoji: '🔰' },
+            { name: 'Low Medium', emoji: '🌤️' },
+            { name: 'Medium', emoji: '⛅' },
+            { name: 'High medium', emoji: '🌞' },
+            { name: 'Advanced', emoji: '🚀' },
+            { name: 'Extremely Advanced', emoji: '🌟' }
+        ];
+        const languages = [
+            { name: 'Spanish', flag: '🇪🇸' },
+            { name: 'French', flag: '🇫🇷' },
+            { name: 'German', flag: '🇩🇪' },
+            { name: 'Italian', flag: '🇮🇹' },
+            { name: 'Portuguese', flag: '🇵🇹' },
+            { name: 'Chinese', flag: '🇨🇳' }
+        ];
         const voices = ['alloy', 'echo', 'fable', 'nova', 'onyx', 'shimmer', 'google', 'cmn-CN-Standard-A', 'cmn-CN-Standard-B', 'es-ES-Neural2-A', 'es-ES-Neural2-B'];
         const systemPre = `You are the character ${aiCharName} in this situation and the er is ${userCharName}. Only speak in ${language} at a ${difficulty} difficulty, using ${difficulty} sentences and words. Keep your responses to 1-2 sentences: `;
         const [systemPrompt, setSystemPrompt] = useState('');
@@ -591,7 +606,10 @@ const customTextFieldStyle = {
                             disabled={isSituationUsed}
                             style={{ marginLeft: '10px' }} // Add left margin here
                         />
+                        
                     </Tooltip>
+                    
+                    
                     <Tooltip title="Teacher mode">
                         <FormControlLabel
                             control={<Switch checked={showTeacherCard} onChange={toggleMode} />}
@@ -620,7 +638,7 @@ const customTextFieldStyle = {
                                     }}
                                 >
                                     {languages.map(lang => (
-                                        <MenuItem key={lang} value={lang}>{lang}</MenuItem>
+                                        <MenuItem key={lang.name} value={lang.name}>{lang.flag + " " +  lang.name }</MenuItem>
                                     ))}
                                 </Select>
                             </FormControl>
@@ -638,7 +656,7 @@ const customTextFieldStyle = {
                                             }}
                                         >
                                             {difficultyLevels.map(level => (
-                                                <MenuItem key={level} value={level}>{level}</MenuItem>
+                                                <MenuItem key={level.name} value={level.name}>{level.emoji + " " + level.name}</MenuItem>
                                             ))}
                                         </Select>
                             </FormControl>
