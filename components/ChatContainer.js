@@ -103,7 +103,11 @@ const customTextFieldStyle = {
         const [completionModel, setCompletionModel] = useState('gpt-3.5-turbo');
         const [helpChatModel, setHelpChatModel] = useState('gpt-3.5-turbo');
         const [translationModel, setTranslationModel] = useState('gpt-3.5-turbo');
-        const availableModels = ["gpt-3.5-turbo", "gpt-4", "gpt-4-turbo"];
+        const availableModels = [
+            { label: "GPT 3.5 Turbo", name: "gpt-3.5-turbo" },
+            { label: "GPT-4", name: "gpt-4" },
+            { label: "GPT-4 Turbo", name: "gpt-4-turbo-preview" }
+        ];
         const [streak, setStreak] = useState(0);
         const [lastCompletedDate, setLastCompletedDate] = useState(null);
         const [consecutiveUserMessages, setConsecutiveUserMessages] = useState(0);
@@ -725,7 +729,7 @@ const customTextFieldStyle = {
                                     label="Completion Model"
                                 >
                                     {availableModels.map(model => (
-                                        <MenuItem key={model} value={model}>{model}</MenuItem>
+                                        <MenuItem key={model.label} value={model.name}>{model.label}</MenuItem>
                                     ))}
                                 </Select>
                             </FormControl>
@@ -740,7 +744,7 @@ const customTextFieldStyle = {
                                     label="Help Chat Model"
                                 >
                                     {availableModels.map(model => (
-                                        <MenuItem key={model} value={model}>{model}</MenuItem>
+                                        <MenuItem key={model.label} value={model.name}>{model.label}</MenuItem>
                                     ))}
                                 </Select>
                             </FormControl>
@@ -755,7 +759,7 @@ const customTextFieldStyle = {
                                     label="Translation Model"
                                 >
                                     {availableModels.map(model => (
-                                        <MenuItem key={model} value={model}>{model}</MenuItem>
+                                        <MenuItem key={model.label} value={model.name}>{model.label}</MenuItem>
                                     ))}
                                 </Select>
                             </FormControl>
