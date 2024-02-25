@@ -90,7 +90,6 @@ const customTextFieldStyle = {
         const [language, setLanguage] = useState('Spanish'); // default language
         const [voice, setVoice] = useState('alloy'); // default voice
         const [isSituationUsed, setIsSituationUsed] = useState(false);
-        const [difficulty, setDifficulty] = useState('extremely beginner');
         const [savedWords, setSavedWords] = useState([]);
         const [customVocab, setCustomVocab] = useState("");
         const [aiCharName, setAiCharName] = useState("Lihua");
@@ -112,6 +111,7 @@ const customTextFieldStyle = {
             { name: 'Portuguese', flag: '🇵🇹' },
             { name: 'Chinese', flag: '🇨🇳' }
         ];
+        const [difficulty, setDifficulty] = useState('Beginner');
         const voices = ['alloy', 'echo', 'fable', 'nova', 'onyx', 'shimmer', 'google', 'cmn-CN-Standard-A', 'cmn-CN-Standard-B', 'es-ES-Neural2-A', 'es-ES-Neural2-B'];
         const systemPre = `You are the character ${aiCharName} in this situation and the er is ${userCharName}. Only speak in ${language} at a ${difficulty} difficulty, using ${difficulty} sentences and words. Keep your responses to 1-2 sentences: `;
         const [systemPrompt, setSystemPrompt] = useState('');
