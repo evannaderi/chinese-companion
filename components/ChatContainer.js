@@ -141,6 +141,7 @@ const customTextFieldStyle = {
         const [showSituation, setShowSituation] = useState(true);
         const [showTeacherCard, setShowTeacherCard] = useState(false);
         const [isLoading, setIsLoading] = useState(false);
+        const [isMobile, setIsMobile] = useState(false);
 
 
         const openSettingsModal = () => setIsSettingsModalOpen(true);
@@ -241,6 +242,16 @@ const customTextFieldStyle = {
             setConversationLog([{ role: 'assistant', content: openAIResponse }]); // resets convo
             setIsSituationUsed(true);
         };
+
+        useEffect(() => {
+            const handleResize = () => {
+                setIsMobile(window.innerWidth < 768);
+            };
+            
+            setIsMobile(window.innerWidth < 768);
+            window.addEventListener('resize', handleResize);
+            return () => window.removeEventListener('resize', handleResize);
+        }, []);
 
         useEffect(() => {
             let newSystemPrompt = `You are the character ${aiCharName} in this situation and the other is ${userCharName}. Only speak in ${language} at a ${difficulty} difficulty, using ${difficulty} sentences and words. Keep your responses to 1-2 sentences: `;
@@ -547,7 +558,7 @@ const customTextFieldStyle = {
             setShowSituation(!showSituation);
         };
 
-        const buttonSize = 38;
+        const buttonSize = isMobile ? 25 : 38;
 
         return (
             <div className={styles.chatContainer}>
@@ -602,7 +613,7 @@ const customTextFieldStyle = {
                     <Tooltip title="Review your saved words during your conversation using a sophisticated spaced repetition algorithm">
                         <FormControlLabel
                             control={<Switch checked={isSrsModeActive} onChange={toggleSrsMode} />}
-                            label= "Spaced Repetition Conversation Mode"
+                            label= {isMobile ? "SRS" : "Spaced Repetition Conversation Mode"}
                             disabled={isSituationUsed}
                             style={{ marginLeft: '10px' }} // Add left margin here
                         />
@@ -610,13 +621,13 @@ const customTextFieldStyle = {
                     </Tooltip>
                     
                     
-                    <Tooltip title="Teacher mode">
+                    {/* <Tooltip title="Teacher mode">
                         <FormControlLabel
                             control={<Switch checked={showTeacherCard} onChange={toggleMode} />}
                             label= "Switch to Teacher Mode"
                             disabled={isSituationUsed}
                         />
-                    </Tooltip>
+                    </Tooltip> */}
                     <div className={styles.horizontalSettings}>
                         
                         <FormControl variant="outlined" style={{ minWidth: 120, margin: '10px' }}>
