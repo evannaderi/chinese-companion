@@ -5,7 +5,7 @@ import styles from './styles/MessageDisplayArea.module.css';
 import { useEffect, useRef, useState } from "react";
 import TeacherCard from "./TeacherCard";
 
-const MessageDisplayArea = ({ messages, segmentedMessages, onClickWord, situation, setSituation, useSituation, showSituation, showTeacherCard, openHelpChat, customVocab, setCustomVocab, sourceLanguage, aiCharName, userCharName, autoplay, voice, model, handleSaveWord, isLoading, language }) => {
+const MessageDisplayArea = ({ messages, segmentedMessages, onClickWord, situation, setSituation, useSituation, showSituation, showTeacherCard, openHelpChat, customVocab, setCustomVocab, sourceLanguage, aiCharName, userCharName, autoplay, voice, model, handleSaveWord, language, isLoading }) => {
     const scrollRef = useRef(null);
     ;
 
@@ -42,6 +42,7 @@ const MessageDisplayArea = ({ messages, segmentedMessages, onClickWord, situatio
                 }
             }
             )}
+            {isLoading && (<div className={styles.loader}></div>)}
             
         </div>
     );

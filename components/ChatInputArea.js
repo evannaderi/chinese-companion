@@ -243,7 +243,7 @@ const ChatInputArea = ({ onSendMessage, userInput, setUserInput, isSituationUsed
                 
             </div>
 
-            <p style={{ fontSize: 'small' }}> If you need help saying something, click the AI help or the translate button on the right!</p>
+            <p style={{ fontSize: 'small', marginLeft: 20 }}> If you need help saying something, click the AI help or the translate button on the right!</p>
 
             <div className={styles.chatInputArea}>
                 {isAdditionalInputVisible && (

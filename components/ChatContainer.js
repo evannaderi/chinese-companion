@@ -214,6 +214,7 @@ const customTextFieldStyle = {
             if (situation === '') {
                 return;
             }
+            setIsLoading(true);
 
             console.log("Custom vocab is: ", customVocab);
 
@@ -239,6 +240,7 @@ const customTextFieldStyle = {
             const messages = [{role: 'user', content: modifiedFirstMsgContent}];
             console.log("Messages: ", messages);
             const openAIResponse = await getCustomCompletion(newSystemPrompt, messages, completionModel);
+            setIsLoading(false);
             setConversationLog([{ role: 'assistant', content: openAIResponse }]); // resets convo
             setIsSituationUsed(true);
         };
@@ -325,6 +327,7 @@ const customTextFieldStyle = {
                     }
                     console.log("The system prompt is: ", systemPrompt);
                     const openAIResponse = await getCustomCompletion(systemPrompt, modifiedConversationLog, completionModel);
+                    setIsLoading(false);
                     setConversationLog(prev => [...prev, { role: 'assistant', content: openAIResponse }]);
                     console.log("Just set conversationLog to: ", modifiedConversationLog);
                 } else if (lastMessage.role === 'assistant') {
@@ -689,7 +692,7 @@ const customTextFieldStyle = {
                     
                 </div>
                 
-                <MessageDisplayArea messages={conversationLog} segmentedMessages={segmentedConversation} onClickWord={updateCard} situation={situation} setSituation={setSituation} useSituation={useSituation} showSituation={showSituation} showTeacherCard={showTeacherCard} openHelpChat={openHelpChat} customVocab={customVocab} setCustomVocab={setCustomVocab} sourceLanguage={language} aiCharName={aiCharName} userCharName={userCharName} autoplay={autoplay} voice={voice} model={completionModel} handleSaveWord={handleSaveWord} language={language} />
+                <MessageDisplayArea messages={conversationLog} segmentedMessages={segmentedConversation} onClickWord={updateCard} situation={situation} setSituation={setSituation} useSituation={useSituation} showSituation={showSituation} showTeacherCard={showTeacherCard} openHelpChat={openHelpChat} customVocab={customVocab} setCustomVocab={setCustomVocab} sourceLanguage={language} aiCharName={aiCharName} userCharName={userCharName} autoplay={autoplay} voice={voice} model={completionModel} handleSaveWord={handleSaveWord} language={language} isLoading={isLoading} />
                 {isSituationUsed && ( 
                     <ChatInputArea 
                         onSendMessage={handleSubmit} 
@@ -748,7 +751,7 @@ const customTextFieldStyle = {
                         <Box style={{ marginBottom: '20px' }}>
                             
                             <FormControl variant="outlined" sx={customSelectStyle}>
-                                <InputLabel id="completion-model-label">Completion Model</InputLabel>
+                                <InputLabel id="completion-model-label">Chatbot Model</InputLabel>
         
                                 <Select
                                     labelId="completion-model-label"
